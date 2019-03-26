@@ -18,6 +18,9 @@ import com.gigamole.navigationtabstrip.NavigationTabStrip
 import io.armcha.playtablayout.core.TouchableTabLayout
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
+import android.content.Intent
+
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -135,6 +138,8 @@ class MainActivity : AppCompatActivity() {
         }
         else if (id == R.id.action_add){
             Toast.makeText(this, "Add acitivty", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, PostingActivity::class.java)
+            startActivity(intent)
         } else if (id == android.R.id.home) {
             drawerLayout.openDrawer(GravityCompat.START)
         }
