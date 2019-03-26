@@ -1,0 +1,158 @@
+package me.lamine.goride
+
+import android.graphics.Color
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.widget.Toolbar
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.TextView
+import com.gigamole.navigationtabstrip.NavigationTabStrip
+import io.armcha.playtablayout.core.TouchableTabLayout
+import android.widget.Toast
+import kotlinx.android.synthetic.main.activity_main.*
+
+
+class MainActivity : AppCompatActivity() {
+    private lateinit var drawerLayout: androidx.drawerlayout.widget.DrawerLayout
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        setSupportActionBar(findViewById(R.id.my_toolbar))
+        //init
+        val  navigationTabStrip = findViewById<NavigationTabStrip>(R.id.playTabLayout1)
+        val fragmentAdapter = MyPagerAdapter(supportFragmentManager)
+        drawerLayout = findViewById(R.id.drawer_layout)
+
+        val fab: FloatingActionButton = findViewById(R.id.fab)
+        fab.setOnClickListener { view ->
+            Snackbar.make(view, "Here's a Snackbar For Driver", Snackbar.LENGTH_LONG)
+                .setAction("Action", null)
+                .show()
+        }
+        val fabp: FloatingActionButton = findViewById(R.id.fab_p)
+        fabp.setOnClickListener { view ->
+            Snackbar.make(view, "Here's a Passenger", Snackbar.LENGTH_LONG)
+                .setAction("Action", null)
+                .show()
+        }
+        fabp.hide()
+
+
+
+
+        playTabLayout.colors = intArrayOf(
+            R.color.colorAccent,
+            R.color.Secondary)
+
+
+        viewpager_v.adapter = fragmentAdapter
+        val tabLayout = playTabLayout.tabLayout
+        tabLayout.setupWithViewPager(viewpager_v)
+        tabLayout.setTabTextColors(ContextCompat.getColor(this,R.color.colorPrimary),ContextCompat.getColor(this,R.color.whiteColor))
+        //tabs_main.setupWithViewPager(viewpager_main)
+        val toolbar = findViewById<Toolbar>(R.id.my_toolbar)
+        val actionbar: ActionBar? = supportActionBar
+        actionbar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp)
+        }
+        toolbar.changeToolbarFont()
+
+       initNavStripe(navigationTabStrip)
+
+
+
+
+        tabLayout.addOnTabSelectedListener(object :
+            TouchableTabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TouchableTabLayout.Tab) {
+                if (tab.position == 0){
+                    toolbar.setTitleTextColor(ContextCompat.getColor(applicationContext,R.color.colorAccent))
+                    navigationTabStrip.stripColor = ContextCompat.getColor(applicationContext,R.color.colorAccent)
+                    navigationTabStrip.activeColor = ContextCompat.getColor(applicationContext,R.color.colorAccent)
+
+                    fab_p.hide()
+                    fab.show()
+
+                }
+                if (tab.position == 1) {
+                    toolbar.setTitleTextColor(ContextCompat.getColor(applicationContext,R.color.Secondary))
+                    navigationTabStrip.stripColor = ContextCompat.getColor(applicationContext,R.color.Secondary)
+                    navigationTabStrip.activeColor = ContextCompat.getColor(applicationContext,R.color.Secondary)
+
+                    fab.hide()
+                    fab_p.show()
+                }
+            }
+            override fun onTabReselected(tab: TouchableTabLayout.Tab) {
+
+            }
+
+            override fun onTabUnselected(tab: TouchableTabLayout.Tab) {
+
+            }
+
+
+        })
+    }
+    fun Toolbar.changeToolbarFont(){
+        for (i in 0 until childCount) {
+            val view = getChildAt(i)
+            if (view is TextView && view.text == title) {
+                view.typeface = ResourcesCompat.getFont(context, R.font.poppins_bold)
+                break
+            }
+        }
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.menu_add, menu)
+        menuInflater.inflate(R.menu.menu_main, menu)
+
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        val id = item.itemId
+
+
+        if (id == R.id.action_favorite) {
+            Toast.makeText(this@MainActivity, "Action clicked", Toast.LENGTH_LONG).show()
+            return true
+        }
+        else if (id == R.id.action_add){
+            Toast.makeText(this, "Add acitivty", Toast.LENGTH_SHORT).show()
+        } else if (id == android.R.id.home) {
+            drawerLayout.openDrawer(GravityCompat.START)
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+    private fun initNavStripe(navigationTabStrip: NavigationTabStrip) {
+        navigationTabStrip.setTitles("Driver", "Passenger")
+        navigationTabStrip.setViewPager(viewpager_v,0)
+        navigationTabStrip.setTabIndex(0, true)
+        navigationTabStrip.setBackgroundColor(Color.WHITE)
+        navigationTabStrip.stripColor = Color.RED
+        navigationTabStrip.stripType = NavigationTabStrip.StripType.POINT
+        navigationTabStrip.stripGravity = NavigationTabStrip.StripGravity.BOTTOM
+        navigationTabStrip.setTypeface("fonts/typeface.ttf")
+        navigationTabStrip.animationDuration = 300
+        navigationTabStrip.inactiveColor = Color.GRAY
+        navigationTabStrip.activeColor = Color.RED
+    }
+}
+//todo fix

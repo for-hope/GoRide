@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical" android:id="@+id/LLmain" android:elevation="50dp">
+
+
+    <TextView
+            android:text="Going Somewhere?"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/textView3" android:textSize="25sp"
+            android:paddingLeft="10dp" android:textColor="@android:color/black"
+            android:fontFamily="@font/secular_one" android:paddingTop="10dp"/>
+    <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.MaterialComponents.CardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/mtrl_card_spacing"
+            android:layout_marginTop="@dimen/mtrl_card_spacing"
+            android:layout_marginRight="@dimen/mtrl_card_spacing"
+            android:minHeight="200dp" android:id="@+id/card_img">
+
+        <!-- Card contents. -->
+        <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" android:id="@+id/cardLL" android:layout_weight="1">
+                <ImageView
+                        android:layout_width="70dp"
+                        android:layout_height="70dp" tools:srcCompat="@tools:sample/avatars[2]"
+                        android:id="@+id/imageView"
+                        android:layout_weight="1" android:layout_margin="10dp" android:layout_gravity="top|left"
+                        android:paddingLeft="10dp" android:contentDescription="TODO"/>
+                <RelativeLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:layout_weight="1">
+                    <TextView
+                            android:text="Post a trip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:id="@+id/textView"
+                            android:textSize="25sp" android:textColor="@color/Secondary"
+                            android:fontFamily="@font/roboto_black" android:paddingStart="10dp"
+                            android:foregroundGravity="left" android:gravity="left"/>
+                    <ImageView
+                            app:srcCompat="@drawable/ic_keyboard_arrow_right_black_24dp"
+                            android:layout_gravity="center|end" android:layout_height="wrap_content"
+                            android:layout_width="wrap_content" android:layout_centerVertical="true"
+                            android:layout_alignParentEnd="true" android:contentDescription="Card Arrow"/>
+                </RelativeLayout>
+                <TextView
+                        android:text="You're a driver with empty seats that you're looking to fill"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:id="@+id/textView2" android:layout_weight="1"
+                        android:textSize="20sp" android:paddingTop="10dp" android:paddingStart="10dp"/>
+            </LinearLayout>
+        </FrameLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+    <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.MaterialComponents.CardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/mtrl_card_spacing"
+            android:layout_marginTop="@dimen/mtrl_card_spacing"
+            android:layout_marginRight="@dimen/mtrl_card_spacing"
+            android:minHeight="200dp" android:id="@+id/card_img2">
+
+        <!-- Card contents. -->
+        <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" android:id="@+id/FrameL2">
+
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" android:id="@+id/cardLL2" android:layout_weight="1">
+                <ImageView
+                        android:layout_width="70dp"
+                        android:layout_height="70dp" tools:srcCompat="@tools:sample/avatars[3]"
+                        android:id="@+id/imageView2"
+                        android:layout_weight="1" android:layout_margin="10dp" android:layout_gravity="top|left"
+                        android:paddingLeft="10dp" android:contentDescription="TODO"/>
+                <RelativeLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/RL2">
+                    <TextView
+                            android:text="Post a request"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:id="@+id/PostRequestTxt"
+                            android:textSize="25sp" android:textColor="@color/colorAccent"
+                            android:fontFamily="@font/roboto_black" android:paddingStart="10dp"
+                            android:foregroundGravity="left" android:gravity="left"/>
+                    <ImageView
+                            app:srcCompat="@drawable/ic_keyboard_arrow_right_black_24dp"
+                            android:layout_gravity="center|end" android:layout_height="wrap_content"
+                            android:layout_width="wrap_content" android:layout_centerVertical="true"
+                            android:layout_alignParentEnd="true" android:contentDescription="Card Arrow"/>
+                </RelativeLayout>
+                <TextView
+                        android:text="You're look a shared ride and would like to get a notification when one is found."
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:id="@+id/Desc2" android:layout_weight="1"
+                        android:textSize="20sp" android:paddingTop="10dp" android:paddingStart="10dp"/>
+            </LinearLayout>
+        </FrameLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+</LinearLayout>
