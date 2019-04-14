@@ -18,9 +18,9 @@
                 android:layout_gravity="end|bottom"
                 android:src="@drawable/ic_search_white_24dp"
                 android:layout_margin="16dp"
-                android:backgroundTint="@color/Secondary"
+                android:backgroundTint="@color/colorSecondary"
                 app:rippleColor="@color/colorPrimary"
-                app:backgroundTint="@color/Secondary"/>
+                app:backgroundTint="@color/colorSecondary"/>
         <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab"
                 android:layout_width="wrap_content"

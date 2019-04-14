@@ -8,7 +8,6 @@ import com.google.android.material.snackbar.Snackbar
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
 import android.view.Menu
@@ -19,6 +18,17 @@ import io.armcha.playtablayout.core.TouchableTabLayout
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import android.content.Intent
+import android.widget.DatePicker
+import android.app.DatePickerDialog
+import android.graphics.Bitmap
+import android.provider.MediaStore
+
+
+
+
+
+
+
 
 
 
@@ -30,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.my_toolbar))
         //init
-        val  navigationTabStrip = findViewById<NavigationTabStrip>(R.id.playTabLayout1)
+        val navigationTabStrip = findViewById<NavigationTabStrip>(R.id.playTabLayout1)
         val fragmentAdapter = MyPagerAdapter(supportFragmentManager)
         drawerLayout = findViewById(R.id.drawer_layout)
 
@@ -53,7 +63,7 @@ class MainActivity : AppCompatActivity() {
 
         playTabLayout.colors = intArrayOf(
             R.color.colorAccent,
-            R.color.Secondary)
+            R.color.colorSecondary)
 
 
         viewpager_v.adapter = fragmentAdapter
@@ -87,9 +97,9 @@ class MainActivity : AppCompatActivity() {
 
                 }
                 if (tab.position == 1) {
-                    toolbar.setTitleTextColor(ContextCompat.getColor(applicationContext,R.color.Secondary))
-                    navigationTabStrip.stripColor = ContextCompat.getColor(applicationContext,R.color.Secondary)
-                    navigationTabStrip.activeColor = ContextCompat.getColor(applicationContext,R.color.Secondary)
+                    toolbar.setTitleTextColor(ContextCompat.getColor(applicationContext,R.color.colorSecondary))
+                    navigationTabStrip.stripColor = ContextCompat.getColor(applicationContext,R.color.colorSecondary)
+                    navigationTabStrip.activeColor = ContextCompat.getColor(applicationContext,R.color.colorSecondary)
 
                     fab.hide()
                     fab_p.show()
@@ -117,6 +127,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_add, menu)
@@ -138,7 +149,7 @@ class MainActivity : AppCompatActivity() {
         }
         else if (id == R.id.action_add){
             Toast.makeText(this, "Add acitivty", Toast.LENGTH_SHORT).show()
-            val intent = Intent(this, PostingActivity::class.java)
+            val intent = Intent(this, PostOptionsActivity::class.java)
             startActivity(intent)
         } else if (id == android.R.id.home) {
             drawerLayout.openDrawer(GravityCompat.START)

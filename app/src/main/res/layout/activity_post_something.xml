@@ -60,7 +60,7 @@
                             android:text="Post a trip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" android:id="@+id/textView"
-                            android:textSize="25sp" android:textColor="@color/Secondary"
+                            android:textSize="25sp" android:textColor="@color/colorSecondary"
                             android:fontFamily="@font/roboto_black" android:paddingStart="10dp"
                             android:foregroundGravity="left" android:gravity="left"/>
                     <ImageView

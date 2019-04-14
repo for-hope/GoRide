@@ -1,0 +1,806 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools" android:id="@+id/scrolling"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" android:background="#eeeeee">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#eeeeee"
+            android:paddingTop="40dp" android:paddingEnd="20dp" android:paddingRight="20dp" android:paddingLeft="20dp"
+            android:paddingStart="20dp" android:id="@+id/atf_Linear_Layout" android:orientation="vertical">
+        <TextView
+                android:text="Trip Form"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/textView4" android:textSize="22sp"
+                android:textColor="@android:color/black" android:fontFamily="@font/roboto_black"
+                android:paddingBottom="20dp"/>
+        <TextView
+                android:text="Enter your origin, destination, and stops you're willing to make to pick up and drop off passengers on the way."
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/textView5" android:textSize="16sp"
+                android:paddingBottom="20dp"/>
+        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                android:id="@+id/origin_label"
+                android:soundEffectsEnabled="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:primaryColor="@color/colorSecondary"
+                app:labelText="Origin"
+                android:paddingBottom="30dp"
+                app:helperTextColor="@color/colorAccent" app:counterTextColor="@color/colorSecondary">
+
+            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                    android:id="@+id/edittext_origin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+            />
+
+
+
+        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                android:id="@+id/destination_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:primaryColor="@color/colorSecondary"
+                android:soundEffectsEnabled="false"
+                app:labelText="Destination"
+                app:helperTextColor="@color/colorAccent"
+                android:paddingBottom="30dp">
+
+            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                    android:id="@+id/edittext_destination"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+            />
+
+
+        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/atf_LL">
+            <TextView
+                    android:text="Stops"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/Stops_textfield" android:textColor="#a4232323"
+                    android:textSize="15sp" android:textStyle="bold" android:paddingEnd="10dp"/>
+            <ImageView
+                    app:srcCompat="@drawable/ic_help_black_24dp"
+                    android:id="@+id/help_img" android:layout_weight="0"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"/>
+        </LinearLayout>
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/relative_layout_form">
+
+        </LinearLayout>
+        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                android:id="@+id/add_field_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:primaryColor="@color/colorSecondary"
+                app:labelText="Stop: Pick up people along the way"
+                app:helperTextColor="@color/colorAccent"
+                app:iconSignifier="@drawable/ic_add_black_24dp"
+                app:enabled="false">
+
+            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                    android:id="@+id/edittext_origin4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+            />
+
+
+        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+        <View
+                android:id="@+id/divider1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginTop="60dp" android:layout_marginBottom="30dp"/>
+        <TextView
+                android:text="Ride Shcedule"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/ride_shcedule_txt" android:textSize="22sp"
+                android:textColor="@android:color/black" android:fontFamily="@font/roboto_black"
+                android:paddingBottom="20dp"/>
+        <TextView
+                android:text="Enter a pricise date and make sure to post the correct time format."
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/textView7" android:textSize="16sp"
+                android:paddingBottom="20dp"/>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" android:id="@+id/Linear1222">
+            <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:id="@+id/add_datebtn"
+                    android:layout_width="200dp"
+                    android:layout_height="match_parent"
+                    app:primaryColor="@color/colorSecondary"
+                    app:labelText="Departure date"
+                    app:helperTextColor="@color/colorAccent"
+                    app:iconSignifier="@drawable/ic_date_range_black_24dp"
+                    app:enabled="true"
+                    android:focusable="false"
+                    android:clickable="false"
+            android:soundEffectsEnabled="false">
+
+                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                        android:id="@+id/editText_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:inputType="date"
+                        android:focusable="false"
+                        android:clickable="false"
+                        android:soundEffectsEnabled="false"/>
+
+
+            </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+            <TextView
+                    android:text="at "
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" android:id="@+id/textView8" android:layout_weight="1"
+                    android:gravity="center"/>
+            <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:id="@+id/add_timebtn"
+                    android:layout_width="120dp"
+                    app:primaryColor="@color/colorSecondary"
+                    app:labelText="Time"
+                    app:helperTextColor="@color/colorAccent"
+                    app:iconSignifier="@drawable/ic_access_time_black_24dp"
+                    android:layout_height="wrap_content">
+
+                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                        android:id="@+id/editText_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:inputType="time"/>
+
+
+            </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+        </LinearLayout>
+        <View
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginTop="60dp" android:layout_marginBottom="30dp"/>
+        <TextView
+                android:text="Vehicle details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/cardetails_shcedule_txt2" android:textSize="22sp"
+                android:textColor="@android:color/black" android:fontFamily="@font/roboto_black"
+                android:paddingBottom="20dp"/>
+        <TextView
+                android:text="This helps get more bookings and gives passengers a way to identify your car during pick-up"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/textView9" android:textSize="16sp"
+                android:paddingBottom="20dp"/>
+        <CheckBox
+                android:text="Skip Vehicle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/skip_vehicle_check"/>
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" android:id="@+id/vehicle_linearlayout"
+                android:visibility="visible">
+            <FrameLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" android:id="@+id/car_img_layout"
+                    android:layout_marginBottom="20dp">
+                <ImageButton
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:srcCompat="@drawable/ic_directions_car_150dp"
+                        android:id="@+id/carBtn"
+                        android:layout_centerHorizontal="true" android:padding="10dp"/>
+                <TextView
+                        android:text="add a photo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:id="@+id/imgTextSelectCar"
+                        android:textSize="16sp"
+                        android:layout_centerInParent="true"
+                        android:elevation="1dp" android:layout_gravity="bottom|center" android:paddingBottom="10dip"/>
+            </FrameLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/editText_model"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="#9E9E9E"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+                    app:hintTextAppearance="@color/colorSecondary"
+                    app:boxBackgroundColor="#E0E0E0"
+                    android:hint="Model"
+                    app:boxBackgroundMode="filled" android:paddingBottom="20sp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editText_car_model"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                <com.jaredrummler.materialspinner.MaterialSpinner
+                        android:id="@+id/spinner_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:ms_hint="Type"
+                        android:hint="Type"
+                        app:ms_background_color="#e0e0e0" android:paddingBottom="20sp"
+                        android:layout_marginBottom="30dp"/>
+                <com.jaredrummler.materialspinner.MaterialSpinner
+                        android:id="@+id/spinner_color"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:ms_hint="Color"
+                        app:ms_background_color="#e0e0e0" android:paddingBottom="20sp"
+                        android:layout_marginBottom="30dp"/>
+            </LinearLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="#9E9E9E"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+                    app:hintTextAppearance="@color/colorSecondary"
+                    app:boxBackgroundColor="#E0E0E0"
+                    android:hint="Year"
+                    app:helperText="Format YYYY"
+                    app:boxBackgroundMode="filled" android:paddingBottom="20sp" android:id="@+id/year_TextField">
+
+                <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:id="@+id/year_EditText"
+                        android:inputType="number"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="#9E9E9E"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+                    app:hintTextAppearance="@color/colorSecondary"
+                    app:boxBackgroundColor="#E0E0E0"
+                    android:hint="License Plate"
+                    app:helperText="*Optional"
+                    app:boxBackgroundMode="filled" android:paddingBottom="20sp" android:id="@+id/license_TextField">
+
+                <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:inputType="number"
+                        android:id="@+id/licenseplate_EditText"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+        <View
+                android:id="@+id/divider4"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginTop="60dp" android:layout_marginBottom="30dp"/>
+        <TextView
+                android:text="Trip preferences"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/cardetails_tirp_pref" android:textSize="22sp"
+                android:textColor="@android:color/black" android:fontFamily="@font/roboto_black"
+                android:paddingBottom="20dp"/>
+        <TextView
+                android:text="This informs passengers of how much space you have for their luggage and extras before they book"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/tip_p_desc" android:textSize="16sp"
+                android:paddingBottom="20dp"/>
+        <TextView
+                android:text="Luggage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/text_title" android:textSize="20sp"
+                android:textColor="@android:color/black" android:textStyle="bold"/>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" android:id="@+id/luggageLayout">
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:background="@drawable/custom_border"
+                    android:layout_marginTop="10dp" android:layout_marginBottom="20dp" android:id="@+id/pref_btn_no"
+                    android:gravity="center">
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" app:srcCompat="@drawable/ic_work_black_24dp"
+                        android:id="@+id/luggage_none_img" android:layout_weight="0" android:paddingStart="5dp"/>
+                <TextView
+                        android:text="None"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:id="@+id/textView12" android:layout_weight="1"
+                        android:textColor="#282828" android:textSize="18sp" android:paddingLeft="12dp"
+                        android:paddingRight="12dp"/>
+            </LinearLayout>
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:background="@drawable/custom_border" android:gravity="center"
+                    android:layout_marginTop="10dp" android:layout_marginBottom="20dp" android:id="@+id/pref_btn_s">
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" app:srcCompat="@drawable/ic_work_black_24dp"
+                        android:id="@+id/luggage_s" android:layout_weight="1" android:paddingStart="5dp"/>
+                <TextView
+                        android:text="S"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:id="@+id/textprefS" android:layout_weight="1"
+                        android:textColor="#282828" android:textSize="18sp" android:paddingLeft="12dp"
+                        android:paddingRight="12dp"/>
+            </LinearLayout>
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:background="@drawable/custom_border" android:gravity="center"
+                    android:layout_marginTop="10dp" android:layout_marginBottom="20dp" android:id="@+id/pref_btn_m">
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" app:srcCompat="@drawable/ic_work_black_24dp"
+                        android:id="@+id/luggage_m" android:layout_weight="1" android:paddingLeft="5dp"
+                        android:contentDescription="TODO"/>
+                <TextView
+                        android:text="M"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:id="@+id/textprefM" android:layout_weight="1"
+                        android:textColor="#282828" android:textSize="18sp" android:paddingLeft="12dp"
+                        android:paddingRight="12dp"/>
+            </LinearLayout>
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:background="@drawable/custom_border" android:gravity="center"
+                    android:layout_marginTop="10dp" android:layout_marginBottom="20dp" android:id="@+id/pref_btn_l">
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" app:srcCompat="@drawable/ic_work_black_24dp"
+                        android:id="@+id/luggage_l" android:layout_weight="1" android:paddingStart="5dp"
+                        android:contentDescription="TODO"/>
+                <TextView
+                        android:text="L"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:id="@+id/textprefL" android:layout_weight="1"
+                        android:textColor="#282828" android:textSize="18sp" android:paddingLeft="12dp"
+                        android:paddingRight="12dp"/>
+            </LinearLayout>
+        </LinearLayout>
+        <TextView
+                android:text="Other"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/text_other" android:textSize="20sp"
+                android:textColor="@android:color/black" android:textStyle="bold"/>
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                 android:orientation="horizontal">
+
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:background="@drawable/custom_border_round" android:gravity="center"
+                    android:layout_marginTop="10dp" android:layout_marginBottom="20dp" android:id="@+id/other_btn_smoke"
+                    android:layout_marginEnd="10dp">
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" app:srcCompat="@drawable/ic_smoke_free_black_24dp"
+                        android:id="@+id/btn_no_smoke" android:layout_weight="1"
+                        android:contentDescription="smoke_icon"/>
+                <TextView
+                        android:text="No Smoking"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:id="@+id/no_smokeText" android:layout_weight="1"
+                        android:textColor="#282828" android:textSize="18sp" android:paddingLeft="12dp"
+                        android:paddingRight="12dp"/>
+            </LinearLayout>
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:background="@drawable/custom_border_round" android:gravity="center"
+                    android:layout_marginTop="10dp" android:layout_marginBottom="20dp" android:id="@+id/other_btn_pet"
+                    android:layout_marginEnd="28dp">
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" app:srcCompat="@drawable/ic_pets_black_24dp"
+                        android:id="@+id/btn_no_pets" android:layout_weight="1" android:contentDescription="pet_icon"/>
+                <TextView
+                        android:text="Pets"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:id="@+id/text_pet" android:layout_weight="1"
+                        android:textColor="#282828" android:textSize="18sp" android:paddingLeft="12dp"
+                        android:paddingRight="12dp"/>
+            </LinearLayout>
+        </LinearLayout>
+        <View
+                android:id="@+id/divider5"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginTop="60dp" android:layout_marginBottom="30dp" android:layout_weight="1"/>
+        <TextView
+                android:text="Empty Seats"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/cardetails_tirpp_pref2" android:textSize="22sp"
+                android:textColor="@android:color/black" android:fontFamily="@font/roboto_black"
+                android:paddingBottom="20dp"/>
+        <TextView
+                android:text="We reccomend putting maximum 2 people in the back to ensure everyone's comfort"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/tip_p_desc2" android:textSize="16sp"
+                android:paddingBottom="20dp"/>
+        <TextView
+                android:text="Select a number "
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/text_other2" android:textSize="16sp"
+                android:textColor="@color/btnBlack" android:textStyle="bold"/>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/seat_layout">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/seat1" android:layout_weight="1"
+                    android:textColor="@color/btnBlack" android:textStyle="bold" android:textSize="16sp"
+                    android:background="@drawable/custom_border_circle" android:text="1" android:gravity="center"
+                    android:layout_margin="5dp"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/seat2" android:layout_weight="1"
+                    android:textColor="@color/btnBlack" android:textStyle="bold" android:textSize="16sp"
+                    android:background="@drawable/custom_border_circle" android:text="2" android:gravity="center"
+                    android:layout_margin="5dp"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/seat3" android:layout_weight="1"
+                    android:textColor="@color/btnBlack" android:textStyle="bold" android:textSize="16sp"
+                    android:background="@drawable/custom_border_circle" android:text="3" android:gravity="center"
+                    android:layout_margin="5dp"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/seat4" android:layout_weight="1"
+                    android:textColor="@color/btnBlack" android:textStyle="bold" android:textSize="16sp"
+                    android:background="@drawable/custom_border_circle" android:text="4" android:gravity="center"
+                    android:layout_margin="5dp"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/seat5" android:layout_weight="1"
+                    android:textColor="@color/btnBlack" android:textStyle="bold" android:textSize="16sp"
+                    android:background="@drawable/custom_border_circle" android:text="5" android:gravity="center"
+                    android:layout_margin="5dp"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/seat6" android:layout_weight="1"
+                    android:textColor="@color/btnBlack" android:textStyle="bold" android:textSize="16sp"
+                    android:background="@drawable/custom_border_circle" android:text="6" android:gravity="center"
+                    android:layout_margin="5dp"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/seat7" android:layout_weight="1"
+                    android:textColor="@color/btnBlack" android:textStyle="bold" android:textSize="16sp"
+                    android:background="@drawable/custom_border_circle" android:text="7" android:gravity="center"
+                    android:layout_margin="5dp"/>
+        </LinearLayout>
+        <View
+                android:id="@+id/divider6"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginTop="60dp" android:layout_marginBottom="30dp" android:layout_weight="1"/>
+        <TextView
+                android:text="Price per seat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/cardetails_price_pref" android:textSize="22sp"
+                android:textColor="@android:color/black" android:fontFamily="@font/roboto_black"
+                android:paddingBottom="20dp"/>
+        <TextView
+                android:text="We suggest prices based on similar trips and note all prices are in DZA"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/tip_p_desc3" android:textSize="16sp"
+                android:paddingBottom="20dp"/>
+        <TextView
+                android:text="Enter a price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/text_other3" android:textSize="16sp"
+                android:textColor="@color/btnBlack" android:textStyle="bold" android:paddingBottom="10dp"/>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" android:id="@+id/price_layout" android:paddingBottom="30dp">
+            <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:id="@+id/price_label"
+                    android:soundEffectsEnabled="false"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    app:primaryColor="@color/colorSecondary"
+                    app:labelText="Price"
+                    app:helperTextColor="@color/colorAccent" app:counterTextColor="@color/colorSecondary">
+
+                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                        android:id="@+id/edittext_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"/>
+
+
+            </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                <TextView
+                        android:text="Origin to Destination"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" android:id="@+id/Origin_to_Destination"
+                        android:layout_weight="1" android:textColor="@color/btnBlack" android:textSize="20sp"
+                        android:textStyle="bold" android:paddingLeft="10dp"/>
+                <TextView
+                        android:text="Recommanded price: 500DZA"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" android:id="@+id/recommanded_price"
+                        android:layout_weight="1" android:textColor="#4c4c4c" android:textSize="16sp"
+                        android:paddingLeft="10dp" android:paddingTop="5dp" android:textStyle="italic"/>
+            </LinearLayout>
+        </LinearLayout>
+        <View
+                android:id="@+id/divider7"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginTop="60dp" android:layout_marginBottom="30dp" android:layout_weight="1"/>
+        <TextView
+                android:text="Booking prefrence"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/cardetails_price_pref2" android:textSize="22sp"
+                android:textColor="@android:color/black" android:fontFamily="@font/roboto_black"
+                android:paddingBottom="20dp"/>
+        <TextView
+                android:text="We give you the choice of either reviewing each booking or accepting all bookings instantly"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/tip_booking_desc4" android:textSize="16sp"
+                android:paddingBottom="20dp"/>
+        <TextView
+                android:text="Select a type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/text_other4" android:textSize="16sp"
+                android:textColor="@color/btnBlack" android:textStyle="bold" android:paddingBottom="10dp"/>
+        <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" android:id="@+id/request_to_book_card"
+                app:cardCornerRadius="20dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="@drawable/custom_bg"
+                android:background="@drawable/custom_border_round">
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" android:padding="20dp"
+                    android:background="@drawable/custom_border_round" android:id="@+id/requestbook_layout">
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" app:srcCompat="@drawable/ic_credit_card_black_50dp"
+                        android:id="@+id/imageView4"/>
+                <TextView
+                        android:text="Request to book"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:id="@+id/cardetails_price_pref3"
+                        android:textSize="18sp"
+                        android:textColor="@android:color/black" android:fontFamily="@font/roboto_black"
+                        android:paddingBottom="20dp"/>
+                <TextView
+                        android:text="You approve or decline passengers manually"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:id="@+id/text_other5" android:textSize="16sp"
+                        android:textColor="@color/btnBlack" android:textStyle="bold" android:paddingBottom="10dp"/>
+                <TextView
+                        android:text="You control on who gets in your car"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" android:id="@+id/recommanded_price2"
+                        android:layout_weight="1" android:textColor="#4c4c4c" android:textSize="16sp"
+                        android:paddingTop="5dp" android:textStyle="italic"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        <View
+                android:id="@+id/divider10"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginTop="10dp" android:layout_marginBottom="10dp" android:layout_weight="1"
+                android:visibility="invisible"/>
+        <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" android:id="@+id/book_instantly_card"
+                app:cardCornerRadius="20dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="@drawable/custom_bg"
+                android:background="@drawable/custom_border_round" android:paddingBottom="20dp"
+        >
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" android:padding="20dp"
+                    android:background="@drawable/custom_border_round" android:id="@+id/instantbook_layout">
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/flash_ic_img" app:srcCompat="@drawable/ic_flash_on_yellow_24dp"/>
+                <TextView
+                        android:text="Instant Book"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:id="@+id/cardetails_instantbook"
+                        android:textSize="18sp"
+                        android:textColor="@android:color/black" android:fontFamily="@font/roboto_black"
+                        android:paddingBottom="20dp"/>
+                <TextView
+                        android:text="Passengers are instantly booked"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:id="@+id/card_cotitle2" android:textSize="16sp"
+                        android:textColor="@color/btnBlack" android:textStyle="bold" android:paddingBottom="10dp"/>
+                <TextView
+                        android:text="Sit back, relax and watch the bookings roll in "
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" android:id="@+id/card_desc2"
+                        android:layout_weight="1" android:textColor="#4c4c4c" android:textSize="16sp"
+                        android:paddingTop="5dp" android:textStyle="italic"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        <View
+                android:id="@+id/divider11"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginTop="60dp" android:layout_marginBottom="30dp" android:layout_weight="1"/>
+        <TextView
+                android:text="Policies"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/cardetails_price_pref4" android:textSize="22sp"
+                android:textColor="@android:color/black" android:fontFamily="@font/roboto_black"
+                android:paddingBottom="20dp"/>
+        <TextView
+                android:text="Our policies ensure that both the drivers and passengers are happy with the service."
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/tip_booking_desc" android:textSize="16sp"
+                android:paddingBottom="30dp"/>
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" android:paddingBottom="20dp">
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" app:srcCompat="@drawable/ic_credit_card_black_24dp"
+                        android:id="@+id/imageView5" android:layout_weight="1"/>
+                <TextView
+                        android:text="Passengers pay with cash"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:id="@+id/origin_to_Destination2"
+                        android:layout_weight="1" android:textColor="@color/btnBlack" android:textSize="20sp"
+                        android:textStyle="bold" android:paddingLeft="10dp"/>
+            </LinearLayout>
+            <TextView
+                    android:text="All passengers must pay using cash to protect you from scammed."
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/tip_booking_desc2" android:textSize="16sp"
+                    android:paddingBottom="20dp" android:padding="10dp"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" app:srcCompat="@drawable/ic_monetization_on_black_24dp"
+                        android:id="@+id/imageView6" android:layout_weight="1"/>
+                <TextView
+                        android:text="You get paid after the trip "
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:id="@+id/title_policy2"
+                        android:layout_weight="1" android:textColor="@color/btnBlack" android:textSize="20sp"
+                        android:textStyle="bold" android:paddingLeft="10dp"/>
+            </LinearLayout>
+            <TextView
+                    android:text="You'll recieve your payout after the trip from passengers to ensure a succesful trip."
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/policy_desc2" android:textSize="16sp"
+                    android:paddingBottom="20dp" android:padding="10dp"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" app:srcCompat="@drawable/ic_not_interested_black_24dp"
+                        android:id="@+id/imageView7" android:layout_weight="1"/>
+                <TextView
+                        android:text="You get paid after the trip "
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:id="@+id/title_policy3"
+                        android:layout_weight="1" android:textColor="@color/btnBlack" android:textSize="20sp"
+                        android:textStyle="bold" android:paddingLeft="10dp"/>
+            </LinearLayout>
+            <TextView
+                    android:text="You're committed to driving when you post a trip and you could be suspended if you cancel."
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/policy_desc3" android:textSize="16sp"
+                    android:paddingBottom="20dp" android:padding="10dp"/>
+        </LinearLayout>
+        <View
+                android:id="@+id/divider12"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginTop="60dp" android:layout_marginBottom="30dp" android:layout_weight="1"/>
+        <TextView
+                android:text="Trip Description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/cardetails_price_pref5" android:textSize="22sp"
+                android:textColor="@android:color/black" android:fontFamily="@font/roboto_black"
+                android:paddingBottom="20dp"/>
+        <TextView
+                android:text="Use this space to write any details relavant to your trip for passengers before they book"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/tip_booking_desc3" android:textSize="16sp"
+                android:paddingBottom="30dp"/>
+        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                android:id="@+id/tripdesc_label"
+                android:soundEffectsEnabled="false"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                app:primaryColor="@color/colorSecondary"
+                app:labelText="Description"
+                app:helperTextColor="@color/colorAccent" app:counterTextColor="@color/colorSecondary"
+                android:paddingBottom="30dp">
+
+            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/edittext_tripdesc" android:inputType="textMultiLine|textLongMessage"/>
+
+
+        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/submit_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Post a trip"/>
+    </LinearLayout>
+
+
+</ScrollView>
+
+

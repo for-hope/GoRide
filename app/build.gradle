@@ -27,7 +27,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     //noinspection GradleCompatible
     implementation 'com.google.android.material:material:1.0.0'
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha03'
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha04'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
     testImplementation 'junit:junit:4.12'
@@ -36,4 +36,15 @@ dependencies {
     implementation 'com.github.armcha:PlayTabLayout:2.0.0'
     implementation 'com.github.devlight.navigationtabstrip:navigationtabstrip:1.0.4'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.libizo:customedittext:1.0.4'
+    implementation 'com.android.support:design:28.0.0'
+    implementation 'com.github.HITGIF:TextFieldBoxes:1.4.4'
+    implementation 'com.github.florent37:viewtooltip:1.2.0'
+    implementation ('com.weiwangcn.betterspinner:library-material:1.1.0') {
+        exclude group: 'com.android.support', module: 'appcompat-v7'
+    }
+    implementation 'com.jaredrummler:material-spinner:1.3.1'
+    implementation 'com.otaliastudios:autocomplete:1.1.0'
+    implementation 'com.github.vihtarb:tooltip:0.2.0'
+    implementation "com.wajahatkarim3.easyvalidation:easyvalidation-core:1.0.1"
 }
