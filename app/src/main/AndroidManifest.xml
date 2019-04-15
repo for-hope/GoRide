@@ -4,6 +4,10 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <application
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"
@@ -14,6 +18,8 @@
             tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".PostingActivity"/>
         <activity android:name=".PostOptionsActivity"/>
+        <activity android:name=".SearchTripActivity"/>
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyDWbc3KQP6ssBlClf8HSiZWEtMxfwqSYto"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

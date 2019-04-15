@@ -625,4 +625,5 @@ class PostingActivity : AppCompatActivity() {
         val edit = v.findViewById<ExtendedEditText>(R.id.edittext_label)
         stops.add(edit.text.toString())
     }
+
 }

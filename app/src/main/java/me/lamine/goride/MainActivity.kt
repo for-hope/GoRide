@@ -22,6 +22,18 @@ import android.widget.DatePicker
 import android.app.DatePickerDialog
 import android.graphics.Bitmap
 import android.provider.MediaStore
+import androidx.core.os.HandlerCompat.postDelayed
+import com.google.android.gms.location.LocationServices
+import android.content.pm.PackageManager
+import android.Manifest.permission
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import androidx.core.app.ActivityCompat
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import com.google.android.gms.location.LocationRequest
+
+
+
+
 
 
 
@@ -40,6 +52,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.my_toolbar))
         //init
+
         val navigationTabStrip = findViewById<NavigationTabStrip>(R.id.playTabLayout1)
         val fragmentAdapter = MyPagerAdapter(supportFragmentManager)
         drawerLayout = findViewById(R.id.drawer_layout)
@@ -145,6 +158,8 @@ class MainActivity : AppCompatActivity() {
 
         if (id == R.id.action_favorite) {
             Toast.makeText(this@MainActivity, "Action clicked", Toast.LENGTH_LONG).show()
+            val intent = Intent(this, SearchTripActivity::class.java)
+            startActivity(intent)
             return true
         }
         else if (id == R.id.action_add){
@@ -170,5 +185,7 @@ class MainActivity : AppCompatActivity() {
         navigationTabStrip.inactiveColor = Color.GRAY
         navigationTabStrip.activeColor = Color.RED
     }
+
+
 }
 //todo fix
