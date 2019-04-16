@@ -531,7 +531,7 @@
             <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
                     android:id="@+id/price_label"
                     android:soundEffectsEnabled="false"
-                    android:layout_width="80dp"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     app:primaryColor="@color/colorSecondary"
                     app:labelText="Price"
@@ -541,7 +541,8 @@
                         android:id="@+id/edittext_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:inputType="number"/>
+                        android:inputType="number"
+                        app:suffix="  DZD"/>
 
 
             </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>

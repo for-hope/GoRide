@@ -51,6 +51,7 @@ dependencies {
     implementation 'com.google.android.libraries.places:places:1.1.0'
     implementation 'org.jetbrains.anko:anko-sdk15:0.8.2'
     implementation 'com.beust:klaxon:0.30'
-
+    implementation 'com.github.florent37:runtime-permission-kotlin:1.1.0'
+    implementation 'de.hdodenhof:circleimageview:3.0.0'
 
 }

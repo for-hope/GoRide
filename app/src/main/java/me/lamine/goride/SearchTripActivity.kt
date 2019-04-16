@@ -70,6 +70,9 @@ class SearchTripActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+        setSupportActionBar(findViewById(R.id.search_toolbar))
+        supportActionBar?.setDisplayHomeAsUpEnabled(true);
+        supportActionBar?.setDisplayShowHomeEnabled(true);
 
         // we add permissions we need to request location of the users
 
@@ -123,6 +126,10 @@ class SearchTripActivity : AppCompatActivity(), OnMapReadyCallback {
 
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSION_REQUEST_ACCESS_FINE_LOCATION) {
@@ -211,6 +218,7 @@ class SearchTripActivity : AppCompatActivity(), OnMapReadyCallback {
 
     @SuppressLint("MissingPermission")
     private fun addMarkersOnMap(){
+        mMap.clear()
         if (fromLatLng != null){
         mMap.addMarker(MarkerOptions().position(fromLatLng!!).title("Origin Location"))
         mMap.addMarker(MarkerOptions().position(toLatLng!!).title("Destination Location"))
@@ -293,7 +301,7 @@ class SearchTripActivity : AppCompatActivity(), OnMapReadyCallback {
         val params = "$origin&$dest&$sensor"
         return "https://maps.googleapis.com/maps/api/directions/json?$params&key=$apiKey"
     }
-
+    //decode Poly to draw line
     private fun decodePoly(encoded: String): List<LatLng> {
         val poly = ArrayList<LatLng>()
         var index = 0

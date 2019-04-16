@@ -18,31 +18,10 @@ import io.armcha.playtablayout.core.TouchableTabLayout
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import android.content.Intent
-import android.widget.DatePicker
-import android.app.DatePickerDialog
-import android.graphics.Bitmap
-import android.provider.MediaStore
-import androidx.core.os.HandlerCompat.postDelayed
-import com.google.android.gms.location.LocationServices
-import android.content.pm.PackageManager
-import android.Manifest.permission
-import android.Manifest.permission.ACCESS_COARSE_LOCATION
-import androidx.core.app.ActivityCompat
-import android.Manifest.permission.ACCESS_FINE_LOCATION
-import com.google.android.gms.location.LocationRequest
-
-
-
-
-
-
-
-
-
-
-
-
-
+import android.util.Log
+import androidx.appcompat.app.AlertDialog
+import com.github.florent37.runtimepermission.kotlin.PermissionException
+import com.github.florent37.runtimepermission.kotlin.askPermission
 
 
 class MainActivity : AppCompatActivity() {
@@ -128,6 +107,45 @@ class MainActivity : AppCompatActivity() {
 
 
         })
+
+        askPermission(){
+            //all permissions already granted or just granted
+
+            Toast.makeText(this,"Permissions Granted!",Toast.LENGTH_SHORT).show()
+        }.onDeclined { e ->
+            if (e.hasDenied()) {
+                Toast.makeText(this,"Permissions Denied!",Toast.LENGTH_SHORT).show()
+                //the list of denied permissions
+                e.denied.forEach {
+                   Log.i("DENIED FOR EACH", it)
+                }
+
+                AlertDialog.Builder(this)
+                    .setMessage("Please accept our permissions")
+                    .setPositiveButton("yes") { dialog, which ->
+                        e.askAgain();
+                    } //ask again
+                    .setNegativeButton("no") { dialog, which ->
+                        dialog.dismiss();
+                    }
+                    .show();
+            }
+
+            if(e.hasForeverDenied()) {
+                Toast.makeText(this,"Permissions Denied Forever!",Toast.LENGTH_SHORT).show()
+                //the list of forever denied permissions, user has check 'never ask again'
+                e.foreverDenied.forEach {
+                    Log.i("DENIED FOREVER", it)
+                }
+                // you need to open setting manually if you really need it
+                e.goToSettings();
+            }
+        }
+
+
+
+
+
     }
     fun Toolbar.changeToolbarFont(){
         for (i in 0 until childCount) {
