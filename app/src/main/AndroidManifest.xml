@@ -19,6 +19,7 @@
         <activity android:name=".PostingActivity"/>
         <activity android:name=".PostOptionsActivity"/>
         <activity android:name=".SearchTripActivity"/>
+
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyDWbc3KQP6ssBlClf8HSiZWEtMxfwqSYto"/>
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -27,6 +28,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".TripsListActivity"/>
         <meta-data android:name="preloaded_fonts" android:resource="@array/preloaded_fonts"/>
     </application>
 

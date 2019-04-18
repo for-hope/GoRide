@@ -1,26 +1,27 @@
 package me.lamine.goride
 
 import android.util.Log
+import java.io.Serializable
 
-class Trip(tripOrigin: String, tripDestination: String,allStops:ArrayList<String>,date:String , luggageSizeInt:Int,time:String,numberOfSeats:Int,price:Int,bookingPref:Int) {
-    private var origin:String = tripOrigin
-    private var destination:String = tripDestination
-    private var stops:ArrayList<String> = ArrayList()
-    private var numberOfStops = 0
-    private var date:String = date
-    private var time:String = time
-    private  lateinit var vehicleModel:String
-    private lateinit var vehicleType:String
-    private lateinit var vehicleColor:String
-    private var vehicleYear:Int = 0
-    private lateinit var licensePlate:String
-    private var luggageSize:String = "None"
-    private var noSmoking:Boolean = false
-    private var petsAllowed = false
-    private var numberOfSeats:Int = 0
-    private var pricePerSeat:Int = 0
-    private var bookingPref = 0
-    private lateinit var description:String
+class Trip(tripOrigin: String, tripDestination: String,allStops:ArrayList<String>,date:String , luggageSizeInt:Int,time:String,numberOfSeats:Int,price:Int,bookingPref:Int):Serializable {
+     var origin:String = tripOrigin
+     var destination:String = tripDestination
+     var stops:ArrayList<String> = ArrayList()
+     var numberOfStops = 0
+     var date:String = date
+     var time:String = time
+      lateinit var vehicleModel:String
+     lateinit var vehicleType:String
+     lateinit var vehicleColor:String
+     var vehicleYear:Int = 0
+     lateinit var licensePlate:String
+     var luggageSize:String = "None"
+     var noSmoking:Boolean = false
+     var petsAllowed = false
+     var numberOfSeats:Int = 0
+     var pricePerSeat:Int = 0
+     var bookingPref = 0
+     lateinit var description:String
 
 
     init {

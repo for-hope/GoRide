@@ -254,6 +254,10 @@ class PostingActivity : AppCompatActivity() {
         trip.addPrefrences(noSmoking,petsAllowed)
         trip.addDescription(tripDescription)
         trip.printAllInfo()
+            val intent = Intent(this, TripsListActivity::class.java)
+            intent.putExtra("PostingActivity",trip)
+            startActivity(intent)
+                //start activity
         } else {
             Toast.makeText(this,"Wrong Information, check and try again.",Toast.LENGTH_SHORT).show()
         }

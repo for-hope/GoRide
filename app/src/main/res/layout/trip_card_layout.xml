@@ -3,7 +3,10 @@
                                    xmlns:app="http://schemas.android.com/apk/res-auto"
                                    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
                                    android:layout_height="wrap_content" android:id="@+id/trip_card_view"
-                                   android:layout_marginTop="10dp" android:layout_marginBottom="10dp">
+                                   android:layout_marginTop="10dp" android:layout_marginBottom="10dp"
+                                   android:clickable="true"
+                                   android:focusable="true"
+                                   android:foreground="@drawable/custom_bg">
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -12,7 +15,8 @@
         <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:id="@+id/trip_lines_layout">
+                android:layout_height="match_parent" android:id="@+id/trip_lines_layout"
+        >
             <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
@@ -29,7 +33,7 @@
                         android:layout_height="wrap_content"
                         app:srcCompat="@drawable/ic_flash_on_yellow_24dp_true"
                         android:layout_weight="0"
-                        android:layout_gravity="bottom" android:id="@+id/ic_instant_card"/>
+                        android:layout_gravity="bottom" android:id="@+id/trip_ic_instant_card"/>
                 <TextView
                         android:text="0 seats left"
                         android:layout_width="wrap_content"
@@ -102,7 +106,7 @@
                 <TextView
                         android:text="Vehicle Prefrences"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:id="@+id/trip_preftxt_card4"
+                        android:layout_height="wrap_content" android:id="@+id/trip_vehicleperf_card"
                         android:textColor="@android:color/black"
                         android:textSize="18sp" android:layout_weight="0"
                         android:layout_marginStart="15dp"
@@ -123,7 +127,7 @@
                         <TextView
                                 android:text="M"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" android:id="@+id/trip_preftxt_card"
+                                android:layout_height="wrap_content" android:id="@+id/trip_luggage_card"
                                 android:textColor="@color/backgroundColor"
                                 android:textSize="12sp" android:layout_weight="1"
                                 android:textStyle="bold" android:gravity="center" android:foregroundGravity="center"
@@ -132,12 +136,12 @@
                     <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" app:srcCompat="@drawable/ic_pets_black_24dp"
-                            android:id="@+id/ic_pet_card" android:layout_weight="0" android:paddingEnd="5dp"
+                            android:id="@+id/trip_ic_pet_card" android:layout_weight="0" android:paddingEnd="5dp"
                             android:paddingStart="5dp"/>
                     <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" app:srcCompat="@drawable/ic_smoke_free_black_24dp"
-                            android:id="@+id/ic_smoke_card" android:layout_weight="0"
+                            android:id="@+id/trip_ic_smoke_card" android:layout_weight="0"
                             android:paddingStart="5dp" android:paddingEnd="5dp"/>
                 </LinearLayout>
             </LinearLayout>
@@ -155,10 +159,10 @@
                     android:layout_width="match_parent" android:layout_marginStart="15dp">
                 <de.hdodenhof.circleimageview.CircleImageView
                         xmlns:app="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/profile_image"
+                        android:id="@+id/trip_profile_image"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:src="@tools:sample/avatars[0]"
+                        android:src="@mipmap/ic_launcher_round"
                         app:civ_border_width="2dp"
                         app:civ_border_color="#FF000000"/>
                 <LinearLayout
@@ -173,13 +177,13 @@
                         <TextView
                                 android:text="Name"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" android:id="@+id/trip_date_card5"
+                                android:layout_height="wrap_content" android:id="@+id/trip_fullname_card"
                                 android:textColor="@android:color/black"
                                 android:textSize="18sp" android:textStyle="bold" android:layout_weight="0"
                                 android:paddingStart="10dp" android:layout_marginEnd="10dp"/>
                         <TextView
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" android:id="@+id/trip_profileinfo_card2"
+                                android:layout_height="wrap_content" android:id="@+id/trip_gender_age_card"
                                 android:layout_weight="0" android:textSize="18sp" android:text="Gender, Age"/>
                     </LinearLayout>
                     <LinearLayout
