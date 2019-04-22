@@ -21,6 +21,7 @@ class Trip(tripOrigin: String, tripDestination: String,allStops:ArrayList<String
      var numberOfSeats:Int = 0
      var pricePerSeat:Int = 0
      var bookingPref = 0
+     var hasVehicleInfo = false
      lateinit var description:String
 
 
@@ -41,6 +42,7 @@ class Trip(tripOrigin: String, tripDestination: String,allStops:ArrayList<String
     }
 
     fun addVehicleInfo(vehicleModel:String, vehicleType:String, vehicleColor:String, vehicleYear:Int,vehiclePlate:String) {
+        hasVehicleInfo = true
         this.vehicleModel = vehicleModel
         this.vehicleType = vehicleType
         this.vehicleColor = vehicleColor

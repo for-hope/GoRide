@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical" android:background="@color/quantum_googblue800">
+
+    <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" app:srcCompat="@drawable/ic_directions_car_white_60dp"
+            android:id="@+id/imageView12" android:layout_marginTop="150dp"/>
+    <TextView
+            android:text="@string/AppTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/appTitle"
+            android:textColor="@android:color/white" android:textSize="30sp"
+            android:fontFamily="@font/poppins_bold"
+            android:gravity="center" android:paddingBottom="20dp"/>
+    <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+            android:id="@+id/email_label"
+            android:soundEffectsEnabled="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:primaryColor="@color/colorSecondary"
+            app:labelText="Email"
+            android:paddingBottom="30dp"
+            app:iconSignifier="@drawable/ic_email_black_24dp"
+            app:helperTextColor="@color/colorAccent" app:counterTextColor="@color/colorSecondary"
+            android:layout_marginRight="30dp" android:layout_marginStart="30dp" android:layout_marginLeft="30dp"
+            android:layout_marginEnd="30dp" app:secondaryColor="@color/backgroundColor">
+
+        <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                android:id="@+id/email_edittext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+        />
+
+
+    </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+    <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+            android:id="@+id/password_label"
+            android:soundEffectsEnabled="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:primaryColor="@color/colorSecondary"
+            app:labelText="Password"
+            app:iconSignifier="@drawable/ic_vpn_key_black_24dp"
+            app:helperTextColor="@color/colorAccent" app:counterTextColor="@color/colorSecondary"
+            android:layout_marginRight="30dp" android:layout_marginStart="30dp" android:layout_marginLeft="30dp"
+            android:layout_marginEnd="30dp" app:secondaryColor="@color/backgroundColor"
+            android:layout_marginBottom="40dp">
+
+        <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                android:id="@+id/password_edittext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+        />
+
+
+    </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+    <Button
+            android:text="Log In"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/btnLogin" android:paddingBottom="15dp"
+            android:paddingTop="15dp" android:layout_marginLeft="30dp" android:layout_marginRight="30dp"
+            android:backgroundTint="#a2303f9f" android:textColor="#d1ffffff"/>
+    <TextView
+            android:text="Forgot your pasword?"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/frogot_pass" android:textColor="#6affffff"
+            android:gravity="center" android:padding="10dp"/>
+    <TextView
+            android:text="Dont have an account? Create one"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/create_account"
+            android:textColor="#6affffff"
+            android:gravity="bottom|center" android:padding="10dp"/>
+
+</LinearLayout>

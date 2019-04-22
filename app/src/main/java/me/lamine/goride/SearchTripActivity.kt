@@ -15,6 +15,7 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import android.R.attr.apiKey
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
@@ -118,9 +119,17 @@ class SearchTripActivity : AppCompatActivity(), OnMapReadyCallback {
             ) .setCountry("DZ")
                 .build(this)
             startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE_to)
+
         }
+        add_datebtn.setOnClickListener {  addMarkersOnMap() }
         search_btn.setOnClickListener {
-            addMarkersOnMap()
+            val mPrefs = this.getPreferences(Context.MODE_PRIVATE)!!
+            val tripID = mPrefs.getInt("TripID", 0)
+            Toast.makeText(this,"Trips Searched : $tripID",Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, TripsListActivity::class.java)
+            intent.putExtra("toText",editText_To.text)
+            intent.putExtra("fromText",editText_from.text)
+            startActivity(intent)
 
         }
 

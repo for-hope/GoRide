@@ -6,12 +6,14 @@
                                    android:layout_marginTop="10dp" android:layout_marginBottom="10dp"
                                    android:clickable="true"
                                    android:focusable="true"
-                                   android:foreground="@drawable/custom_bg">
+                                   android:foreground="@drawable/custom_bg"
+                                   android:layout_marginEnd="10dp" android:layout_marginRight="10dp"
+                                   android:layout_marginStart="10dp" android:layout_marginLeft="10dp">
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent" android:paddingTop="10dp" android:paddingBottom="10dp"
-            android:id="@+id/card_llayout">
+            android:id="@+id/card_llayout" android:paddingEnd="5dp">
         <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
@@ -20,13 +22,14 @@
             <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:id="@+id/first_line_card">
+                    android:layout_height="wrap_content" android:id="@+id/first_line_card"
+                    android:paddingBottom="5dp">
                 <TextView
                         android:text="Day, Mon 01 at 01am"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" android:id="@+id/trip_date_card"
                         android:textColor="@android:color/black"
-                        android:textSize="17sp" android:textStyle="bold" android:layout_weight="1"
+                        android:textSize="16sp" android:textStyle="bold" android:layout_weight="1"
                         android:layout_marginStart="15dp"/>
                 <ImageView
                         android:layout_width="wrap_content"
@@ -39,7 +42,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" android:id="@+id/trip_seats_card"
                         android:textColor="@android:color/black"
-                        android:textSize="17sp" android:textStyle="bold" android:layout_weight="0"
+                        android:textSize="16sp" android:textStyle="bold" android:layout_weight="0"
                         android:gravity="center" android:layout_marginEnd="8dp" android:layout_marginStart="8dp"/>
                 <TextView
                         android:layout_width="wrap_content"
@@ -55,7 +58,8 @@
                 <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" android:id="@+id/horz_second_line">
+                        android:layout_height="match_parent" android:id="@+id/horz_second_line"
+                >
                     <View
                             android:id="@+id/divider"
                             android:layout_width="5dp"
@@ -67,7 +71,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" android:id="@+id/trip_origin_card"
                             android:textColor="@color/colorSecondary"
-                            android:textSize="20sp" android:textStyle="bold" android:layout_weight="0"
+                            android:textSize="18sp" android:textStyle="bold" android:layout_weight="0"
                             android:paddingStart="10dp"/>
                     <TextView
                             android:layout_width="wrap_content"
@@ -90,7 +94,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" android:id="@+id/trip_destination_card"
                             android:textColor="@color/colorSecondary"
-                            android:textSize="20sp" android:textStyle="bold" android:layout_weight="0"
+                            android:textSize="18sp" android:textStyle="bold" android:layout_weight="0"
                             android:paddingStart="10dp"/>
                     <TextView
                             android:layout_width="wrap_content"
@@ -102,13 +106,14 @@
             <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" android:id="@+id/vehicle_pref_line_card">
+                    android:layout_height="match_parent" android:id="@+id/vehicle_pref_line_card"
+                    android:paddingTop="5dp" android:paddingBottom="5dp">
                 <TextView
                         android:text="Vehicle Prefrences"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" android:id="@+id/trip_vehicleperf_card"
                         android:textColor="@android:color/black"
-                        android:textSize="18sp" android:layout_weight="0"
+                        android:textSize="16sp" android:layout_weight="0"
                         android:layout_marginStart="15dp"
                         android:layout_marginEnd="2dp"/>
                 <LinearLayout
@@ -150,7 +155,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="?android:attr/listDivider"
-                    android:layout_marginBottom="5dp" android:layout_marginTop="5dp"/>
+                    android:layout_marginBottom="10dp" android:layout_marginTop="5dp"/>
 
 
             <LinearLayout

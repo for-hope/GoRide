@@ -22,6 +22,9 @@ import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import com.github.florent37.runtimepermission.kotlin.PermissionException
 import com.github.florent37.runtimepermission.kotlin.askPermission
+import android.content.DialogInterface
+
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -41,12 +44,16 @@ class MainActivity : AppCompatActivity() {
             Snackbar.make(view, "Here's a Snackbar For Driver", Snackbar.LENGTH_LONG)
                 .setAction("Action", null)
                 .show()
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
         }
         val fabp: FloatingActionButton = findViewById(R.id.fab_p)
         fabp.setOnClickListener { view ->
             Snackbar.make(view, "Here's a Passenger", Snackbar.LENGTH_LONG)
                 .setAction("Action", null)
                 .show()
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
         }
         fabp.hide()
 
@@ -202,7 +209,9 @@ class MainActivity : AppCompatActivity() {
         navigationTabStrip.animationDuration = 300
         navigationTabStrip.inactiveColor = Color.GRAY
         navigationTabStrip.activeColor = Color.RED
+
     }
+
 
 
 }

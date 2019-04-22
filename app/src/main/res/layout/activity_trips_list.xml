@@ -1,14 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical">
 
-    <ScrollView
-            xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.appcompat.widget.Toolbar
+            android:id="@+id/results_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                      android:orientation="vertical">
-            <androidx.recyclerview.widget.RecyclerView
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/whiteColor"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:title="Search Results"/>
+
+    <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" app:cardBackgroundColor="@color/colorAccent"
+            android:id="@+id/post_req_cardview"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="@drawable/custom_bg">
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" android:paddingTop="8dp"
+                android:paddingBottom="8dp" android:paddingStart="10dp" android:paddingEnd="10dp"
+                android:paddingLeft="10dp" android:paddingRight="10dp">
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" app:srcCompat="@drawable/ic_directions_car_black_40dp"
+                    android:id="@+id/imageView11" android:layout_weight="0"/>
+            <LinearLayout
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" android:id="@+id/trips_list_rec_view"/>
+                    android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="10dp">
+                <TextView
+                        android:text="Origin to Destination"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:id="@+id/origin_to_des" android:layout_weight="1"
+                        android:textSize="16sp" android:textColor="@android:color/white" android:textStyle="bold"
+                />
+                <TextView
+                        android:text="Post Request"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:id="@+id/card_txt_postreq"
+                        android:layout_weight="1"
+                        android:textSize="15sp" android:textColor="@android:color/white" android:textStyle="normal"
+                />
+            </LinearLayout>
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageView8" android:layout_weight="0" app:srcCompat="@drawable/ic_add_white_24dp"
+                    android:foregroundGravity="center" android:layout_gravity="center" android:layout_marginEnd="10dp"/>
         </LinearLayout>
-    </ScrollView>
+    </androidx.cardview.widget.CardView>
+    <com.gigamole.navigationtabstrip.NavigationTabStrip
+            android:id="@+id/trip_results_tablayout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:elevation="5dp"
+            app:nts_color="#000"
+            app:nts_size="15sp"
+            app:nts_weight="3dp"
+            app:nts_factor="2.5"
+            app:nts_titles="@array/titles"
+            app:nts_type="point"
+            app:nts_gravity="top"
+            app:nts_typeface="fonts/typeface.otf"
+            app:nts_corners_radius="1.5dp"
+            app:nts_animation_duration="300"
+            app:nts_active_color="#000"
+            app:nts_inactive_color="#c4c4c4"/>
+    <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewpager_r"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/trip_results_tablayout">
+    </androidx.viewpager.widget.ViewPager>
+</LinearLayout>
+
 

@@ -3,6 +3,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -26,6 +27,7 @@ import android.provider.MediaStore
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.ViewGroup
+import com.google.gson.Gson
 import com.tooltip.Tooltip
 import com.wajahatkarim3.easyvalidation.core.rules.*
 import com.wajahatkarim3.easyvalidation.core.view_ktx.validator
@@ -48,9 +50,9 @@ class PostingActivity : AppCompatActivity() {
     private lateinit var originText:String
     private lateinit var destinationText:String
     private var stops:ArrayList<String> = ArrayList()
-    private  lateinit var vehicleModel:String
-    private lateinit var vehicleType:String
-    private lateinit var vehicleColor:String
+    private  var vehicleModel:String = ""
+    private  var vehicleType:String = ""
+    private var vehicleColor:String = ""
     private var vehicleYear:Int = 0
     private lateinit var licensePlate:String
     private var tripPrice:Int = 0
@@ -64,6 +66,8 @@ class PostingActivity : AppCompatActivity() {
     private var seatOption = -1
     private var vehicleSkipped = false
     private var stopsList:ArrayList<View> = ArrayList()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_trip_form)
@@ -98,13 +102,6 @@ class PostingActivity : AppCompatActivity() {
 
 
 
-    }
-    private fun printAllform(){
-        Log.i("PRINTED FORM","$originText, $destinationText, $vehicleModel," +
-                " $vehicleYear, $licensePlate, $tripPrice, $tripDescription, $tripDate,$tripTime")
-        for (stop in stops) {
-            Log.i("stooops", stop)
-        }
     }
     private fun addStops() {
         var co = -1
@@ -254,13 +251,52 @@ class PostingActivity : AppCompatActivity() {
         trip.addPrefrences(noSmoking,petsAllowed)
         trip.addDescription(tripDescription)
         trip.printAllInfo()
+            /*
             val intent = Intent(this, TripsListActivity::class.java)
             intent.putExtra("PostingActivity",trip)
-            startActivity(intent)
+            startActivity(intent) */
+            saveData(trip)
                 //start activity
         } else {
             Toast.makeText(this,"Wrong Information, check and try again.",Toast.LENGTH_SHORT).show()
         }
+    }
+    private fun showDoneDialog(){
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Trip Saved!")
+            .setMessage("You can view and edit your trip in home screen!")
+
+            // Specifying a listener allows you to take an action before dismissing the dialog.
+            // The dialog is automatically dismissed when a dialog button is clicked.
+            .setPositiveButton("Done") { dialog, which ->
+
+               Toast.makeText(this,"Trip Posted!", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+
+            // A null listener allows the button to dismiss the dialog and take no further action.
+            //.setNegativeButton("Done!", null)
+            .setIcon(R.drawable.ic_done_green_24dp)
+            .show()
+    }
+    private fun addTripID():Int{
+        val mPrefs = this.getSharedPreferences("TripsPref",Context.MODE_PRIVATE)!!
+        val tripID = mPrefs.getInt("TripID", 0)
+        val prefsEditor = mPrefs.edit()
+        prefsEditor.putInt("TripID", tripID+1)
+        prefsEditor.apply()
+        Toast.makeText(this,tripID.toString(),Toast.LENGTH_SHORT).show()
+        return tripID+1
+    }
+    private fun saveData(trip:Trip){
+        val mPrefs = this.getSharedPreferences("TripsPref",Context.MODE_PRIVATE)!!
+        val prefsEditor = mPrefs.edit()
+        val gson = Gson()
+        val json = gson.toJson(trip)
+        val tripID:String = "TripID${addTripID()}"
+        prefsEditor.putString(tripID, json)
+        prefsEditor.apply()
+        showDoneDialog()
     }
     private fun isValidDate(dateString: String):Boolean {
         var date: Date? = null
