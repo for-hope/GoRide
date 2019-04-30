@@ -1,24 +1,49 @@
 package me.lamine.goride
 
+import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.widget.ImageView
+import android.widget.Toast
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import android.content.Intent
 
 
-class TripAdapter(private var tripsList: List<Trip>): RecyclerView.Adapter<TripAdapter.TripViewHolder>() {
-
+class TripAdapter(private var context: Context, private var tripsList: List<Trip>,private var userLiteList: List<LiteUser>): RecyclerView.Adapter<TripAdapter.TripViewHolder>() {
+    //val items: MutableList<String> = arrayListOf()
     override fun onBindViewHolder(holder: TripViewHolder, position: Int) {
         val trip = tripsList[position]
-        val name = "Lamine Fet"
-        holder.vName.text = name
+        val userLite = userLiteList[position]
+        //val name = "Lamine Fet"
         val OLD_FORMAT = "dd/MM/yyyy"
         val NEW_FORMAT = "EEE, MMM dd"
+        val age_format = "dd, MMM yyyy"
+        val peopleDriven = userLite.peopleDriven
+        val ratings = userLite.ratings
+        val userBirthday = userLite.birthday
+        val df = SimpleDateFormat(age_format, Locale.US)
+        val uBirthdate = df.parse(userBirthday)
+        val cal = Calendar.getInstance()
+        cal.time = uBirthdate
+        val year = cal.get(Calendar.YEAR)
+        val month = cal.get(Calendar.MONTH)
+        val day = cal.get(Calendar.DAY_OF_MONTH)
+
+        val age = getAge(year, month, day)
+        val gender = userLite.gender.capitalize()
+
+        val name = userLite.name
+        holder.vName.text = name
+        val genderAndAge = "$gender, $age"
+        holder.uGenderAndAge.text = genderAndAge
+        holder.uRatings.text = userLite.ratings.toString()
+        holder.uPeopleDriven.text = userLite.peopleDriven.toString()
+
 
         val newDate: String
 
@@ -28,6 +53,7 @@ class TripAdapter(private var tripsList: List<Trip>): RecyclerView.Adapter<TripA
         newDate = sdf.format(d)
 
         val fullDate = "$newDate at ${trip.time}"
+
         holder.date.text = fullDate
         holder.origin.text = trip.origin
         holder.destination.text = trip.destination
@@ -61,11 +87,47 @@ class TripAdapter(private var tripsList: List<Trip>): RecyclerView.Adapter<TripA
        return  tripsList.size
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TripViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.trip_card_layout, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TripViewHolder{
+       // val itemView = LayoutInflater.from(parent.context).inflate(R.layout.trip_card_layout, parent, false)
+        val inflater = LayoutInflater.from(parent.context)
+        val view = inflater.inflate(R.layout.trip_card_layout, parent, false)
+        return TripViewHolder(view).listen { pos, type ->
+            val item = tripsList[pos]
+            Toast.makeText(view.context,"item is ${item.destination}", Toast.LENGTH_SHORT).show()
+            startNextActivity(item)
 
-        return TripViewHolder(itemView)
+        }
+       // return TripViewHolder(itemView)
     }
+
+    private fun getAge(year: Int, month: Int, day: Int): String {
+        val dob = Calendar.getInstance()
+        val today = Calendar.getInstance()
+
+        dob.set(year, month, day)
+
+        var age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR)
+
+        if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) {
+            age--
+        }
+
+        val ageInt = age
+
+        return ageInt.toString()
+    }
+    private fun startNextActivity(clickedTip:Trip){
+        val i = Intent(context, TripActivity::class.java)
+        i.putExtra("ClickedTrip", clickedTip )
+        context.startActivity(i)
+    }
+    private fun <T : RecyclerView.ViewHolder> T.listen(event: (position: Int, type: Int) -> Unit): T {
+        itemView.setOnClickListener {
+            event.invoke(adapterPosition, itemViewType)
+        }
+        return this
+    }
+
 
     open class TripViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         var origin: TextView
@@ -81,11 +143,20 @@ class TripAdapter(private var tripsList: List<Trip>): RecyclerView.Adapter<TripA
         var pricePerSeat:TextView
         var bookingPref:ImageView
         var vName: TextView
+        var uPeopleDriven:TextView
+        var uRatings:TextView
+        var uGenderAndAge: TextView
+
+
        //  var vDestination: TextView
          //var vDate: TextView
         // var vOrigin: TextView
 
         init {
+
+            uGenderAndAge = v.findViewById(R.id.trip_gender_age_card)
+            uRatings = v.findViewById(R.id.trip_ratings_card2)
+            uPeopleDriven = v.findViewById(R.id.trip_driven_card4)
             vName = v.findViewById(R.id.trip_fullname_card)
             date = v.findViewById(R.id.trip_date_card)
             origin = v.findViewById(R.id.trip_origin_card)
@@ -97,6 +168,7 @@ class TripAdapter(private var tripsList: List<Trip>): RecyclerView.Adapter<TripA
             numberOfSeats = v.findViewById(R.id.trip_seats_card)
             pricePerSeat = v.findViewById(R.id.trip_price_card)
             bookingPref = v.findViewById(R.id.trip_ic_instant_card)
+
         }
     }
 }

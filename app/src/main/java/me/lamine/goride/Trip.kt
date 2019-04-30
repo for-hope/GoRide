@@ -1,16 +1,17 @@
 package me.lamine.goride
 
+import android.os.Parcelable
 import android.util.Log
+import kotlinx.android.parcel.Parcelize
 import java.io.Serializable
 
-class Trip(tripOrigin: String, tripDestination: String,allStops:ArrayList<String>,date:String , luggageSizeInt:Int,time:String,numberOfSeats:Int,price:Int,bookingPref:Int):Serializable {
+class Trip( tripOrigin: String,  tripDestination: String,  allStops:ArrayList<String>,  date:String, luggageSizeInt:Int, time:String, numberOfSeats:Int, price:Int, bookingPref:Int):Serializable {
      var origin:String = tripOrigin
      var destination:String = tripDestination
      var stops:ArrayList<String> = ArrayList()
-     var numberOfStops = 0
      var date:String = date
      var time:String = time
-      lateinit var vehicleModel:String
+     lateinit var vehicleModel:String
      lateinit var vehicleType:String
      lateinit var vehicleColor:String
      var vehicleYear:Int = 0
@@ -23,6 +24,8 @@ class Trip(tripOrigin: String, tripDestination: String,allStops:ArrayList<String
      var bookingPref = 0
      var hasVehicleInfo = false
      lateinit var description:String
+     private lateinit var carPhoto:String
+     lateinit var userID:String
 
 
     init {
@@ -41,20 +44,24 @@ class Trip(tripOrigin: String, tripDestination: String,allStops:ArrayList<String
 
     }
 
-    fun addVehicleInfo(vehicleModel:String, vehicleType:String, vehicleColor:String, vehicleYear:Int,vehiclePlate:String) {
+    fun addVehicleInfo(vehicleModel:String, vehicleType:String, vehicleColor:String, vehicleYear:Int,vehiclePlate:String, carPhoto:String) {
         hasVehicleInfo = true
         this.vehicleModel = vehicleModel
         this.vehicleType = vehicleType
         this.vehicleColor = vehicleColor
         this.vehicleYear = vehicleYear
         this.licensePlate = vehiclePlate
+        this.carPhoto = carPhoto
     }
-    fun addPrefrences(noSmoking:Boolean,petsAllowed:Boolean){
+    fun addPreferences(noSmoking:Boolean, petsAllowed:Boolean){
         this.noSmoking = noSmoking
         this.petsAllowed = petsAllowed
     }
     fun addDescription(desc:String){
         this.description = desc
+    }
+    fun addUserID(id:String){
+        this.userID = id
     }
     fun printAllInfo(){
         Log.i("ALL TRIP INFO (MAIN)",

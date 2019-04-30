@@ -26,16 +26,19 @@ class LoginActivity:AppCompatActivity() {
 
 
     }
-    private fun updateUI(user:FirebaseUser){
-        val intent = Intent(this, LoginActivity::class.java)
+    private fun updateUI(user:FirebaseUser?){
+        val intent = Intent(this, MainActivity::class.java)
         intent.putExtra("User",user)
         startActivity(intent)
+        finish()
     }
     public override fun onStart() {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
         val currentUser = mAuth?.currentUser
-        //updateUI(currentUser)
+        if (currentUser!=null) {
+            updateUI(currentUser)
+        }
     }
     private fun signUserIn(email:String, password:String){
         mAuth?.signInWithEmailAndPassword(email, password)?.addOnCompleteListener(this) { task ->
@@ -43,7 +46,7 @@ class LoginActivity:AppCompatActivity() {
                 // Sign in success, update UI with the signed-in user's information
                 Log.d("TAG", "signInWithEmail:success")
                 val user = mAuth?.currentUser
-                // updateUI(user)
+                updateUI(user)
             } else {
                 // If sign in fails, display a message to the user.
                 Log.w("TAG", "signInWithEmail:failure", task.exception)

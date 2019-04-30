@@ -795,7 +795,7 @@
 
         </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
         <com.google.android.material.button.MaterialButton
-                android:id="@+id/submit_btn"
+                android:id="@+id/trip_ac_submit_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Post a trip"/>

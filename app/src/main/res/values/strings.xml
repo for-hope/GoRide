@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">GoRide</string>
     <string name="AppTitle">GoRide</string>
+    <string name="smoking_allowed">Smoking Allowed</string>
+    <string name="pets_allowed">Pets Allowed</string>
+    <string name="instant_book">Instant Book</string>
     <string-array name="countries_array">
         <item>Afghanistan</item>
         <item>Albania</item>

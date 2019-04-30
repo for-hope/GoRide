@@ -2,8 +2,13 @@ apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
 
-apply plugin: 'kotlin-android-extensions'
+
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'kotlin-android-extensions'
+
+androidExtensions {
+    experimental = true
+}
 //apply plugin: 'com.google.gms.google-services'
 
 android {
@@ -64,6 +69,9 @@ dependencies {
 
     implementation 'com.firebaseui:firebase-ui-auth:4.3.1'
 
-
     //implementation 'com.google.firebase:firebase-auth:16.0.1:15.0.0'
+    implementation 'com.google.firebase:firebase-database:16.1.0'
+    implementation 'com.github.Ibotta:Supported-Picker-Dialogs:1.0.0'
+    implementation 'com.ycuwq.widgets:datepicker:1.2.2'
+    implementation 'com.github.drawers:SpinnerDatePicker:2.0.1'
 }

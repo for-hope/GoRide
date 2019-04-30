@@ -11,7 +11,6 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.github.florent37.viewtooltip.ViewTooltip
 import kotlinx.android.synthetic.main.activity_trip_form.*
 import android.widget.*
 import studio.carbonylgroup.textfieldboxes.ExtendedEditText
@@ -25,8 +24,10 @@ import android.media.MediaScannerConnection
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.TypedValue
-import android.view.Gravity
-import android.view.ViewGroup
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.gson.Gson
 import com.tooltip.Tooltip
 import com.wajahatkarim3.easyvalidation.core.rules.*
@@ -43,6 +44,7 @@ import kotlin.collections.ArrayList
 
 
 class PostingActivity : AppCompatActivity() {
+    private lateinit var database: DatabaseReference
     private val GALLERY = 1
     private val CAMERA = 2
     private var isTipActive = false
@@ -67,7 +69,8 @@ class PostingActivity : AppCompatActivity() {
     private var vehicleSkipped = false
     private var stopsList:ArrayList<View> = ArrayList()
 
-
+    private var mAuth: FirebaseAuth? = null
+    private var currentUser: FirebaseUser? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_trip_form)
@@ -79,7 +82,13 @@ class PostingActivity : AppCompatActivity() {
             showToolTip(edittext_destination,"Where are you going to?")
 
     }
-
+        database = FirebaseDatabase.getInstance().reference
+        mAuth = FirebaseAuth.getInstance()
+        if (mAuth?.currentUser == null) {
+            finish()
+        }else {
+            currentUser = mAuth?.currentUser
+        }
 
         addStops()
             //fillAllForm()
@@ -93,7 +102,7 @@ class PostingActivity : AppCompatActivity() {
         timeField()
         skipVehicleOption()
         showPictureDialog()
-        submit_btn.setOnClickListener {
+        trip_ac_submit_btn.setOnClickListener {
             fillAllForm()
         //    printAllform()
         }
@@ -244,11 +253,12 @@ class PostingActivity : AppCompatActivity() {
         val petsAllowed = fillOtherOptions()[1] == 1
         val seatOption = fillSeatOptions()
         val bookingPref = fillBookingPref()
+            val carPhoto = ""
         val trip = Trip(originText,destinationText,stops,tripDate,luggageOption,tripTime,seatOption,tripPrice,bookingPref)
             if (!vehicleSkipped) {
-                trip.addVehicleInfo(vehicleModel, vehicleType, vehicleColor, vehicleYear, licensePlate)
+                trip.addVehicleInfo(vehicleModel, vehicleType, vehicleColor, vehicleYear, licensePlate,carPhoto)
             }
-        trip.addPrefrences(noSmoking,petsAllowed)
+        trip.addPreferences(noSmoking,petsAllowed)
         trip.addDescription(tripDescription)
         trip.printAllInfo()
             /*
@@ -256,6 +266,7 @@ class PostingActivity : AppCompatActivity() {
             intent.putExtra("PostingActivity",trip)
             startActivity(intent) */
             saveData(trip)
+            saveToDB(trip)
                 //start activity
         } else {
             Toast.makeText(this,"Wrong Information, check and try again.",Toast.LENGTH_SHORT).show()
@@ -565,7 +576,6 @@ class PostingActivity : AppCompatActivity() {
     private fun dateField() {
         val myCalendar = Calendar.getInstance()
         val date = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-            // TODO Auto-generated method stub
             myCalendar.set(Calendar.YEAR, year)
             myCalendar.set(Calendar.MONTH, monthOfYear)
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
@@ -650,20 +660,23 @@ class PostingActivity : AppCompatActivity() {
             stops.add(edit.text.toString())
         }
     }
-
-
-
-    private  fun removeStopFromList(v:View){
-        val edit = v.findViewById<ExtendedEditText>(R.id.edittext_label)
-        for ((index,myStop) in stops.withIndex()){
-            if (myStop == edit.text.toString()){
-                stops.removeAt(index)
-            }
+    private fun saveToDB(trip:Trip){
+        val childName = "${trip.origin}_${trip.destination}"
+       val newRef = database.child("trips").child(childName).push()
+        newRef.setValue(trip) { databaseError, _ ->
+            if (databaseError != null) {
+                Toast.makeText(this, "Error $databaseError", Toast.LENGTH_LONG).show()}
         }
-    }
-    private fun addStopToList(v:View){
-        val edit = v.findViewById<ExtendedEditText>(R.id.edittext_label)
-        stops.add(edit.text.toString())
+        if (currentUser != null){
+        newRef.child("userID").setValue(currentUser?.uid)}
+        database.push()
+      /*  val newRef =database.child("Trips").push()
+        newRef.setValue(trip) { databaseError, _ ->
+            Toast.makeText(this, "Error $databaseError", Toast.LENGTH_LONG).show()
+        }*/
+
+
+
     }
 
 }

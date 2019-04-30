@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
+              android:layout_height="match_parent"
+android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+            android:id="@+id/extra_reg_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/whiteColor"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:titleTextColor="@color/colorAccent" android:layout_weight="0"/>
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Registration Progress"
+              android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
+              android:layout_marginLeft="20dp"/>
+    <ProgressBar
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar_extra" android:progress="25" android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp" android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp" android:paddingTop="5dp" android:scaleY="5"
+            android:layout_marginBottom="20dp"/>
+    <ViewFlipper
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/view_flipper" android:layout_weight="0">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" android:id="@+id/phone_verf_layout">
+            <TextView android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:text="Phone Number Verfication"
+                      android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="40dp"
+                      android:layout_marginLeft="20dp" android:id="@+id/phone_verf_title"
+                      android:textColor="@android:color/black"/>
+            <TextView android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:text="Please enter a valid phone number to verify your identity."
+                      android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
+                      android:layout_marginLeft="20dp" android:id="@+id/phone_verf_desc"/>
+            <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:id="@+id/phone_nb_label"
+                    android:soundEffectsEnabled="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:primaryColor="@color/colorSecondary"
+                    app:labelText="Phone Number"
+                    app:helperTextColor="@color/colorAccent" app:counterTextColor="@color/colorSecondary"
+                    android:layout_marginStart="20dp" android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp" android:layout_marginTop="20dp" android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="20dp">
+
+                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                        android:id="@+id/phone_nb_edittext"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:prefix="+213 " android:inputType="number"/>
+
+
+            </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+        </LinearLayout>
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" android:id="@+id/code_verf_layout">
+            <TextView android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:text="Code Verification"
+                      android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="40dp"
+                      android:layout_marginLeft="20dp" android:id="@+id/code_verf_title"
+                      android:textColor="@android:color/black"/>
+            <TextView android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:text="Please enter the code sent to you by an SMS to complete the registration"
+                      android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
+                      android:layout_marginLeft="20dp" android:id="@+id/code_verf_desc"/>
+            <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:id="@+id/code_label"
+                    android:soundEffectsEnabled="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:primaryColor="@color/colorSecondary"
+                    app:labelText="Code"
+                    app:helperTextColor="@color/colorAccent" app:counterTextColor="@color/colorSecondary"
+                    android:layout_marginStart="20dp" android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp" android:layout_marginTop="20dp" android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="20dp">
+
+                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                        android:id="@+id/code_edittext"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:prefix="+213"/>
+
+
+            </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+        </LinearLayout>
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" android:id="@+id/pref_layout">
+            <TextView android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:text="What is your birthday?"
+                      android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="40dp"
+                      android:layout_marginLeft="20dp" android:id="@+id/pref_bday_title"
+                      android:textColor="@android:color/black"/>
+            <TextView android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:text="You must be at least 18 years old to use RideGo. Please enter your correct birthday below."
+                      android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
+                      android:layout_marginLeft="20dp" android:id="@+id/pref_bday_desc"/>
+
+            <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:id="@+id/age_label"
+                    android:soundEffectsEnabled="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:primaryColor="@color/colorSecondary"
+                    app:labelText="Birthday"
+                    app:helperTextColor="@color/colorAccent" app:counterTextColor="@color/colorSecondary"
+                    android:layout_marginStart="20dp" android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp" android:layout_marginTop="20dp" android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="20dp">
+
+                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                        android:id="@+id/age_edittext"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                />
+
+
+            </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+            <TextView android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:text="What is your gender?"
+                      android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="40dp"
+                      android:layout_marginLeft="20dp" android:id="@+id/pref_bday_title2"
+                      android:textColor="@android:color/black"/>
+            <TextView android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:text="Please enter your gender for better safety and specification when traveling."
+                      android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
+                      android:layout_marginLeft="20dp" android:id="@+id/pref_bday_desc2"/>
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp">
+                <CheckBox
+                        android:text="Male"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:id="@+id/male_checkbox" android:layout_weight="1"
+                        android:textStyle="bold" android:textSize="18sp"/>
+                <CheckBox
+                        android:text="Female"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:id="@+id/female_checkbox" android:layout_weight="1"
+                        android:textStyle="bold" android:textSize="18sp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" android:id="@+id/desc_layout">
+            <TextView android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:text="Are you a driver?"
+                      android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="40dp"
+                      android:layout_marginLeft="20dp" android:id="@+id/driver_title"
+                      android:textColor="@android:color/black"/>
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="Check this box if you will be driving, this will adjust your prefrences."
+                          android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
+                          android:layout_marginLeft="20dp" android:id="@+id/driver_desc" android:layout_weight="1"
+                          android:layout_marginBottom="20dp"/>
+                <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:id="@+id/driver_checkbox" android:layout_weight="0"
+                        android:gravity="center" android:foregroundGravity="center" android:layout_gravity="center"
+                        android:layout_marginEnd="10dp" android:layout_marginRight="10dp"/>
+            </LinearLayout>
+            <TextView android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:text="Description"
+                      android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="40dp"
+                      android:layout_marginLeft="20dp" android:id="@+id/desc_title"
+                      android:textColor="@android:color/black"/>
+            <TextView android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:text="Write some interesting things about you to help people understand what type of person you are!"
+                      android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
+                      android:layout_marginLeft="20dp" android:id="@+id/desc_description"/>
+            <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:id="@+id/desc_label"
+                    android:soundEffectsEnabled="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    app:primaryColor="@color/colorSecondary"
+                    app:labelText="Description"
+                    app:helperTextColor="@color/colorAccent" app:counterTextColor="@color/colorSecondary"
+                    android:layout_marginStart="20dp" android:layout_marginEnd="20dp"
+                    android:layout_marginTop="20dp" android:layout_marginBottom="20dp">
+
+                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/desc_edittext" android:inputType="textMultiLine|textLongMessage"/>
+
+
+            </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+        </LinearLayout>
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" android:id="@+id/terms_layout">
+            <TextView android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:text="Terms of service "
+                      android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="40dp"
+                      android:layout_marginLeft="20dp" android:id="@+id/terms_title"
+                      android:textColor="@android:color/black"/>
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" android:layout_weight="1">
+
+                    <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                        <TextView android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:text="Please agree to our  "
+                                  android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
+                                  android:id="@+id/terms_desc1"
+                                  android:layout_weight="0" android:layout_marginLeft="20dp"/>
+                        <TextView android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:text="terms of service "
+                                  android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
+                                  android:id="@+id/terms_desc" android:layout_weight="0"
+                                  android:textColor="@color/colorAccent"/>
+                    </LinearLayout>
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:text="to complete your registration please check the box on the right."
+                              android:textSize="16sp" android:textStyle="bold"
+                              android:id="@+id/terms_desc2"
+                              android:layout_weight="0" android:layout_marginLeft="20dp"
+                              android:layout_marginRight="20dp"/>
+                </LinearLayout>
+                <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:id="@+id/terms_checkbox" android:layout_weight="0"
+                        android:layout_gravity="center" android:layout_marginRight="10dp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </ViewFlipper>
+    <Button
+            android:text="Next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/next_button" android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp" android:layout_marginBottom="50dp" android:layout_weight="0"/>
+</LinearLayout>

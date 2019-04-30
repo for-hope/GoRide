@@ -127,8 +127,9 @@ class SearchTripActivity : AppCompatActivity(), OnMapReadyCallback {
             val tripID = mPrefs.getInt("TripID", 0)
             Toast.makeText(this,"Trips Searched : $tripID",Toast.LENGTH_SHORT).show()
             val intent = Intent(this, TripsListActivity::class.java)
-            intent.putExtra("toText",editText_To.text)
-            intent.putExtra("fromText",editText_from.text)
+          //  Log.i("toFrom")
+            intent.putExtra("to",editText_To.text.toString())
+            intent.putExtra("from",editText_from.text.toString())
             startActivity(intent)
 
         }

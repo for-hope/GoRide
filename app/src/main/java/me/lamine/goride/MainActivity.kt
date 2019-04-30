@@ -20,15 +20,17 @@ import kotlinx.android.synthetic.main.activity_main.*
 import android.content.Intent
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
-import com.github.florent37.runtimepermission.kotlin.PermissionException
 import com.github.florent37.runtimepermission.kotlin.askPermission
-import android.content.DialogInterface
-
-
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var drawerLayout: androidx.drawerlayout.widget.DrawerLayout
+    override fun onStart() {
+        super.onStart()
+
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -38,6 +40,31 @@ class MainActivity : AppCompatActivity() {
         val navigationTabStrip = findViewById<NavigationTabStrip>(R.id.playTabLayout1)
         val fragmentAdapter = MyPagerAdapter(supportFragmentManager)
         drawerLayout = findViewById(R.id.drawer_layout)
+        //todo set up 
+        val database = FirebaseDatabase.getInstance()
+        val myRef = database.getReference("message")
+
+        myRef.setValue("Hello, World!")
+        //var user:FirebaseUser = intent.getParcelableExtra("User")
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            for (profile in user.providerData) {
+                // Id of the provider (ex: google.com)
+                val providerId = profile.providerId
+
+                // UID specific to the provider
+                val uid = profile.uid
+
+                // Name, email address, and profile photo Url
+                val name = profile.displayName
+                val email = profile.email
+                Log.i("LOGINTEST", "Welcome $providerId, $name ,$uid, $email")
+                Toast.makeText(this,"Welcome back $name", Toast.LENGTH_SHORT).show()
+               // val photoUrl = profile.photoUrl
+            }
+        } else {
+            Log.i("FAILED", " FAiLED LOG")
+        }
 
         val fab: FloatingActionButton = findViewById(R.id.fab)
         fab.setOnClickListener { view ->
@@ -154,7 +181,7 @@ class MainActivity : AppCompatActivity() {
 
 
     }
-    fun Toolbar.changeToolbarFont(){
+    private fun Toolbar.changeToolbarFont(){
         for (i in 0 until childCount) {
             val view = getChildAt(i)
             if (view is TextView && view.text == title) {
