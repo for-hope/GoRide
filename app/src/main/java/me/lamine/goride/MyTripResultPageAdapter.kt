@@ -5,8 +5,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 
 
-class MyTripResultPageAdapter(fm: FragmentManager,trip:ArrayList<String>,toText:String,fromText:String) : androidx.fragment.app.FragmentPagerAdapter(fm) {
-    private var item = trip!!
+class MyTripResultPageAdapter(fm: FragmentManager, private var tsd: TripSearchData, toText:String, fromText:String) : androidx.fragment.app.FragmentPagerAdapter(fm) {
+   // private var item = trip!!
     private var toText = toText
     private var fromText = fromText
     override fun getItem(position: Int): Fragment {
@@ -15,9 +15,10 @@ class MyTripResultPageAdapter(fm: FragmentManager,trip:ArrayList<String>,toText:
                 val bundle = Bundle()
              //   bundle.putSerializable("PassedTrip",item)
               //  bundle.putSerializable()
-                bundle.putStringArrayList("TripsList", item)
+              //todo  bundle.putStringArrayList("TripsList", item)
                 bundle.putString("toText",toText)
                 bundle.putString("fromText",fromText)
+                bundle.putSerializable("tsd",tsd)
                 val tripResultsFragment:Fragment = TripResultFragment()
                 tripResultsFragment.arguments = bundle
                 tripResultsFragment

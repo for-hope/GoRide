@@ -12,13 +12,11 @@ import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
-import java.util.ArrayList
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.FirebaseDatabase
-
-
+import java.util.*
 
 
 class TripResultFragment() : Fragment() {
@@ -27,7 +25,11 @@ class TripResultFragment() : Fragment() {
     private val listOfTrips:MutableList<Trip> = mutableListOf()
     private var mAuth: FirebaseAuth? = null
     private var currentUser: FirebaseUser? = null
+    private var isSameOriginCity:Boolean = false
+    private var isSameDestinationCity:Boolean = false
+    private lateinit var tsd:TripSearchData
     private var listOfUsersLite:MutableList<LiteUser> = mutableListOf()
+    private var searchAgain = false
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_trip_results, container, false)
@@ -49,6 +51,7 @@ class TripResultFragment() : Fragment() {
         //
         val toText = bundle?.getString("toText")
         val fromText = bundle?.getString("fromText")
+        tsd = bundle?.getSerializable("tsd") as TripSearchData
         database = FirebaseDatabase.getInstance().reference
         mAuth = FirebaseAuth.getInstance()
         if (mAuth?.currentUser == null) {
@@ -57,10 +60,19 @@ class TripResultFragment() : Fragment() {
             currentUser = mAuth?.currentUser
         }
         //pass here
-        val childName = "${fromText}_$toText"
-        database.child("trips").child(childName)
-        val myTripQuery = database.child("trips").child(childName)
-            .orderByChild("date")
+        //val childName = "${fromText}_$toText"
+        val childName ="${tsd.originCode}_${tsd.destinationCode}"
+        //database.child("trips").child(childName)
+        //database.child("trips").child(childName).orderByChild("date").equalTo("lol")
+        Log.i("CITY 1", wilayaArrayEN[tsd.originCode-1])
+        Log.i("CITY",  tsd.originSubCity)
+        if (wilayaArrayEN[tsd.originCode-1] == tsd.originSubCity || wilayaArrayFR[tsd.originCode-1] == tsd.originSubCity){
+
+            isSameOriginCity = true
+        }
+        if (wilayaArrayEN[tsd.destinationCode-1] == tsd.destSubCity || wilayaArrayFR[tsd.destinationCode-1] == tsd.destSubCity){
+            isSameDestinationCity = true
+        }
         ////
         //
         //
@@ -110,7 +122,7 @@ class TripResultFragment() : Fragment() {
         val hasVehicleInfo = dataSnapshot.child("hasVehicleInfo").value as Boolean?
         val description = dataSnapshot.child("description").value as String?
         val userID = dataSnapshot.child("userID").value as String?
-        val carPhoto:String = ""
+        val carPhoto:String? = dataSnapshot.child("carPhoto").value as String?
         var luggageSize:Int? = 0
         when (luggageSizeInt) {
             "None" -> luggageSize = 0
@@ -122,7 +134,7 @@ class TripResultFragment() : Fragment() {
         returnedTrip = Trip(origin!!,destination!!,stops,date!!,luggageSize!!,time!!,numberOfSeats?.toInt()!!,pricePerSeat?.toInt()!!
             ,bookingPref?.toInt()!!)
         if (hasVehicleInfo!!) {
-            returnedTrip.addVehicleInfo(vehicleModel!!, vehicleType!!, vehicleColor!!, vehicleYear?.toInt()!!, licensePlate!!,carPhoto)
+            returnedTrip.addVehicleInfo(vehicleModel!!, vehicleType!!, vehicleColor!!, vehicleYear?.toInt()!!, licensePlate!!,carPhoto!!)
         }
         returnedTrip.addPreferences(noSmoking!!,petsAllowed!!)
         returnedTrip.addDescription(description!!)
@@ -157,7 +169,15 @@ class TripResultFragment() : Fragment() {
     private fun mReadDataOnce(childName: String, listener: OnGetDataListener) {
         listener.onStart()
         val rootRef = FirebaseDatabase.getInstance().reference
-        val currentUserIdRef = rootRef.child("trips").child(childName)
+        val currentUserIdRef:Any
+        Log.i("OPTiOPN", searchAgain.toString() +""+ isSameOriginCity.toString())
+        currentUserIdRef = if (!searchAgain){
+            rootRef.child("trips").child(childName).orderByChild("originSubCity").startAt(tsd.originSubCity)
+           //todo
+        } else {
+            rootRef.child("trips").child(childName).orderByChild("originSubCity").startAt(wilayaArrayEN[tsd.originCode])  //todo
+        }
+
         val eventListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
@@ -177,7 +197,15 @@ class TripResultFragment() : Fragment() {
                             //todo
                         if (ds.value == lastDs.value) {
                             Log.i("succss",listOfTrips.size.toString())
-                            listener.onSuccess(dataSnapshot)
+                            if (isSameOriginCity || searchAgain){
+                                Log.i("BOOL",isSameOriginCity.toString())
+                                listener.onSuccess(dataSnapshot)
+                            } else {
+                                Log.i("BO111L",isSameOriginCity.toString())
+                                searchAgain = true
+                                mCheckTripInfoInServer(childName)
+                            }
+
                         }
 
                         }
@@ -204,8 +232,8 @@ class TripResultFragment() : Fragment() {
         var ratings = dataSnapshot.child("ratings").value as Long?
         var peopleDriven = dataSnapshot.child("peopleDriven").value as Long?
         var fullName = dataSnapshot.child("fullName").value as String?
-        var gender =dataSnapshot.child("gender").value as String?
-        var birthday = dataSnapshot.child("birthday").value as String?
+        val gender =dataSnapshot.child("gender").value as String?
+        val birthday = dataSnapshot.child("birthday").value as String?
         Log.i("NAME","name is $fullName")
         if (ratings == null ){
             ratings = 1
@@ -231,8 +259,6 @@ class TripResultFragment() : Fragment() {
 
             override fun onSuccess(data: DataSnapshot) {
                 //DO SOME THING WHEN GET DATA SUCCESS HERE
-                Log.i("Username", listOfUsersLite[0].name.toString())
-                Log.i("Hello","DONE!! ${listOfUsersLite[0].userId.toString()}")
                 trips_list_rec_view.adapter = context?.let { TripAdapter(it,listOfTrips,listOfUsersLite)}
             }
 
@@ -251,8 +277,6 @@ class TripResultFragment() : Fragment() {
 
             override fun onSuccess(data: DataSnapshot) {
                 //DO SOME THING WHEN GET DATA SUCCESS HERE
-                Log.i("size_succbus_trips",listOfTrips.size.toString())
-                Log.i("ModelTrIP",listOfTrips[0].origin)
                // trips_list_rec_view.adapter = context?.let { TripAdapter(it,listOfTrips,listOfUsersLite)}
             }
 

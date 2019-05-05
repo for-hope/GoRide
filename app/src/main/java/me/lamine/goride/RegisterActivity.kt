@@ -10,6 +10,13 @@ import android.util.Log
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.activity_register.*
 import com.google.firebase.auth.UserProfileChangeRequest
+import androidx.annotation.NonNull
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.firebase.storage.UploadTask
+import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.storage.StorageReference
+
+
 
 
 
@@ -46,6 +53,7 @@ class RegisterActivity:AppCompatActivity() {
     }
 
     private fun updateInterface(user:FirebaseUser?){
+
         val intent = Intent(this, RegisterExtraActivity::class.java)
         intent.putExtra("User",user)
         startActivity(intent)

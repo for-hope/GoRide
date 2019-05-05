@@ -1,4 +1,5 @@
 package me.lamine.goride
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
@@ -6,6 +7,7 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -20,14 +22,23 @@ import android.view.LayoutInflater
 import com.jaredrummler.materialspinner.MaterialSpinner
 import com.google.android.material.snackbar.Snackbar
 import android.graphics.drawable.GradientDrawable
+import android.location.Geocoder
 import android.media.MediaScannerConnection
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.TypedValue
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.AutocompleteActivity
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.google.gson.Gson
 import com.tooltip.Tooltip
 import com.wajahatkarim3.easyvalidation.core.rules.*
@@ -45,10 +56,21 @@ import kotlin.collections.ArrayList
 
 class PostingActivity : AppCompatActivity() {
     private lateinit var database: DatabaseReference
+    private lateinit var mGeocoder:Geocoder
+    private var originCode = 0
+    private var destinationCode = 0
+    private val mapsApiKey: String = "AIzaSyDWbc3KQP6ssBlClf8HSiZWEtMxfwqSYto"
     private val GALLERY = 1
     private val CAMERA = 2
-    private var isTipActive = false
-    private var activeTooltip: View? = null
+    private var originCity:String = ""
+    private var originSubCity:String = ""
+    private lateinit var originFullAddress:String
+    private var destCity:String = ""
+    private var destSubCity:String = ""
+    private lateinit var destFullAddress:String
+    private var AUTOCOMPLETE_REQUEST_CODE = 10
+    private var AUTOCOMPLETE_REQUEST_CODE_DES = 20
+    private lateinit var downloadUrl:String
     private lateinit var originText:String
     private lateinit var destinationText:String
     private var stops:ArrayList<String> = ArrayList()
@@ -63,23 +85,34 @@ class PostingActivity : AppCompatActivity() {
     private lateinit var tripTime:String
     private var numberOfStops = 0
     private var luggageOption: Int = -1
-    private val otherOptions = arrayListOf<Int>(0,0)
+    private val otherOptions = arrayListOf(0,0)
     private var bookingOption = -1
     private var seatOption = -1
     private var vehicleSkipped = false
     private var stopsList:ArrayList<View> = ArrayList()
-
+    private lateinit var mStorageRef: StorageReference
     private var mAuth: FirebaseAuth? = null
     private var currentUser: FirebaseUser? = null
+    private var originLatLng: LatLng? = null
+    private var desLatLng:LatLng? = null
+    @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_trip_form)
+        mStorageRef = FirebaseStorage.getInstance().reference;
+        Places.initialize(applicationContext, mapsApiKey)
+        mGeocoder = Geocoder(this, Locale.getDefault())
+        // Create a new Places client instance.
+        val placesClient = Places.createClient(this)
+
         origin_label.setOnClickListener {
             showToolTip(edittext_origin,"Where are you taking off from?")
+            autoCompleteFieldOrigin()
         }
         destination_label.setOnClickListener {
 
             showToolTip(edittext_destination,"Where are you going to?")
+            autoCompleteFieldDes()
 
     }
         database = FirebaseDatabase.getInstance().reference
@@ -103,7 +136,7 @@ class PostingActivity : AppCompatActivity() {
         skipVehicleOption()
         showPictureDialog()
         trip_ac_submit_btn.setOnClickListener {
-            fillAllForm()
+        fillAllForm()
         //    printAllform()
         }
 
@@ -111,6 +144,153 @@ class PostingActivity : AppCompatActivity() {
 
 
 
+    }
+    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            when (resultCode) {
+                Activity.RESULT_OK -> {
+                    val place = Autocomplete.getPlaceFromIntent(data!!)
+                    fillOrigin(place)
+                }
+                AutocompleteActivity.RESULT_ERROR -> {
+                    // TODO: Handle the error.
+                    val status = Autocomplete.getStatusFromIntent(data!!)
+                    Log.i("PostingActivity", status.statusMessage)
+                }
+                Activity.RESULT_CANCELED -> {
+                    // The user canceled the operation.
+                }
+            }
+        }
+        //
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE_DES) {
+            when (resultCode) {
+                Activity.RESULT_OK -> {
+                    val place = Autocomplete.getPlaceFromIntent(data!!)
+                    fillDest(place)
+
+
+                }
+                AutocompleteActivity.RESULT_ERROR -> {
+                    // TODO: Handle the error.
+                    val status = Autocomplete.getStatusFromIntent(data!!)
+                    Log.i("SearchActivity", status.statusMessage)
+                }
+                Activity.RESULT_CANCELED -> {
+                    // The user canceled the operation.
+                }
+            }
+        }
+
+
+        ////
+        if (resultCode == Activity.RESULT_CANCELED) {
+            return
+        }
+        if (requestCode == GALLERY) {
+            if (data != null) {
+                val contentURI = data.data
+                try {
+                    val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, contentURI)
+                    val path = saveImage(bitmap)
+                    Toast.makeText(this, "Image Saved!", Toast.LENGTH_SHORT).show()
+                    carBtn.setImageBitmap(bitmap)
+
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                    Toast.makeText(this, "Failed!", Toast.LENGTH_SHORT).show()
+                }
+
+            }
+
+        } else if (requestCode == CAMERA) {
+            val thumbnail = data!!.extras!!.get("data") as Bitmap
+            carBtn.setImageBitmap(thumbnail)
+            saveImage(thumbnail)
+            Toast.makeText(this, "Image Saved!", Toast.LENGTH_SHORT).show()
+        }
+    }
+    @Throws(IOException::class)
+    private fun getSubCityNameByName(name:String): String? {
+        val addresses = mGeocoder.getFromLocationName(name,1)
+        return if (addresses != null && addresses.size > 0) {
+            if (addresses[0].locality != null) {
+                addresses[0].locality }
+            else{
+                "EMPTY"
+            }
+        } else null
+    }
+    @Throws(IOException::class)
+    private fun getCityNameByName(name:String): String? {
+        val addresses = mGeocoder.getFromLocationName(name,1)
+        return if (addresses != null && addresses.size > 0) {
+            if (addresses[0].adminArea != null) {
+                addresses[0].adminArea }
+            else{
+                "EMPTY"
+            }
+
+        } else null
+    }
+    @Throws(IOException::class)
+    private fun getCityNameByCoordinates(lat: Double, lon: Double,isOrigin:Boolean): String? {
+
+
+          val addresses = mGeocoder.getFromLocation(lat, lon, 3)
+
+
+
+
+        return if (addresses != null && addresses.size > 0) {
+            // Here are some results you can geocode
+            val city: String
+            val state: String
+            if (addresses[0].locality != null) {
+                city = addresses[0].locality
+                if (isOrigin){
+                    originSubCity = city
+                } else {
+                    destSubCity = city
+                }
+
+                Log.d("city", city)
+            }
+            if (addresses[0].adminArea != null) {
+                state = addresses[0].adminArea
+                if(isOrigin){
+                    originCity = state
+                } else {
+                    destCity = state
+                }
+
+                Log.d("state", state)
+            }
+            addresses[0].countryName
+        } else null
+    }
+    private fun autoCompleteFieldOrigin(){
+        val fields = Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.ADDRESS,Place.Field.ADDRESS_COMPONENTS, Place.Field.LAT_LNG)
+        // Start the autocomplete intent.
+        val intent = com.google.android.libraries.places.widget.Autocomplete.IntentBuilder(
+            AutocompleteActivityMode.FULLSCREEN, fields
+        ).setCountry("DZ")
+            .build(this)
+
+        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+    }
+    private fun autoCompleteFieldDes(){
+        val fields = Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.ADDRESS_COMPONENTS,Place.Field.ADDRESS, Place.Field.LAT_LNG)
+        // Start the autocomplete intent.
+        val intent = com.google.android.libraries.places.widget.Autocomplete.IntentBuilder(
+            AutocompleteActivityMode.FULLSCREEN, fields
+        ).setCountry("DZ")
+            .build(this)
+
+        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE_DES)
     }
     private fun addStops() {
         var co = -1
@@ -223,7 +403,7 @@ class PostingActivity : AppCompatActivity() {
 
 
         tripDescription = edittext_tripdesc.text.toString()
-        tripDate=editText_date.text.toString()
+        tripDate=search_date_edittext.text.toString()
         val isValidDate = isValidDate(tripDate)
         if (!isValidDate){
             correctForm = false
@@ -247,30 +427,39 @@ class PostingActivity : AppCompatActivity() {
             fillStops()
         }
         if(correctForm){
-        val luggageOption = fillLuggageOptions()
-        
-        val noSmoking = fillOtherOptions()[0] == 1
-        val petsAllowed = fillOtherOptions()[1] == 1
-        val seatOption = fillSeatOptions()
-        val bookingPref = fillBookingPref()
-            val carPhoto = ""
-        val trip = Trip(originText,destinationText,stops,tripDate,luggageOption,tripTime,seatOption,tripPrice,bookingPref)
-            if (!vehicleSkipped) {
-                trip.addVehicleInfo(vehicleModel, vehicleType, vehicleColor, vehicleYear, licensePlate,carPhoto)
-            }
-        trip.addPreferences(noSmoking,petsAllowed)
-        trip.addDescription(tripDescription)
-        trip.printAllInfo()
-            /*
-            val intent = Intent(this, TripsListActivity::class.java)
-            intent.putExtra("PostingActivity",trip)
-            startActivity(intent) */
-            saveData(trip)
-            saveToDB(trip)
+            savePhotoToDatabase(carBtn)
                 //start activity
         } else {
             Toast.makeText(this,"Wrong Information, check and try again.",Toast.LENGTH_SHORT).show()
         }
+    }
+    private fun finishUploading(){
+        val luggageOption = fillLuggageOptions()
+        val noSmoking = fillOtherOptions()[0] == 1
+        val petsAllowed = fillOtherOptions()[1] == 1
+        val seatOption = fillSeatOptions()
+        val bookingPref = fillBookingPref()
+
+
+        val carPhoto = downloadUrl
+        val trip = Trip(originText,destinationText,stops,tripDate,luggageOption,tripTime,seatOption,tripPrice,bookingPref)
+        if (!vehicleSkipped) {
+            trip.addVehicleInfo(vehicleModel, vehicleType, vehicleColor, vehicleYear, licensePlate,carPhoto)
+        }
+        trip.addPreferences(noSmoking,petsAllowed)
+        trip.addDescription(tripDescription)
+        trip.originFullAddress = originFullAddress
+        trip.destFullAddress = destFullAddress
+        trip.printAllInfo()
+        /*
+        val intent = Intent(this, TripsListActivity::class.java)
+        intent.putExtra("PostingActivity",trip)
+        startActivity(intent) */
+        saveData(trip)
+        saveToDB(trip)
+
+
+        trip.addTripDestinations(originCity,originSubCity,originFullAddress,destCity,destSubCity,destFullAddress)
     }
     private fun showDoneDialog(){
         androidx.appcompat.app.AlertDialog.Builder(this)
@@ -337,7 +526,6 @@ class PostingActivity : AppCompatActivity() {
         }
         return date != null
     }
-
     private fun convertDPtoInt(myDP:Float): Int {
         val r = resources
         val px = Math.round(
@@ -372,35 +560,96 @@ class PostingActivity : AppCompatActivity() {
         }
         return bookingOption
     }
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_CANCELED) {
-            return
-        }
-        if (requestCode == GALLERY) {
-            if (data != null) {
-                val contentURI = data.data
-                try {
-                    val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, contentURI)
-                    val path = saveImage(bitmap)
-                    Toast.makeText(this, "Image Saved!", Toast.LENGTH_SHORT).show()
-                    carBtn.setImageBitmap(bitmap)
-
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                    Toast.makeText(this, "Failed!", Toast.LENGTH_SHORT).show()
-                }
-
-            }
-
-        } else if (requestCode == CAMERA) {
-            val thumbnail = data!!.extras!!.get("data") as Bitmap
-            carBtn.setImageBitmap(thumbnail)
-            saveImage(thumbnail)
-            Toast.makeText(this, "Image Saved!", Toast.LENGTH_SHORT).show()
-        }
+    private fun setOrigin(origin:String){
+        edittext_origin.setText(origin)
     }
+    private fun setDestination(destination:String){
+        edittext_destination.setText(destination)
+    }
+    private fun fillOrigin(place: Place){
+        originCity = ""
+        originSubCity = ""
+        originLatLng = place.latLng
+        val placeName = place.addressComponents?.asList()!![1].name
+        //take cords from geolocation
+        getCityNameByCoordinates(originLatLng?.latitude!!,originLatLng?.longitude!!,true)
+        //check if they're init
+        if (originCity == ""){
+            originCity = getCityNameByName(placeName)!!
+        }
+        if (originSubCity == ""){
+            originSubCity = getSubCityNameByName(placeName)!!
+            if (originSubCity=="EMPTY"){
+                originSubCity = originCity
+            }
+        }
+        originFullAddress = place.name!!
+        Log.i("state", originCity)
+        Log.i("city", originSubCity)
+        Log.i("address", originFullAddress)
+        /*
+          Log.i("PLACE FULL ADDRESS", place.addressComponents.toString())
+          Log.i("PLACE SUBCITY ADDRESS", place.addressComponents?.asList()!![0].name)
+          Log.i("PLACE CITY ADDRESS", place.addressComponents?.asList()!![1].name)*/
+
+        if (place.address != null){
+            Log.i("PLACE ADDRESS", place.address)
+        } else {
+            Log.i("PLACE ADDRESS", "NU::")
+        }
+        val decodedOriginCity = decodeWilaya(originCity)
+        originCode = decodedOriginCity
+        Log.i("DECODE",decodedOriginCity.toString())
+        setOrigin(originFullAddress)
+        Log.i("SetOrigin",originSubCity)
+       // setOrigin("$place.name!!")
+
+    }
+    private fun fillDest(place: Place){
+        destCity = ""
+        destSubCity = ""
+        Log.i("PActivity", place.name!!)
+        desLatLng = place.latLng
+        if (place.address != null) {
+            Log.i("PostActivity", place.address)
+        } else {
+            Log.i("PostActivity", "NUUULL")
+        }
+        Log.i("PostActivity", "${desLatLng?.latitude!!},${desLatLng?.longitude!!}")
+        val placeName = place.addressComponents?.asList()!![1].name
+        //take cords from geolocation
+        getCityNameByCoordinates(desLatLng?.latitude!!,desLatLng?.longitude!!,false)
+        //check if they're init
+        if (destCity == ""){
+            destCity = getCityNameByName(placeName)!!
+        }
+        if (destSubCity == ""){
+            destSubCity = getSubCityNameByName(placeName)!!
+            if (destSubCity=="EMPTY"){
+                destSubCity = destCity
+            }
+        }
+        destFullAddress = place.name!!
+        Log.i("state", destCity)
+        Log.i("city", destSubCity)
+        Log.i("address", destFullAddress)
+        /*
+          Log.i("PLACE FULL ADDRESS", place.addressComponents.toString())
+          Log.i("PLACE SUBCITY ADDRESS", place.addressComponents?.asList()!![0].name)
+          Log.i("PLACE CITY ADDRESS", place.addressComponents?.asList()!![1].name)*/
+
+        if (place.address != null){
+            Log.i("PLACE ADDRESS", place.address)
+        } else {
+            Log.i("PLACE ADDRESS", "NUll")
+        }
+        val decodedDestCity = decodeWilaya(destCity)
+        destinationCode = decodedDestCity
+        setDestination(destFullAddress)
+       //todo setDestination("$place.name!!")
+
+    }
+
     private  fun fillLuggageOptions(): Int {
         val luggageBtns = arrayListOf<LinearLayout>(pref_btn_no,pref_btn_s,pref_btn_m,pref_btn_l)
         for ((index, btn) in luggageBtns.withIndex()){
@@ -573,6 +822,49 @@ class PostingActivity : AppCompatActivity() {
         val intent = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
         startActivityForResult(intent, CAMERA)
     }
+    private fun savePhotoToDatabase(imageView:ImageView){
+       // val file = Uri.fromFile(File("path/to/images/rivers.jpg"))
+        val uniqueId = UUID.randomUUID().toString()
+        val riversRef = mStorageRef.child("car_images/$uniqueId.jpg")
+// Get the data from an ImageView as bytes
+
+        val bitmap = (imageView.drawable as BitmapDrawable).bitmap
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val data = baos.toByteArray()
+
+        val uploadTask = riversRef.putBytes(data)
+        uploadTask.addOnFailureListener {
+            // Handle unsuccessful uploads
+            Log.i("UPLOAD","FAILED")
+        }.addOnSuccessListener { it1 ->
+            //todo add download url
+            val result = it1.metadata?.reference?.downloadUrl
+            result?.addOnSuccessListener {
+                downloadUrl = it.toString()
+                Log.i("UPLOAD",downloadUrl)
+                finishUploading()
+            }
+
+          //  downloadUrl =  it.metadata?.reference?.downloadUrl.toString()
+           // downloadUrl = it1.metadata?.reference?.downloadUrl?.result.toString()
+
+            //finishUploading()
+
+            // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
+            // ...
+        }
+        /*
+        riversRef.putFile(file)
+            .addOnSuccessListener(OnSuccessListener<UploadTask.TaskSnapshot> { taskSnapshot ->
+                // Get a URL to the uploaded content
+                val downloadUrl = taskSnapshot.getDownloadUrl()
+            })
+            .addOnFailureListener(OnFailureListener {
+                // Handle unsuccessful uploads
+                // ...
+            })*/
+    }
     private fun dateField() {
         val myCalendar = Calendar.getInstance()
         val date = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
@@ -591,7 +883,7 @@ class PostingActivity : AppCompatActivity() {
         val time = TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
             myCalendar.set(Calendar.HOUR_OF_DAY,hourOfDay)
             myCalendar.set(Calendar.MINUTE,minute)
-
+            updateTimeLabel(myCalendar)
         }
 
         add_timebtn.setOnClickListener {
@@ -599,7 +891,7 @@ class PostingActivity : AppCompatActivity() {
         TimePickerDialog(this,time,myCalendar.get(Calendar.HOUR_OF_DAY),myCalendar.get(Calendar.MINUTE),true).show()
            // DatePickerDialog(this,date,myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),
           //      myCalendar.get(Calendar.DAY_OF_MONTH)).show()
-            updateTimeLabel(myCalendar)
+
         }
 
     }
@@ -623,7 +915,7 @@ class PostingActivity : AppCompatActivity() {
     private fun updateLabel(myCalendar:Calendar) {
         val myFormat = "dd/MM/yyyy"
         val sdf  = SimpleDateFormat(myFormat,Locale.US)
-        editText_date.setText(sdf.format(myCalendar.time))
+        search_date_edittext.setText(sdf.format(myCalendar.time))
     }
     private fun showToolTip(editText: EditText, text:String) {
 
@@ -661,10 +953,11 @@ class PostingActivity : AppCompatActivity() {
         }
     }
     private fun saveToDB(trip:Trip){
-        val childName = "${trip.origin}_${trip.destination}"
+        val childName = "${originCode}_$destinationCode"
        val newRef = database.child("trips").child(childName).push()
         newRef.setValue(trip) { databaseError, _ ->
             if (databaseError != null) {
+                Log.i("FireBaseEroor",databaseError.message)
                 Toast.makeText(this, "Error $databaseError", Toast.LENGTH_LONG).show()}
         }
         if (currentUser != null){

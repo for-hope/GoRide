@@ -135,7 +135,7 @@
             android:soundEffectsEnabled="false">
 
                 <studio.carbonylgroup.textfieldboxes.ExtendedEditText
-                        android:id="@+id/editText_date"
+                        android:id="@+id/search_date_edittext"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:inputType="date"
@@ -199,12 +199,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" android:id="@+id/car_img_layout"
                     android:layout_marginBottom="20dp">
-                <ImageButton
+                <ImageView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="200dp"
+                        android:clickable="true"
                         app:srcCompat="@drawable/ic_directions_car_150dp"
                         android:id="@+id/carBtn"
-                        android:layout_centerHorizontal="true" android:padding="10dp"/>
+                        android:scaleType="fitCenter"
+                        android:adjustViewBounds="false"
+                        android:padding="10dp"
+                        android:focusable="true"/>
                 <TextView
                         android:text="add a photo"
                         android:layout_width="wrap_content"

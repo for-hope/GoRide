@@ -12,6 +12,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import android.content.Intent
+import android.location.Geocoder
+
+
 
 
 class TripAdapter(private var context: Context, private var tripsList: List<Trip>,private var userLiteList: List<LiteUser>): RecyclerView.Adapter<TripAdapter.TripViewHolder>() {
@@ -33,6 +36,7 @@ class TripAdapter(private var context: Context, private var tripsList: List<Trip
         val year = cal.get(Calendar.YEAR)
         val month = cal.get(Calendar.MONTH)
         val day = cal.get(Calendar.DAY_OF_MONTH)
+
 
         val age = getAge(year, month, day)
         val gender = userLite.gender.capitalize()

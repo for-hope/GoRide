@@ -1,27 +1,17 @@
 package me.lamine.goride
 
 
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-
-import com.gigamole.navigationtabstrip.NavigationTabStrip
-import kotlinx.android.synthetic.main.activity_trips_list.*
-
 import android.graphics.Color
-
+import android.os.Bundle
 import android.util.Log
-
+import androidx.appcompat.app.AppCompatActivity
+import com.gigamole.navigationtabstrip.NavigationTabStrip
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-
-import java.util.ArrayList
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-
-
+import kotlinx.android.synthetic.main.activity_trips_list.*
+import java.util.*
 
 
 class TripsListActivity : AppCompatActivity() {
@@ -39,70 +29,9 @@ class TripsListActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true);
         val toText:String = intent.getStringExtra("to")
         val fromText:String = intent.getStringExtra("from")
+        val tsd:TripSearchData = intent.getSerializableExtra("tsd") as TripSearchData
         val listOfTrips: MutableList<Trip> = mutableListOf()
         val listOfStringTrips: ArrayList<String> = arrayListOf()
-       /* database = FirebaseDatabase.getInstance().reference
-        mAuth = FirebaseAuth.getInstance()
-        if (mAuth?.currentUser == null) {
-            finish()
-        }else {
-            currentUser = mAuth?.currentUser
-        }
-        val childName = "${fromText}_$toText"
-      database.child("trips").child(childName)
-        val myTripQuery = database.child("trips").child(childName)
-            .orderByChild("date")
-        ////
-        //
-        //
-        Log.i("MYDATE","STARTED $toText, $fromText")
-        val rootRef = FirebaseDatabase.getInstance().reference
-        val currentUserIdRef = rootRef.child("trips").child(childName)
-        val eventListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                for (ds in dataSnapshot.children) {
-
-                    val userIdRef = rootRef.child("trips").child(childName).child(ds.key!!)
-                    val eventListener = object : ValueEventListener {
-                        override fun onDataChange(dataSnapshot: DataSnapshot) {
-                            //todo set up trips
-                            val addTrip = getData(dataSnapshot)
-                            listOfTrips.add(addTrip)
-
-                           // val date = dataSnapshot.child("date").value as String?
-
-                             Log.i("MYDATE",addTrip.date)
-                        }
-
-                        override fun onCancelled(databaseError: DatabaseError) {
-                            throw databaseError.toException() // don't ignore errors
-                        }
-                    }
-                    userIdRef.addListenerForSingleValueEvent(eventListener)
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                throw databaseError.toException() // don't ignore errors
-            }
-        }
-        currentUserIdRef.addListenerForSingleValueEvent(eventListener) */
-
-
-        //restore trip
-        /*val mPrefs = this.getSharedPreferences("TripsPref", Context.MODE_PRIVATE)!!
-        val tripIDs = mPrefs.getInt("TripID", 0)
-        Log.i("TRIP_IDS ", tripIDs.toString())
-        val gson = Gson()
-        for (i in 1..tripIDs) {
-            val id = "TripID$i"
-            val json = mPrefs.getString(id, "")
-            listOfStringTrips.add(json!!)
-            Log.i("json", json)
-            val tripOBJ = gson.fromJson<Trip>(json, Trip::class.java)!!
-            listOfTrips.add(tripOBJ)
-        }*/
-
 
         val bundle = Bundle()
         Log.i("SEARCH_TRIPS", listOfStringTrips.size.toString())
@@ -116,7 +45,7 @@ class TripsListActivity : AppCompatActivity() {
         //tripResultsFragment.arguments = bundle
 
         val navigationTabStrip = findViewById<NavigationTabStrip>(R.id.trip_results_tablayout)
-        val fragmentAdapter = MyTripResultPageAdapter(supportFragmentManager, listOfStringTrips,toText,fromText)
+        val fragmentAdapter = MyTripResultPageAdapter(supportFragmentManager, tsd,toText,fromText)
         viewpager_r.adapter = fragmentAdapter
         navigationTabStrip.setViewPager(viewpager_r)
         initNavStripe(navigationTabStrip)

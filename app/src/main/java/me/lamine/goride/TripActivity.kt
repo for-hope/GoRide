@@ -26,6 +26,7 @@ class TripActivity:AppCompatActivity() {
         return true
     }
 
+
     private fun setupView(trip: Trip){
         val name = "Lamine Fet"
         trip_ac_user_name.text = name

@@ -24,8 +24,14 @@ class Trip( tripOrigin: String,  tripDestination: String,  allStops:ArrayList<St
      var bookingPref = 0
      var hasVehicleInfo = false
      lateinit var description:String
-     private lateinit var carPhoto:String
-     lateinit var userID:String
+     var carPhoto:String = ""
+     var userID:String = ""
+    private var originCity = ""
+    private var originSubCity = ""
+     var originFullAddress = ""
+    private var destCity = ""
+    private var destSubCity = ""
+     var destFullAddress = ""
 
 
     init {
@@ -43,7 +49,19 @@ class Trip( tripOrigin: String,  tripDestination: String,  allStops:ArrayList<St
         }
 
     }
-
+    fun addTripDestinations(originCity:String, originSubCity:String,
+             originFullAddress:String,
+             destCity:String,
+             destSubCity:String,
+             destFullAddress:String)
+    {
+        this.originCity = originCity
+        this.originSubCity = originSubCity
+        this.originFullAddress = originFullAddress
+        this.destCity = destCity
+        this.destSubCity = destSubCity
+        this.destFullAddress = destFullAddress
+    }
     fun addVehicleInfo(vehicleModel:String, vehicleType:String, vehicleColor:String, vehicleYear:Int,vehiclePlate:String, carPhoto:String) {
         hasVehicleInfo = true
         this.vehicleModel = vehicleModel
