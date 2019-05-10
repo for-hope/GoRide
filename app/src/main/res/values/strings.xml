@@ -4,6 +4,17 @@
     <string name="smoking_allowed">Smoking Allowed</string>
     <string name="pets_allowed">Pets Allowed</string>
     <string name="instant_book">Instant Book</string>
+    <string name="instant_booking">Instant Booking</string>
+    <string name="request_booking">Request Booking</string>
+    <string name="no_luggage">No Luggage</string>
+    <string name="small_luggage">Small Luggage</string>
+    <string name="medium_luggage">Medium Luggage</string>
+    <string name="large_luggage">Large Luggage</string>
+    <string name="booked">Booked:</string>
+    <string name="driver_desc">You don\'t have any upcoming trips at the moment! If you add a trip it will be displayed here.</string>
+    <string name="passenger_desc">You don\'t have any upcoming trips yet! your registered trips will be shown here
+        alongside with your trip requests.
+    </string>
     <string-array name="countries_array">
         <item>Afghanistan</item>
         <item>Albania</item>

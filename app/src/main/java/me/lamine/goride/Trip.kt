@@ -11,32 +11,33 @@ class Trip( tripOrigin: String,  tripDestination: String,  allStops:ArrayList<St
      var stops:ArrayList<String> = ArrayList()
      var date:String = date
      var time:String = time
-     lateinit var vehicleModel:String
-     lateinit var vehicleType:String
-     lateinit var vehicleColor:String
+     var vehicleModel:String = ""
+      var vehicleType:String = ""
+      var vehicleColor:String = ""
      var vehicleYear:Int = 0
-     lateinit var licensePlate:String
-     var luggageSize:String = "None"
+     var licensePlate:String = ""
+     var luggageSize:String = "N"
      var noSmoking:Boolean = false
      var petsAllowed = false
      var numberOfSeats:Int = 0
      var pricePerSeat:Int = 0
      var bookingPref = 0
      var hasVehicleInfo = false
-     lateinit var description:String
+     var description:String = ""
      var carPhoto:String = ""
      var userID:String = ""
-    private var originCity = ""
-    private var originSubCity = ""
+      var originCity = ""
+    var originSubCity = ""
      var originFullAddress = ""
-    private var destCity = ""
-    private var destSubCity = ""
+     var destCity = ""
+     var destSubCity = ""
      var destFullAddress = ""
+     var tripID = ""
 
 
     init {
         when (luggageSizeInt) {
-            0 -> luggageSize = "None"
+            0 -> luggageSize = "N"
             1 -> luggageSize = "S"
             2 -> luggageSize = "M"
             3 -> luggageSize = "L"

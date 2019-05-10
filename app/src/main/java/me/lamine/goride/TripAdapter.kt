@@ -39,8 +39,12 @@ class TripAdapter(private var context: Context, private var tripsList: List<Trip
 
 
         val age = getAge(year, month, day)
-        val gender = userLite.gender.capitalize()
-
+        var gender = userLite.gender.capitalize()
+        gender = if (gender=="F"){
+            "Female"
+        } else {
+            "Male"
+        }
         val name = userLite.name
         holder.vName.text = name
         val genderAndAge = "$gender, $age"
@@ -59,8 +63,13 @@ class TripAdapter(private var context: Context, private var tripsList: List<Trip
         val fullDate = "$newDate at ${trip.time}"
 
         holder.date.text = fullDate
-        holder.origin.text = trip.origin
-        holder.destination.text = trip.destination
+
+        holder.origin.text = trip.originSubCity
+        holder.destination.text = trip.destSubCity
+        val fod = "${trip.origin}, ${trip.originFullAddress}"
+        holder.fullOriginAddress.text = fod
+        val fdd = "${trip.destination}, ${trip.destFullAddress}"
+        holder.fullDestAddress.text = fdd
         val vehiclePref = "${trip.vehicleModel} ${trip.vehicleColor} '${trip.vehicleYear}"
         if (trip.hasVehicleInfo){
             holder.vehicleInfo.text = vehiclePref
@@ -97,8 +106,9 @@ class TripAdapter(private var context: Context, private var tripsList: List<Trip
         val view = inflater.inflate(R.layout.trip_card_layout, parent, false)
         return TripViewHolder(view).listen { pos, type ->
             val item = tripsList[pos]
+            val userItem = userLiteList[pos]
             Toast.makeText(view.context,"item is ${item.destination}", Toast.LENGTH_SHORT).show()
-            startNextActivity(item)
+            startNextActivity(item,userItem)
 
         }
        // return TripViewHolder(itemView)
@@ -120,9 +130,10 @@ class TripAdapter(private var context: Context, private var tripsList: List<Trip
 
         return ageInt.toString()
     }
-    private fun startNextActivity(clickedTip:Trip){
+    private fun startNextActivity(clickedTip:Trip,clickedUser:LiteUser){
         val i = Intent(context, TripActivity::class.java)
         i.putExtra("ClickedTrip", clickedTip )
+        i.putExtra("ClickedTripUser",clickedUser)
         context.startActivity(i)
     }
     private fun <T : RecyclerView.ViewHolder> T.listen(event: (position: Int, type: Int) -> Unit): T {
@@ -150,7 +161,8 @@ class TripAdapter(private var context: Context, private var tripsList: List<Trip
         var uPeopleDriven:TextView
         var uRatings:TextView
         var uGenderAndAge: TextView
-
+        var fullOriginAddress: TextView
+        var fullDestAddress: TextView
 
        //  var vDestination: TextView
          //var vDate: TextView
@@ -172,7 +184,8 @@ class TripAdapter(private var context: Context, private var tripsList: List<Trip
             numberOfSeats = v.findViewById(R.id.trip_seats_card)
             pricePerSeat = v.findViewById(R.id.trip_price_card)
             bookingPref = v.findViewById(R.id.trip_ic_instant_card)
-
+            fullOriginAddress = v.findViewById(R.id.trip_desc1_card)
+            fullDestAddress = v.findViewById(R.id.trip_desc2_card)
         }
     }
 }

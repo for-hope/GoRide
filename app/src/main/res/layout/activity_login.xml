@@ -7,7 +7,7 @@
     <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content" app:srcCompat="@drawable/ic_directions_car_white_60dp"
-            android:id="@+id/imageView12" android:layout_marginTop="150dp"/>
+            android:id="@+id/imageView12" android:layout_marginTop="60dp"/>
     <TextView
             android:text="@string/AppTitle"
             android:layout_width="match_parent"
@@ -20,19 +20,19 @@
             android:soundEffectsEnabled="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:primaryColor="@color/colorSecondary"
             app:labelText="Email"
             android:paddingBottom="30dp"
             app:iconSignifier="@drawable/ic_email_black_24dp"
             app:helperTextColor="@color/colorAccent" app:counterTextColor="@color/colorSecondary"
             android:layout_marginRight="30dp" android:layout_marginStart="30dp" android:layout_marginLeft="30dp"
-            android:layout_marginEnd="30dp" app:secondaryColor="@color/backgroundColor">
+            android:layout_marginEnd="30dp" app:secondaryColor="@color/backgroundColor"
+            app:primaryColor="@color/colorSecondary">
 
         <studio.carbonylgroup.textfieldboxes.ExtendedEditText
                 android:id="@+id/email_edittext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-        />
+                android:textColor="@android:color/white"/>
 
 
     </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
@@ -53,7 +53,7 @@
                 android:id="@+id/password_edittext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-        />
+                android:textColor="@android:color/white" android:inputType="textPassword"/>
 
 
     </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
@@ -62,18 +62,31 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:id="@+id/btnLogin" android:paddingBottom="15dp"
             android:paddingTop="15dp" android:layout_marginLeft="30dp" android:layout_marginRight="30dp"
-            android:backgroundTint="#a2303f9f" android:textColor="#d1ffffff"/>
+            android:backgroundTint="#3248a1" android:textColor="#d1ffffff"/>
     <TextView
             android:text="Forgot your pasword?"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:id="@+id/frogot_pass" android:textColor="#6affffff"
-            android:gravity="center" android:padding="10dp"/>
-    <TextView
-            android:text="Dont have an account? Create one"
+            android:layout_height="match_parent" android:id="@+id/frogot_pass" android:textColor="#6affffff"
+            android:gravity="top|center" android:padding="10dp" android:layout_weight="1" android:textSize="16sp"/>
+    <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/create_account"
-            android:textColor="#6affffff"
-            android:gravity="bottom|center" android:padding="10dp"/>
+            android:layout_height="match_parent" android:layout_weight="1" android:gravity="bottom|center"
+            android:paddingBottom="20dp">
+        <TextView
+                android:text="Dont have an account? "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/create_acc_desc"
+                android:textColor="#6affffff"
+                android:gravity="center" android:layout_weight="0" android:textSize="16sp"/>
+        <TextView
+                android:text="Create one "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/create_account"
+                android:textColor="#ff7249"
+                android:gravity="bottom|center" android:layout_weight="0"
+                android:textSize="16sp"/>
+    </LinearLayout>
 
 </LinearLayout>

@@ -11,14 +11,30 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" android:gravity="center">
         <ImageView
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:id="@+id/imageView3" android:background="@drawable/driver"/>
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:id="@+id/imageView3" android:background="@drawable/cat_blue"/>
         <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Driver"
-                android:textSize="40sp" android:gravity="center"/>
+                android:text="@string/passenger_desc"
+                android:textSize="18sp" android:gravity="center" android:layout_marginBottom="5dp"
+                android:layout_marginEnd="50dp" android:layout_marginStart="40dp" android:layout_marginTop="40dp"
+                android:id="@+id/pass_desc"/>
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Want to request a ride?"
+                android:textSize="18sp" android:gravity="center"
+                android:layout_marginEnd="50dp" android:layout_marginStart="40dp"
+                android:id="@+id/req_text"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="click here."
+                android:textSize="18sp" android:gravity="center"
+                android:id="@+id/add_req_text2" android:textColor="@color/colorAccent" android:layout_marginTop="8dp"
+                android:linksClickable="false"/>
     </LinearLayout>
 
 </FrameLayout>

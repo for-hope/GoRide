@@ -7,6 +7,8 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_login.*
 import android.widget.Toast
 import android.util.Log
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseUser
 
 
@@ -50,11 +52,23 @@ class LoginActivity:AppCompatActivity() {
             } else {
                 // If sign in fails, display a message to the user.
                 Log.w("TAG", "signInWithEmail:failure", task.exception)
-                Toast.makeText(
-                    this, "Authentication failed.",
-                    Toast.LENGTH_SHORT
-                ).show()
-                // updateUI(null)
+                when {
+                    task.exception is FirebaseAuthInvalidUserException -> Toast.makeText(
+                        this, "User doesn't exist. check your email.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    task.exception is FirebaseAuthInvalidCredentialsException -> Toast.makeText(
+                        this, "Incorrect password.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    else -> Toast.makeText(
+                        this, "Authentication failed.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+
+                //todo updateUI(null)
             }
 
             // ...

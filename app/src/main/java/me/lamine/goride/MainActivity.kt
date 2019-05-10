@@ -208,18 +208,17 @@ class MainActivity : AppCompatActivity() {
         val id = item.itemId
 
 
-        if (id == R.id.action_favorite) {
-            Toast.makeText(this@MainActivity, "Action clicked", Toast.LENGTH_LONG).show()
-            val intent = Intent(this, SearchTripActivity::class.java)
-            startActivity(intent)
-            return true
-        }
-        else if (id == R.id.action_add){
-            Toast.makeText(this, "Add acitivty", Toast.LENGTH_SHORT).show()
-            val intent = Intent(this, PostOptionsActivity::class.java)
-            startActivity(intent)
-        } else if (id == android.R.id.home) {
-            drawerLayout.openDrawer(GravityCompat.START)
+        when (id) {
+            R.id.action_favorite -> {
+                val intent = Intent(this, SearchTripActivity::class.java)
+                startActivity(intent)
+                return true
+            }
+            R.id.action_add -> {
+                val intent = Intent(this, PostOptionsActivity::class.java)
+                startActivity(intent)
+            }
+            android.R.id.home -> drawerLayout.openDrawer(GravityCompat.START)
         }
 
         return super.onOptionsItemSelected(item)
@@ -232,7 +231,7 @@ class MainActivity : AppCompatActivity() {
         navigationTabStrip.stripColor = Color.RED
         navigationTabStrip.stripType = NavigationTabStrip.StripType.POINT
         navigationTabStrip.stripGravity = NavigationTabStrip.StripGravity.BOTTOM
-        navigationTabStrip.setTypeface("fonts/typeface.ttf")
+        //todo navigationTabStrip.setTypeface("fonts/typeface.ttf")
         navigationTabStrip.animationDuration = 300
         navigationTabStrip.inactiveColor = Color.GRAY
         navigationTabStrip.activeColor = Color.RED

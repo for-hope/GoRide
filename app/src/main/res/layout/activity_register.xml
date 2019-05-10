@@ -7,7 +7,7 @@
     <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content" app:srcCompat="@drawable/ic_directions_car_white_60dp"
-            android:id="@+id/imageView12" android:layout_marginTop="100dp"/>
+            android:id="@+id/imageView12" android:layout_marginTop="50dp"/>
     <TextView
             android:text="@string/AppTitle"
             android:layout_width="match_parent"
@@ -33,7 +33,7 @@
                 android:id="@+id/rname_edittext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-        />
+                android:textColor="@android:color/white"/>
 
 
     </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
@@ -54,7 +54,7 @@
                 android:id="@+id/remail_edittext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-        />
+                android:textColor="@android:color/white"/>
 
 
     </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
@@ -75,7 +75,7 @@
                 android:id="@+id/rpassword_edittext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-        />
+                android:textColor="@android:color/white" android:inputType="textPassword"/>
 
 
     </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
@@ -84,11 +84,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:id="@+id/nextRegisterBtn" android:paddingBottom="15dp"
             android:paddingTop="15dp" android:layout_marginLeft="30dp" android:layout_marginRight="30dp"
-            android:backgroundTint="#a2303f9f" android:textColor="#d1ffffff" app:cornerRadius="10dp"/>
-    <TextView
-            android:text="Already have an account? Login here"
+            android:backgroundTint="#3248a1" android:textColor="#d1ffffff" app:cornerRadius="5dp"/>
+    <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" android:id="@+id/login_in_register_btn" android:textColor="#6affffff"
-            android:gravity="bottom|center" android:padding="10dp"/>
+            android:layout_height="match_parent" android:layout_weight="1" android:gravity="bottom|center"
+            android:paddingBottom="20dp">
+        <TextView
+                android:text="Already have an account?  "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/already_have_acc_desc"
+                android:textColor="#6affffff"
+                android:gravity="center" android:layout_weight="0" android:textSize="16sp"/>
+        <TextView
+                android:text="Login here."
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/login_textbtn"
+                android:textColor="#ff7249"
+                android:gravity="bottom|center" android:layout_weight="0"
+                android:textSize="16sp" android:paddingBottom="10dp"/>
+    </LinearLayout>
 
 </LinearLayout>

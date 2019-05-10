@@ -1,10 +1,7 @@
 package me.lamine.goride
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.app.AlertDialog
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
-import android.content.Context
+import android.app.*
+
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -24,9 +21,11 @@ import com.google.android.material.snackbar.Snackbar
 import android.graphics.drawable.GradientDrawable
 import android.location.Geocoder
 import android.media.MediaScannerConnection
+import android.opengl.Visibility
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.TypedValue
+import android.view.WindowManager
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -59,6 +58,7 @@ class PostingActivity : AppCompatActivity() {
     private lateinit var mGeocoder:Geocoder
     private var originCode = 0
     private var destinationCode = 0
+    private var isImageSet=false
     private val mapsApiKey: String = "AIzaSyDWbc3KQP6ssBlClf8HSiZWEtMxfwqSYto"
     private val GALLERY = 1
     private val CAMERA = 2
@@ -70,7 +70,7 @@ class PostingActivity : AppCompatActivity() {
     private lateinit var destFullAddress:String
     private var AUTOCOMPLETE_REQUEST_CODE = 10
     private var AUTOCOMPLETE_REQUEST_CODE_DES = 20
-    private lateinit var downloadUrl:String
+    private var downloadUrl:String = ""
     private lateinit var originText:String
     private lateinit var destinationText:String
     private var stops:ArrayList<String> = ArrayList()
@@ -95,6 +95,7 @@ class PostingActivity : AppCompatActivity() {
     private var currentUser: FirebaseUser? = null
     private var originLatLng: LatLng? = null
     private var desLatLng:LatLng? = null
+
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -118,13 +119,13 @@ class PostingActivity : AppCompatActivity() {
         database = FirebaseDatabase.getInstance().reference
         mAuth = FirebaseAuth.getInstance()
         if (mAuth?.currentUser == null) {
+            Toast.makeText(this,"LOGIN FIRST",Toast.LENGTH_LONG).show()
             finish()
         }else {
             currentUser = mAuth?.currentUser
         }
 
         addStops()
-            //fillAllForm()
         vehicleTypeSpinner()
         vehicleColorSpinner()
         fillBookingPref()
@@ -136,14 +137,27 @@ class PostingActivity : AppCompatActivity() {
         skipVehicleOption()
         showPictureDialog()
         trip_ac_submit_btn.setOnClickListener {
+            Log.i("onCreate","FILLING FORMS")
         fillAllForm()
-        //    printAllform()
         }
 
 
 
 
 
+    }
+    private fun setPb(visibility: Int){
+        if (visibility == 1) {
+        progressBar1.visibility = View.VISIBLE
+            greout_layout.visibility = View.VISIBLE
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+    } else {
+        progressBar1.visibility = View.GONE
+        greout_layout.visibility = View.GONE
+        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+    }
     }
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
@@ -198,6 +212,7 @@ class PostingActivity : AppCompatActivity() {
                     val path = saveImage(bitmap)
                     Toast.makeText(this, "Image Saved!", Toast.LENGTH_SHORT).show()
                     carBtn.setImageBitmap(bitmap)
+                    isImageSet = true
 
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -294,7 +309,7 @@ class PostingActivity : AppCompatActivity() {
     }
     private fun addStops() {
         var co = -1
-        add_field_label.setOnClickListener { it ->
+        add_field_label.setOnClickListener {
             val parentView = findViewById<LinearLayout>(R.id.relative_layout_form)
             val inflater = LayoutInflater.from(this)
             val viewer = inflater.inflate(R.layout.textfield_form, parentView, false)
@@ -340,45 +355,65 @@ class PostingActivity : AppCompatActivity() {
     }
     private fun fillAllForm(){
         var correctForm = true
-        originText = edittext_origin.text.toString()
-        destinationText = edittext_destination.text.toString()
-        vehicleModel = editText_car_model.text.toString()
+        Log.i("fillAllForms",correctForm.toString())
+        if (edittext_origin.text.toString() == "" || edittext_origin.text == null){
+            correctForm = false
+            origin_label.setError("Invalid",true)
+        } else {
+            originText = edittext_origin.text.toString()
+            origin_label.removeError()
+        }
+        if (edittext_destination.text.toString() == "" || edittext_destination.text == null){
+            correctForm = false
+            destination_label.setError("Invalid",true)
+        } else {
+            destinationText = edittext_destination.text.toString()
+            destination_label.removeError()
+        }
+
+
         if (!vehicleSkipped) {
-            try {
-                vehicleYear = year_EditText.text.toString().toInt()
-            } catch (e: NumberFormatException) {
-                e.stackTrace
-            }
 
-            val validatorYear = year_EditText.validator()
-            val isValidYear = validatorYear.addRule(ValidNumberRule())
-                .addRule(MaxLengthRule(4))
-                .addRule(MinLengthRule(4))
-                .addRule(GreaterThanRule(1800))
-                .addRule(LessThanRule(2019))
-                .addRule(OnlyNumbersRule())
-                .check()
-            if (!isValidYear) {
-                correctForm = false
-                year_TextField.error = "Invalid Year"
-            } else {
-                year_TextField.error = ""
-                year_TextField.isErrorEnabled = false
+            //vehicle model
+            vehicleModel = editText_car_model.text.toString()
+            if (year_EditText.text.toString() != "" && year_EditText.text != null){
+                //vehicle year parsing
+                try {
+                    vehicleYear = year_EditText.text.toString().toInt()
+                } catch (e: NumberFormatException) {
+                    e.stackTrace
+                }
+                val validatorYear = year_EditText.validator()
+                val isValidYear = validatorYear.addRule(ValidNumberRule())
+                    .addRule(MaxLengthRule(4))
+                    .addRule(MinLengthRule(4))
+                    .addRule(GreaterThanRule(1900))
+                    .addRule(LessThanOrEqualRule(2019))
+                    .addRule(OnlyNumbersRule())
+                    .check()
+                if (!isValidYear) {
+                    correctForm = false
+                    year_TextField.error = "Invalid Year"
+                } else {
+                    year_TextField.error = ""
+                    year_TextField.isErrorEnabled = false
+                }
             }
-
-            licensePlate = licenseplate_EditText.text.toString()
-            val validatorLicense = licenseplate_EditText.validator()
-            val isValidLicense = validatorLicense.addRule(ValidNumberRule())
-                .addRule(MaxLengthRule(10))
-                .addRule(MinLengthRule(10))
-                .addRule(OnlyNumbersRule())
-                .check()
-            if (!isValidLicense) {
-                correctForm = false
-                license_TextField.error = "Invalid license plate"
-            } else {
-                license_TextField.error = ""
-                license_TextField.isErrorEnabled = false
+            if (licenseplate_EditText.text.toString()!="" && licenseplate_EditText.text != null) {
+                licensePlate = licenseplate_EditText.text.toString()
+                val validatorLicense = licenseplate_EditText.validator()
+                val isValidLicense = validatorLicense.addRule(ValidNumberRule())
+                    .addRule(MaxLengthRule(10))
+                    .addRule(MinLengthRule(10))
+                    .addRule(OnlyNumbersRule())
+                    .check()
+                if (!isValidLicense) {
+                    correctForm = false
+                    license_TextField.error = "Invalid license plate"
+                } else {
+                    license_TextField.error = ""
+                    license_TextField.isErrorEnabled = false
+                }
             }
         }
 
@@ -426,14 +461,30 @@ class PostingActivity : AppCompatActivity() {
             addStopViewToList()
             fillStops()
         }
+        Log.i("finish uploading lol",correctForm.toString())
         if(correctForm){
-            savePhotoToDatabase(carBtn)
+
+            if (!this.vehicleSkipped){
+                if (isImageSet){
+                    Log.i("SAVE PHotos",correctForm.toString())
+                    savePhotoToDatabase(carBtn)
+                } else{
+                    Log.i("ComPELTE ",correctForm.toString())
+                    finishUploading()
+                }
+
+            } else {
+                Log.i("DONE?",correctForm.toString())
+                finishUploading()
+            }
+
                 //start activity
         } else {
             Toast.makeText(this,"Wrong Information, check and try again.",Toast.LENGTH_SHORT).show()
         }
     }
     private fun finishUploading(){
+        Log.i("finish uploading method","TRUE")
         val luggageOption = fillLuggageOptions()
         val noSmoking = fillOtherOptions()[0] == 1
         val petsAllowed = fillOtherOptions()[1] == 1
@@ -450,16 +501,22 @@ class PostingActivity : AppCompatActivity() {
         trip.addDescription(tripDescription)
         trip.originFullAddress = originFullAddress
         trip.destFullAddress = destFullAddress
+        trip.destSubCity = destSubCity
+        trip.originSubCity = originSubCity
+        trip.originCity = originCity
+        trip.destCity = destCity
+        trip.tripID = UUID.randomUUID().toString()
+        trip.addTripDestinations(originCity,originSubCity,originFullAddress,destCity,destSubCity,destFullAddress)
         trip.printAllInfo()
         /*
         val intent = Intent(this, TripsListActivity::class.java)
         intent.putExtra("PostingActivity",trip)
         startActivity(intent) */
-        saveData(trip)
+        Log.i("DB", trip.origin)
         saveToDB(trip)
 
 
-        trip.addTripDestinations(originCity,originSubCity,originFullAddress,destCity,destSubCity,destFullAddress)
+
     }
     private fun showDoneDialog(){
         androidx.appcompat.app.AlertDialog.Builder(this)
@@ -479,38 +536,31 @@ class PostingActivity : AppCompatActivity() {
             .setIcon(R.drawable.ic_done_green_24dp)
             .show()
     }
-    private fun addTripID():Int{
-        val mPrefs = this.getSharedPreferences("TripsPref",Context.MODE_PRIVATE)!!
-        val tripID = mPrefs.getInt("TripID", 0)
-        val prefsEditor = mPrefs.edit()
-        prefsEditor.putInt("TripID", tripID+1)
-        prefsEditor.apply()
-        Toast.makeText(this,tripID.toString(),Toast.LENGTH_SHORT).show()
-        return tripID+1
-    }
-    private fun saveData(trip:Trip){
-        val mPrefs = this.getSharedPreferences("TripsPref",Context.MODE_PRIVATE)!!
-        val prefsEditor = mPrefs.edit()
-        val gson = Gson()
-        val json = gson.toJson(trip)
-        val tripID:String = "TripID${addTripID()}"
-        prefsEditor.putString(tripID, json)
-        prefsEditor.apply()
-        showDoneDialog()
-    }
+
+
     private fun isValidDate(dateString: String):Boolean {
         var date: Date? = null
         val myFormat = "dd/MM/yyyy"
+        val c = Calendar.getInstance()
+
+
         try {
             val sdf = SimpleDateFormat(myFormat, Locale.US)
             date = sdf.parse(dateString)
-            if (!dateString.equals(sdf.format(date))) {
+            if (dateString != sdf.format(date)) {
                 date = null
             }
         } catch (ex: ParseException) {
             ex.printStackTrace()
         }
-        return date != null
+        return if (date != null) {
+            Log.i("PostingActivity",c.time.toString())
+            date.after(c.time)
+
+        } else {
+            false
+        }
+
     }
     private fun isValidTime(timeString: String):Boolean {
         var date: Date? = null
@@ -526,6 +576,9 @@ class PostingActivity : AppCompatActivity() {
         }
         return date != null
     }
+
+
+
     private fun convertDPtoInt(myDP:Float): Int {
         val r = resources
         val px = Math.round(
@@ -583,14 +636,10 @@ class PostingActivity : AppCompatActivity() {
                 originSubCity = originCity
             }
         }
-        originFullAddress = place.name!!
+        originFullAddress = place.address!!
         Log.i("state", originCity)
         Log.i("city", originSubCity)
         Log.i("address", originFullAddress)
-        /*
-          Log.i("PLACE FULL ADDRESS", place.addressComponents.toString())
-          Log.i("PLACE SUBCITY ADDRESS", place.addressComponents?.asList()!![0].name)
-          Log.i("PLACE CITY ADDRESS", place.addressComponents?.asList()!![1].name)*/
 
         if (place.address != null){
             Log.i("PLACE ADDRESS", place.address)
@@ -600,7 +649,7 @@ class PostingActivity : AppCompatActivity() {
         val decodedOriginCity = decodeWilaya(originCity)
         originCode = decodedOriginCity
         Log.i("DECODE",decodedOriginCity.toString())
-        setOrigin(originFullAddress)
+        setOrigin(place.name!!)
         Log.i("SetOrigin",originSubCity)
        // setOrigin("$place.name!!")
 
@@ -629,14 +678,11 @@ class PostingActivity : AppCompatActivity() {
                 destSubCity = destCity
             }
         }
-        destFullAddress = place.name!!
+        destFullAddress = place.address!!
         Log.i("state", destCity)
         Log.i("city", destSubCity)
         Log.i("address", destFullAddress)
-        /*
-          Log.i("PLACE FULL ADDRESS", place.addressComponents.toString())
-          Log.i("PLACE SUBCITY ADDRESS", place.addressComponents?.asList()!![0].name)
-          Log.i("PLACE CITY ADDRESS", place.addressComponents?.asList()!![1].name)*/
+
 
         if (place.address != null){
             Log.i("PLACE ADDRESS", place.address)
@@ -645,11 +691,10 @@ class PostingActivity : AppCompatActivity() {
         }
         val decodedDestCity = decodeWilaya(destCity)
         destinationCode = decodedDestCity
-        setDestination(destFullAddress)
-       //todo setDestination("$place.name!!")
+        setDestination(place.name!!)
+
 
     }
-
     private  fun fillLuggageOptions(): Int {
         val luggageBtns = arrayListOf<LinearLayout>(pref_btn_no,pref_btn_s,pref_btn_m,pref_btn_l)
         for ((index, btn) in luggageBtns.withIndex()){
@@ -702,31 +747,31 @@ class PostingActivity : AppCompatActivity() {
     private fun vehicleColorSpinner(){
         val spinner = findViewById<MaterialSpinner>(R.id.spinner_color)
         spinner.setItems("Black", "White", "Blue", "Red", " Light Gray","Dark Gray","Yellow","Green","Gold", "Beige")
-        spinner.setOnItemSelectedListener { view, position, id, item ->
+        spinner.setOnItemSelectedListener { view, _, _, item ->
             vehicleColor = item.toString()
             Snackbar.make(
                 view,
-                "Clicked $item",
+                "Saved $item!",
                 Snackbar.LENGTH_LONG
             ).show()
         } }
     private fun vehicleTypeSpinner(){
         val spinner = findViewById<MaterialSpinner>(R.id.spinner_type)
         spinner.setItems("Car", "Bus", "Taxi", "Van","Minivan","Truck","Helix")
-        spinner.setOnItemSelectedListener { view, position, id, item ->
+        spinner.setOnItemSelectedListener { view, _, _, item ->
             vehicleType = item.toString()
             Snackbar.make(
                 view,
-                "Clicked $item",
+                "Saved $item !",
                 Snackbar.LENGTH_LONG
             ).show()
         } }
     private fun fillOtherOptions(): ArrayList<Int> {
         val otherBtns = arrayListOf<LinearLayout>(other_btn_smoke,other_btn_pet)
-        val imgIconList = arrayListOf<Int>(R.drawable.ic_smoke_free_white_24dp,R.drawable.ic_pets_white_24dp,R.drawable.ic_smoke_free_black_24dp,R.drawable.ic_pets_black_24dp)
-        val colorList = arrayListOf<Int>(R.color.btnBlack,R.color.backgroundColor,R.color.backgroundColor,R.color.btnBlack)
+        val imgIconList = arrayListOf(R.drawable.ic_smoke_free_white_24dp,R.drawable.ic_pets_white_24dp,R.drawable.ic_smoke_free_black_24dp,R.drawable.ic_pets_black_24dp)
+        val colorList = arrayListOf(R.color.btnBlack,R.color.backgroundColor,R.color.backgroundColor,R.color.btnBlack)
         for((indexOther,otherOptionBtn) in otherBtns.withIndex() ) {
-            //otherOptions[indexOther] = 1
+           //todo fix colors
             var otherBtnClicked = 0
             otherOptionBtn.setOnClickListener {
 
@@ -747,7 +792,7 @@ class PostingActivity : AppCompatActivity() {
                     0
                 }
                 otherOptions[indexOther] = otherBtnClicked-1
-                Toast.makeText(this,"$indexOther is $otherBtnClicked", Toast.LENGTH_SHORT).show()
+
 
             }
 
@@ -793,14 +838,14 @@ class PostingActivity : AppCompatActivity() {
         return ""
     }
     companion object {
-        private const val IMAGE_DIRECTORY = "/demonuts"
+        private const val IMAGE_DIRECTORY = "/RideGO_Images"
     }
     private fun showPictureDialog() {
         carBtn.setOnClickListener { val pictureDialog = AlertDialog.Builder(this)
             pictureDialog.setTitle("Select Action")
             val pictureDialogItems = arrayOf("Select photo from gallery", "Capture photo from camera")
             pictureDialog.setItems(pictureDialogItems
-            ) { dialog, which ->
+            ) { _, which ->
                 when (which) {
                     0 -> choosePhotoFromGallery()
                     1 -> takePhotoFromCamera()
@@ -813,17 +858,18 @@ class PostingActivity : AppCompatActivity() {
     private fun choosePhotoFromGallery() {
         val galleryIntent = Intent(
             Intent.ACTION_PICK,
-            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         )
 
         startActivityForResult(galleryIntent, GALLERY)
     }
     private fun takePhotoFromCamera() {
-        val intent = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         startActivityForResult(intent, CAMERA)
     }
     private fun savePhotoToDatabase(imageView:ImageView){
        // val file = Uri.fromFile(File("path/to/images/rivers.jpg"))
+        setPb(1)
         val uniqueId = UUID.randomUUID().toString()
         val riversRef = mStorageRef.child("car_images/$uniqueId.jpg")
 // Get the data from an ImageView as bytes
@@ -842,6 +888,7 @@ class PostingActivity : AppCompatActivity() {
             val result = it1.metadata?.reference?.downloadUrl
             result?.addOnSuccessListener {
                 downloadUrl = it.toString()
+                //downloadUrl = uniqueId
                 Log.i("UPLOAD",downloadUrl)
                 finishUploading()
             }
@@ -896,7 +943,7 @@ class PostingActivity : AppCompatActivity() {
 
     }
     private fun skipVehicleOption():Boolean {
-        skip_vehicle_check.setOnCheckedChangeListener { buttonView, isChecked ->
+        skip_vehicle_check.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked){
                 vehicleSkipped = true
                 vehicle_linearlayout.visibility=View.GONE
@@ -940,8 +987,6 @@ class PostingActivity : AppCompatActivity() {
         var i = 0
         while(i<parentView.childCount){
             stopsList.add(parentView.getChildAt(i))
-         //   val edit = parentView.getChildAt(0).findViewById<ExtendedEditText>(R.id.edittext_label)
-        //    stops.add()
             i++
         }
     }
@@ -953,6 +998,7 @@ class PostingActivity : AppCompatActivity() {
         }
     }
     private fun saveToDB(trip:Trip){
+        setPb(1)
         val childName = "${originCode}_$destinationCode"
        val newRef = database.child("trips").child(childName).push()
         newRef.setValue(trip) { databaseError, _ ->
@@ -963,12 +1009,8 @@ class PostingActivity : AppCompatActivity() {
         if (currentUser != null){
         newRef.child("userID").setValue(currentUser?.uid)}
         database.push()
-      /*  val newRef =database.child("Trips").push()
-        newRef.setValue(trip) { databaseError, _ ->
-            Toast.makeText(this, "Error $databaseError", Toast.LENGTH_LONG).show()
-        }*/
-
-
+        setPb(0)
+        showDoneDialog()
 
     }
 

@@ -54,7 +54,7 @@ android:orientation="vertical">
                     app:helperTextColor="@color/colorAccent" app:counterTextColor="@color/colorSecondary"
                     android:layout_marginStart="20dp" android:layout_marginRight="20dp"
                     android:layout_marginLeft="20dp" android:layout_marginTop="20dp" android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="20dp">
+                    android:layout_marginBottom="20dp" app:maxCharacters="9">
 
                 <studio.carbonylgroup.textfieldboxes.ExtendedEditText
                         android:id="@+id/phone_nb_edittext"
@@ -91,13 +91,13 @@ android:orientation="vertical">
                     app:helperTextColor="@color/colorAccent" app:counterTextColor="@color/colorSecondary"
                     android:layout_marginStart="20dp" android:layout_marginRight="20dp"
                     android:layout_marginLeft="20dp" android:layout_marginTop="20dp" android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="20dp">
+                    android:layout_marginBottom="20dp" app:maxCharacters="6">
 
                 <studio.carbonylgroup.textfieldboxes.ExtendedEditText
                         android:id="@+id/code_edittext"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:prefix="+213"/>
+                />
 
 
             </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
