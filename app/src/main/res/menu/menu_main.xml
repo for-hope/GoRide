@@ -5,10 +5,10 @@
       tools:context=".MainActivity">
 
     <item
-            android:id="@+id/action_favorite"
+            android:id="@+id/action_messages"
             android:orderInCategory="300"
-            android:title="User"
-            android:icon="@drawable/ic_search_black_24dp"
+            android:title="@string/messages"
+            android:icon="@drawable/ic_inbox_black_24dp"
             app:showAsAction="ifRoom"/>
 
 </menu>

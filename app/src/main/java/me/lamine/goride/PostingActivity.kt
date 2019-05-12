@@ -100,7 +100,7 @@ class PostingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_trip_form)
-        mStorageRef = FirebaseStorage.getInstance().reference;
+        mStorageRef = FirebaseStorage.getInstance().reference
         Places.initialize(applicationContext, mapsApiKey)
         mGeocoder = Geocoder(this, Locale.getDefault())
         // Create a new Places client instance.
@@ -576,9 +576,6 @@ class PostingActivity : AppCompatActivity() {
         }
         return date != null
     }
-
-
-
     private fun convertDPtoInt(myDP:Float): Int {
         val r = resources
         val px = Math.round(
@@ -623,35 +620,40 @@ class PostingActivity : AppCompatActivity() {
         originCity = ""
         originSubCity = ""
         originLatLng = place.latLng
-        val placeName = place.addressComponents?.asList()!![1].name
-        //take cords from geolocation
-        getCityNameByCoordinates(originLatLng?.latitude!!,originLatLng?.longitude!!,true)
-        //check if they're init
-        if (originCity == ""){
-            originCity = getCityNameByName(placeName)!!
-        }
-        if (originSubCity == ""){
-            originSubCity = getSubCityNameByName(placeName)!!
-            if (originSubCity=="EMPTY"){
-                originSubCity = originCity
-            }
-        }
-        originFullAddress = place.address!!
-        Log.i("state", originCity)
-        Log.i("city", originSubCity)
-        Log.i("address", originFullAddress)
-
-        if (place.address != null){
-            Log.i("PLACE ADDRESS", place.address)
+        if (place.addressComponents?.asList()!!.size == 1){
+            Toast.makeText(this,"Pick a valid place.", Toast.LENGTH_SHORT).show()
         } else {
-            Log.i("PLACE ADDRESS", "NU::")
+            val placeName = place.addressComponents?.asList()!![1].name
+            //take cords from geolocation
+            getCityNameByCoordinates(originLatLng?.latitude!!,originLatLng?.longitude!!,true)
+            //check if they're init
+            if (originCity == ""){
+                originCity = getCityNameByName(placeName)!!
+            }
+            if (originSubCity == ""){
+                originSubCity = getSubCityNameByName(placeName)!!
+                if (originSubCity=="EMPTY"){
+                    originSubCity = originCity
+                }
+            }
+            originFullAddress = place.address!!
+            Log.i("state", originCity)
+            Log.i("city", originSubCity)
+            Log.i("address", originFullAddress)
+
+            if (place.address != null){
+                Log.i("PLACE ADDRESS", place.address)
+            } else {
+                Log.i("PLACE ADDRESS", "NU::")
+            }
+            val decodedOriginCity = decodeWilaya(originCity)
+            originCode = decodedOriginCity
+            Log.i("DECODE",decodedOriginCity.toString())
+            setOrigin(place.name!!)
+            Log.i("SetOrigin",originSubCity)
+            // setOrigin("$place.name!!")
         }
-        val decodedOriginCity = decodeWilaya(originCity)
-        originCode = decodedOriginCity
-        Log.i("DECODE",decodedOriginCity.toString())
-        setOrigin(place.name!!)
-        Log.i("SetOrigin",originSubCity)
-       // setOrigin("$place.name!!")
+
 
     }
     private fun fillDest(place: Place){
@@ -893,24 +895,8 @@ class PostingActivity : AppCompatActivity() {
                 finishUploading()
             }
 
-          //  downloadUrl =  it.metadata?.reference?.downloadUrl.toString()
-           // downloadUrl = it1.metadata?.reference?.downloadUrl?.result.toString()
-
-            //finishUploading()
-
-            // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
-            // ...
         }
-        /*
-        riversRef.putFile(file)
-            .addOnSuccessListener(OnSuccessListener<UploadTask.TaskSnapshot> { taskSnapshot ->
-                // Get a URL to the uploaded content
-                val downloadUrl = taskSnapshot.getDownloadUrl()
-            })
-            .addOnFailureListener(OnFailureListener {
-                // Handle unsuccessful uploads
-                // ...
-            })*/
+
     }
     private fun dateField() {
         val myCalendar = Calendar.getInstance()
@@ -1011,6 +997,7 @@ class PostingActivity : AppCompatActivity() {
         database.push()
         setPb(0)
         showDoneDialog()
+
 
     }
 

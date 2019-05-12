@@ -34,6 +34,7 @@
                   android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".RegisterExtraActivity"/>
         <activity android:name=".TripActivity"/>
+        <activity android:name=".InboxActivity"/>
         <meta-data android:name="preloaded_fonts" android:resource="@array/preloaded_fonts"/>
     </application>
 

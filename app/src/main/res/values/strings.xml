@@ -11,10 +11,15 @@
     <string name="medium_luggage">Medium Luggage</string>
     <string name="large_luggage">Large Luggage</string>
     <string name="booked">Booked:</string>
-    <string name="driver_desc">You don\'t have any upcoming trips at the moment! If you add a trip it will be displayed here.</string>
-    <string name="passenger_desc">You don\'t have any upcoming trips yet! your registered trips will be shown here
-        alongside with your trip requests.
+    <string name="driver_desc">You have no upcoming trips! added trips will be displayed here.</string>
+    <string name="passenger_desc">You have no trip requests! registered trips will also be shown here.
     </string>
+    <string name="profile">Profile</string>
+    <string name="privacy_and_terms">Privacy and Terms</string>
+    <string name="settings">Settings</string>
+    <string name="log_out">Log out</string>
+    <string name="notification">Notification</string>
+    <string name="messages">Messages</string>
     <string-array name="countries_array">
         <item>Afghanistan</item>
         <item>Albania</item>

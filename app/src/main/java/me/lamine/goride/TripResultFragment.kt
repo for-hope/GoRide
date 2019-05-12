@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_trip_results.*
 import android.util.Log
-import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import com.google.firebase.auth.FirebaseAuth
@@ -19,8 +18,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.FirebaseDatabase
-import kotlinx.android.synthetic.main.activity_trip_form.*
-import kotlinx.android.synthetic.main.activity_trips_list.*
+import me.lamine.goride.Adapters.TripAdapter
 import java.util.*
 
 
@@ -135,6 +133,7 @@ class TripResultFragment() : Fragment() {
         val destSubCity = dataSnapshot.child("destSubCity").value as String?
         val destFullAddress = dataSnapshot.child("destFullAddress").value as String?
         val tripID = dataSnapshot.key
+        //val tripID = dataSnapshot.child("tripID").value as String?
         var luggageSize:Int? = 0
         when (luggageSizeInt) {
             "None" -> luggageSize = 0
@@ -200,7 +199,6 @@ class TripResultFragment() : Fragment() {
 
         }
     }
-
     private fun mReadDataOnce(childName: String, listener: OnGetDataListener) {
         listener.onStart()
         val rootRef = FirebaseDatabase.getInstance().reference
@@ -310,7 +308,13 @@ class TripResultFragment() : Fragment() {
             override fun onSuccess(data: DataSnapshot) {
                 //DO SOME THING WHEN GET DATA SUCCESS HERE
                 setPb(0)
-                trips_list_rec_view.adapter = context?.let { TripAdapter(it,listOfTrips,listOfUsersLite)}
+                trips_list_rec_view.adapter = context?.let {
+                    TripAdapter(
+                        it,
+                        listOfTrips,
+                        listOfUsersLite
+                    )
+                }
             }
 
             override fun onFailed(databaseError: DatabaseError) {
@@ -329,7 +333,13 @@ class TripResultFragment() : Fragment() {
 
             override fun onSuccess(data: DataSnapshot) {
                 //DO SOME THING WHEN GET DATA SUCCESS HERE
-                trips_list_rec_view.adapter = context?.let { TripAdapter(it,listOfTrips,listOfUsersLite)}
+                trips_list_rec_view.adapter = context?.let {
+                    TripAdapter(
+                        it,
+                        listOfTrips,
+                        listOfUsersLite
+                    )
+                }
                 setPb(0)
             }
 

@@ -1,8 +1,11 @@
-package me.lamine.goride
+package me.lamine.goride.Adapters
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import me.lamine.goride.PassengerFragment
+import me.lamine.goride.TripResultFragment
+import me.lamine.goride.TripSearchData
 
 
 class MyTripResultPageAdapter(fm: FragmentManager, private var tsd: TripSearchData, toText:String, fromText:String) : androidx.fragment.app.FragmentPagerAdapter(fm) {
@@ -25,7 +28,7 @@ class MyTripResultPageAdapter(fm: FragmentManager, private var tsd: TripSearchDa
 
             }
             else -> {
-                return SecondFragment()
+                return PassengerFragment()
             }
         }
     }

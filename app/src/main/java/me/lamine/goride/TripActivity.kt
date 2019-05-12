@@ -32,6 +32,7 @@ import kotlinx.android.synthetic.main.fragment_trip_results.*
 import org.jetbrains.anko.*
 import java.io.*
 import java.net.URL
+import java.sql.Timestamp
 
 
 class TripActivity:AppCompatActivity() {
@@ -102,6 +103,7 @@ class TripActivity:AppCompatActivity() {
             trip_ac_type_color_year.text = ""
             trip_ac_lisence.text = ""
         }
+        //show icon of booked users
         bookedUsers(trip)
        trip_ac_luggage.text = trip.luggageSize
         //todo change icon
@@ -139,6 +141,7 @@ class TripActivity:AppCompatActivity() {
         }
         trip_ac_submit_btn.setOnClickListener { submitRequest(trip) }
     }
+
     private  fun addUserView(trip: Trip,userId:String){
         Log.i("AddedUser", "YES")
         val layout = trip_users_layout
@@ -161,8 +164,15 @@ class TripActivity:AppCompatActivity() {
         layout.addView(circleImageView)
     }
     private fun submitRequest(trip:Trip){
-
+        if (trip.bookingPref == 1){
+            Log.i("BookingPref",trip.bookingPref.toString())
             saveToDB(trip)
+        } else {
+            Log.i("BookingPref2",trip.bookingPref.toString())
+            savePendingToDB(trip)
+        }
+
+
 
     }
     private fun setPb(visibility: Int){
@@ -241,13 +251,23 @@ class TripActivity:AppCompatActivity() {
         }
         database.push()
         bookedUsers(trip)
-        /*  val newRef =database.child("Trips").push()
-          newRef.setValue(trip) { databaseError, _ ->
-              Toast.makeText(this, "Error $databaseError", Toast.LENGTH_LONG).show()
-          }*/
+    }
+    private fun savePendingToDB(trip:Trip){
+        val childName = trip.tripID
+        Log.i("savePendingToDB", trip.tripID)
+        val destCode = decodeWilaya(trip.destCity)
+        val originCode = decodeWilaya(trip.originCity)
+        var newRef = database.child("trips").child("${originCode}_$destCode").child(childName)
 
-
-
+        newRef.child("pendingBookedUsers").child(currentUser?.uid!!).setValue(0){ databaseError, _ ->
+            if (databaseError != null) {
+                Log.i("FireBaseEroor",databaseError.message)
+                Toast.makeText(this, "Error $databaseError", Toast.LENGTH_LONG).show()}
+        }
+        newRef = database.child("users").child(trip.userID).child("tripRequests").child(trip.tripID)
+        newRef.child(currentUser?.uid!!).setValue(Timestamp(System.currentTimeMillis()).toString())
+        database.push()
+        bookedUsers(trip)
     }
     private fun downloadCarImage(carPhotoURL:String){
         Picasso.get().load(carPhotoURL).into(trip_ac_car_photo);

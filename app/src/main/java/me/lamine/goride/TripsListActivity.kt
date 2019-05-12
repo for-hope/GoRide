@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.gigamole.navigationtabstrip.NavigationTabStrip
 import kotlinx.android.synthetic.main.activity_trips_list.*
+import me.lamine.goride.Adapters.MyTripResultPageAdapter
 import java.util.*
 
 
@@ -36,7 +37,8 @@ class TripsListActivity : AppCompatActivity() {
         //tripResultsFragment.arguments = bundle
 
         val navigationTabStrip = findViewById<NavigationTabStrip>(R.id.trip_results_tablayout)
-        val fragmentAdapter = MyTripResultPageAdapter(supportFragmentManager, tsd,toText,fromText)
+        val fragmentAdapter =
+            MyTripResultPageAdapter(supportFragmentManager, tsd, toText, fromText)
         viewpager_r.adapter = fragmentAdapter
         navigationTabStrip.setViewPager(viewpager_r)
         initNavStripe(navigationTabStrip)

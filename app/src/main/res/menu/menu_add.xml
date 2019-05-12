@@ -5,10 +5,10 @@
       tools:context=".MainActivity">
 
     <item
-            android:id="@+id/action_add"
+            android:id="@+id/action_notifications"
             android:orderInCategory="300"
-            android:title="User"
-            android:icon="@drawable/ic_add_black_24dp"
+            android:title="@string/notification"
+            android:icon="@drawable/ic_notifications_none_black_24dp"
             app:showAsAction="ifRoom"/>
 
 </menu>

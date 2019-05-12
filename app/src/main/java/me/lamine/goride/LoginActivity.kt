@@ -18,7 +18,10 @@ class LoginActivity:AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         mAuth = FirebaseAuth.getInstance();
-
+        create_account.setOnClickListener { Log.i("Login","CLICKED")
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
+            finish()}
         btnLogin.setOnClickListener {
             val email = email_edittext.text.toString()
             val password = password_edittext.text.toString()
@@ -66,6 +69,7 @@ class LoginActivity:AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
+
 
 
                 //todo updateUI(null)

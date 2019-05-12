@@ -1,18 +1,20 @@
-package me.lamine.goride
+package me.lamine.goride.Adapters
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import me.lamine.goride.DriverFragment
+import me.lamine.goride.PassengerFragment
 
 class MyPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment {
         return when (position) {
             0 -> {
-                FirstFragment()
+                DriverFragment()
             }
             else -> {
-                return SecondFragment()
+                return PassengerFragment()
             }
         }
     }

@@ -4,7 +4,6 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GravityCompat
@@ -19,18 +18,22 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import android.content.Intent
 import android.util.Log
+import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
+import com.firebase.ui.auth.AuthUI
 import com.github.florent37.runtimepermission.kotlin.askPermission
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.*
+import com.squareup.picasso.Picasso
+import me.lamine.goride.Adapters.MyPagerAdapter
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+    private var user:FirebaseUser? = null
+    private lateinit var database:DatabaseReference
     private lateinit var drawerLayout: androidx.drawerlayout.widget.DrawerLayout
-    override fun onStart() {
-        super.onStart()
-
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -40,15 +43,11 @@ class MainActivity : AppCompatActivity() {
         val navigationTabStrip = findViewById<NavigationTabStrip>(R.id.playTabLayout1)
         val fragmentAdapter = MyPagerAdapter(supportFragmentManager)
         drawerLayout = findViewById(R.id.drawer_layout)
-        //todo set up 
-        val database = FirebaseDatabase.getInstance()
-        val myRef = database.getReference("message")
-
-        myRef.setValue("Hello, World!")
-        //var user:FirebaseUser = intent.getParcelableExtra("User")
-        val user = FirebaseAuth.getInstance().currentUser
+        nav_view.setNavigationItemSelectedListener(this)
+         database = FirebaseDatabase.getInstance().reference
+        user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
-            for (profile in user.providerData) {
+            for (profile in user!!.providerData) {
                 // Id of the provider (ex: google.com)
                 val providerId = profile.providerId
 
@@ -63,26 +62,30 @@ class MainActivity : AppCompatActivity() {
                // val photoUrl = profile.photoUrl
             }
         } else {
-            Log.i("FAILED", " FAiLED LOG")
+            Log.i("FAILED", " FAILED LOG")
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.putExtra("tab",1)
+            startActivity(intent)
+            finish()
+
+
+        }
+        if (user!= null){
+            getUser()
         }
 
         val fab: FloatingActionButton = findViewById(R.id.fab)
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Here's a Snackbar For Driver", Snackbar.LENGTH_LONG)
-                .setAction("Action", null)
-                .show()
-            val intent = Intent(this, LoginActivity::class.java)
+        fab.setOnClickListener {
+            val intent = Intent(this, PostOptionsActivity::class.java)
             startActivity(intent)
         }
-        val fabp: FloatingActionButton = findViewById(R.id.fab_p)
-        fabp.setOnClickListener { view ->
-            Snackbar.make(view, "Here's a Passenger", Snackbar.LENGTH_LONG)
-                .setAction("Action", null)
-                .show()
-            val intent = Intent(this, RegisterActivity::class.java)
+
+        val fabP: FloatingActionButton = findViewById(R.id.fab_p)
+        fabP.setOnClickListener {
+            val intent = Intent(this, SearchTripActivity::class.java)
             startActivity(intent)
         }
-        fabp.hide()
+        fabP.hide()
 
 
 
@@ -118,7 +121,7 @@ class MainActivity : AppCompatActivity() {
                     navigationTabStrip.stripColor = ContextCompat.getColor(applicationContext,R.color.colorAccent)
                     navigationTabStrip.activeColor = ContextCompat.getColor(applicationContext,R.color.colorAccent)
 
-                    fab_p.hide()
+                    fabP.hide()
                     fab.show()
 
                 }
@@ -128,7 +131,7 @@ class MainActivity : AppCompatActivity() {
                     navigationTabStrip.activeColor = ContextCompat.getColor(applicationContext,R.color.colorSecondary)
 
                     fab.hide()
-                    fab_p.show()
+                    fabP.show()
                 }
             }
             override fun onTabReselected(tab: TouchableTabLayout.Tab) {
@@ -142,7 +145,7 @@ class MainActivity : AppCompatActivity() {
 
         })
 
-        askPermission(){
+        askPermission{
             //all permissions already granted or just granted
 
             Toast.makeText(this,"Permissions Granted!",Toast.LENGTH_SHORT).show()
@@ -156,13 +159,13 @@ class MainActivity : AppCompatActivity() {
 
                 AlertDialog.Builder(this)
                     .setMessage("Please accept our permissions")
-                    .setPositiveButton("yes") { dialog, which ->
-                        e.askAgain();
+                    .setPositiveButton("yes") { _, _ ->
+                        e.askAgain()
                     } //ask again
-                    .setNegativeButton("no") { dialog, which ->
-                        dialog.dismiss();
+                    .setNegativeButton("no") { dialog, _ ->
+                        dialog.dismiss()
                     }
-                    .show();
+                    .show()
             }
 
             if(e.hasForeverDenied()) {
@@ -172,7 +175,7 @@ class MainActivity : AppCompatActivity() {
                     Log.i("DENIED FOREVER", it)
                 }
                 // you need to open setting manually if you really need it
-                e.goToSettings();
+                e.goToSettings()
             }
         }
 
@@ -205,23 +208,94 @@ class MainActivity : AppCompatActivity() {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.itemId
-
-
-        when (id) {
-            R.id.action_favorite -> {
-                val intent = Intent(this, SearchTripActivity::class.java)
+        when (item.itemId) {
+            R.id.action_messages -> {
+                val intent = Intent(this, InboxActivity::class.java)
+                intent.putExtra("tab",1)
                 startActivity(intent)
                 return true
             }
-            R.id.action_add -> {
-                val intent = Intent(this, PostOptionsActivity::class.java)
+            R.id.action_notifications -> {
+                val intent = Intent(this, InboxActivity::class.java)
+                intent.putExtra("tab",0)
                 startActivity(intent)
             }
             android.R.id.home -> drawerLayout.openDrawer(GravityCompat.START)
         }
 
         return super.onOptionsItemSelected(item)
+    }
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        // Handle navigation view item clicks here.
+        when (item.itemId) {
+
+            R.id.nav_profile -> {
+                Toast.makeText(this, "Clicked Profile",Toast.LENGTH_SHORT).show()
+                Log.i("MainActivity", "CLicked Profile")
+
+            }//do sometehing
+            R.id.nav_logout -> {
+                AuthUI.getInstance()
+                    .signOut(this)
+                    .addOnCompleteListener {
+                        startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+                        finish() }
+                //FirebaseAuth.getInstance().signOut()
+
+            }
+        }
+        //close navigation drawer
+
+        drawerLayout.closeDrawer(GravityCompat.START)
+        return true
+    }
+    private fun getUser(){
+
+        getUserInfo(object : OnGetDataListener {
+            override fun onStart() {
+                //setPb(1)
+            }
+
+            override fun onSuccess(data: DataSnapshot) {
+                //DO SOME THING WHEN GET DATA SUCCESS HERE
+                var profileUrl = data.value as String?
+                if(profileUrl == null || profileUrl == ""){
+                    Log.i("DATA",data.exists().toString())
+                    profileUrl = "https://firebasestorage.googleapis.com/v0/b/ridego-1555252117345.appspot.com/o/user_images%2Fmale_default.png?alt=media&token=658a01b5-ba18-4491-8aa7-e15c30284200"
+                }
+                setHeaderImage(profileUrl)
+
+            }
+
+            override fun onFailed(databaseError: DatabaseError) {
+
+            }
+        })
+
+    }
+    private fun getUserInfo(listener: OnGetDataListener){
+        listener.onStart()
+
+        val newRef = database.child("users").child(user?.uid!!).child("profilePic")
+        val eventListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                listener.onSuccess(dataSnapshot)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                listener.onFailed(databaseError)
+                throw databaseError.toException() // don't ignore errors
+            }
+        }
+        newRef.addListenerForSingleValueEvent(eventListener)
+    }
+
+    private fun setHeaderImage(link:String){
+        val hView = nav_view.inflateHeaderView(R.layout.nav_header)
+//
+        val mImageView = hView.findViewById(R.id.nav_header_pfp) as ImageView
+        //val link = "https://firebasestorage.googleapis.com/v0/b/ridego-1555252117345.appspot.com/o/user_images%2Fmale_default.png?alt=media&token=658a01b5-ba18-4491-8aa7-e15c30284200"
+        Picasso.get().load(link).into(mImageView)
     }
     private fun initNavStripe(navigationTabStrip: NavigationTabStrip) {
         navigationTabStrip.setTitles("Driver", "Passenger")

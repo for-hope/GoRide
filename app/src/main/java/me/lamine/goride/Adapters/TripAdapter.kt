@@ -1,4 +1,4 @@
-package me.lamine.goride
+package me.lamine.goride.Adapters
 
 import android.content.Context
 import android.view.View
@@ -12,12 +12,13 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import android.content.Intent
-import android.location.Geocoder
+import me.lamine.goride.LiteUser
+import me.lamine.goride.R
+import me.lamine.goride.Trip
+import me.lamine.goride.TripActivity
 
 
-
-
-class TripAdapter(private var context: Context, private var tripsList: List<Trip>,private var userLiteList: List<LiteUser>): RecyclerView.Adapter<TripAdapter.TripViewHolder>() {
+class TripAdapter(private var context: Context, private var tripsList: List<Trip>, private var userLiteList: List<LiteUser>): RecyclerView.Adapter<TripAdapter.TripViewHolder>() {
     //val items: MutableList<String> = arrayListOf()
     override fun onBindViewHolder(holder: TripViewHolder, position: Int) {
         val trip = tripsList[position]
@@ -100,7 +101,7 @@ class TripAdapter(private var context: Context, private var tripsList: List<Trip
        return  tripsList.size
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TripViewHolder{
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TripViewHolder {
        // val itemView = LayoutInflater.from(parent.context).inflate(R.layout.trip_card_layout, parent, false)
         val inflater = LayoutInflater.from(parent.context)
         val view = inflater.inflate(R.layout.trip_card_layout, parent, false)
@@ -130,7 +131,7 @@ class TripAdapter(private var context: Context, private var tripsList: List<Trip
 
         return ageInt.toString()
     }
-    private fun startNextActivity(clickedTip:Trip,clickedUser:LiteUser){
+    private fun startNextActivity(clickedTip: Trip, clickedUser: LiteUser){
         val i = Intent(context, TripActivity::class.java)
         i.putExtra("ClickedTrip", clickedTip )
         i.putExtra("ClickedTripUser",clickedUser)
