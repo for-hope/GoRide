@@ -15,26 +15,27 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".PostingActivity"/>
-        <activity android:name=".PostOptionsActivity"/>
-        <activity android:name=".SearchTripActivity"/>
+        <activity android:name=".postingActivity.PostingActivity"/>
+        <activity android:name=".postingActivity.PostOptionsActivity"/>
+        <activity android:name=".searchActivity.SearchTripActivity"/>
 
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyDWbc3KQP6ssBlClf8HSiZWEtMxfwqSYto"/>
-        <activity android:name=".MainActivity">
+        <activity android:name=".mainActivities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".TripsListActivity"/>
-        <activity android:name=".LoginActivity"
+        <activity android:name=".searchActivity.TripsListActivity"/>
+        <activity android:name=".signActivity.LoginActivity"
                   android:windowSoftInputMode="adjustPan"/>
-        <activity android:name=".RegisterActivity"
+        <activity android:name=".signActivity.RegisterActivity"
                   android:windowSoftInputMode="adjustPan"/>
-        <activity android:name=".RegisterExtraActivity"/>
-        <activity android:name=".TripActivity"/>
-        <activity android:name=".InboxActivity"/>
+        <activity android:name=".signActivity.RegisterExtraActivity"/>
+        <activity android:name=".tripActivity.TripActivity"/>
+        <activity android:name=".notificationActivity.InboxActivity"/>
+        <activity android:name=".userActivity.UserActivity"/>
         <meta-data android:name="preloaded_fonts" android:resource="@array/preloaded_fonts"/>
     </application>
 

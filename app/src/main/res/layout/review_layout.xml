@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
+              android:layout_height="wrap_content" android:orientation="vertical">
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:paddingEnd="10dp">
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/review_user_pfp"
+                    android:layout_width="80dp"
+                    android:src="@mipmap/ic_launcher_round"
+                    app:civ_border_width="2dp"
+                    app:civ_border_color="#FF000000" android:layout_weight="0"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp" android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp" android:layout_gravity="center" android:layout_height="80dp"/>
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:layout_weight="0">
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:layout_marginBottom="5dp"
+                        android:layout_marginTop="10dp">
+                    <TextView
+                            android:text="Reviewer"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:id="@+id/review_username"
+                            android:textSize="14sp" android:textStyle="bold"
+                            android:textColor="@color/quantum_black_100" android:layout_weight="1"/>
+                    <TextView
+                            android:text="Passenger review"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:id="@+id/review_type" android:layout_weight="1"
+                            android:textSize="14sp" android:layout_gravity="end" android:gravity="end"
+                            android:paddingEnd="5dp"/>
+                </LinearLayout>
+                <TextView
+                        android:text="Origin to destination on May 20"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:id="@+id/review_type2" android:layout_weight="0"
+                        android:textSize="15sp" android:gravity="start"
+                        android:paddingEnd="5dp"/>
+                <TextView
+                        android:text="Review Goes Here"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:id="@+id/review_type3" android:layout_weight="0"
+                        android:textSize="16sp" android:gravity="start"
+                        android:paddingEnd="5dp" android:textColor="@color/quantum_grey800"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

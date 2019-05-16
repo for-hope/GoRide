@@ -19,7 +19,7 @@
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Lamine Fetni"
+                android:text="RideGo User"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="@color/whiteColor"
@@ -30,7 +30,7 @@
                 android:textAllCaps="true"
                 android:layout_alignBottom="@id/nav_header_pfp"
                 android:padding="8dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1" android:id="@+id/pfp_name_textview"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" android:id="@+id/nav_text"
         />
     </RelativeLayout>
 
