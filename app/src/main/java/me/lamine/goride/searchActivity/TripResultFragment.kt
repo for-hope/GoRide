@@ -11,6 +11,7 @@ import kotlinx.android.synthetic.main.fragment_trip_results.*
 import android.util.Log
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
@@ -27,10 +28,11 @@ import me.lamine.goride.interfaces.OnGetDataListener
 import me.lamine.goride.tripActivity.TripAdapter
 import me.lamine.goride.utils.wilayaArrayEN
 import me.lamine.goride.utils.wilayaArrayFR
+import java.text.SimpleDateFormat
 import java.util.*
 
 
-class TripResultFragment() : Fragment() {
+class TripResultFragment : Fragment() {
     private lateinit var returnedTrip: Trip
     private lateinit var database: DatabaseReference
     private val listOfTrips:MutableList<Trip> = mutableListOf()
@@ -39,7 +41,7 @@ class TripResultFragment() : Fragment() {
     private var isSameOriginCity:Boolean = false
     private var isSameDestinationCity:Boolean = false
     private lateinit var tsd: TripSearchData
-    private var listOfUsersLite:MutableList<LiteUser> = mutableListOf()
+    private var listOfUsersLite:MutableList<User> = mutableListOf()
     private var searchAgain = false
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -89,25 +91,6 @@ class TripResultFragment() : Fragment() {
         //
         Log.i("MYDATE","STARTED $toText, $fromText")
 
-        /* var myTrip:Serializable? = null
-         if (bundle != null) {
-            myTrip = bundle.getSerializable("PassedTrip")
-         }
-         val passedTrip = myTrip as Trip*/
-     /*   val myTripsString = bundle?.getStringArrayList("TripsList")!!
-
-        val listOfTrips: MutableList<Trip> = mutableListOf()
-        for (json in myTripsString) {
-            val gson = Gson()
-            val tripOBJ = gson.fromJson<Trip>(json, Trip::class.java)
-            listOfTrips.add(tripOBJ)
-        }*/ //todo check added
-
-        //val passedTrip:Trip = intent.getSerializableExtra("PostingActivity") as Trip
-        //val listOfTrips:List<Trip> = listOf(passedTrip)
-      //todo  Log.i("size_of_trips",listOfTrips.size.toString())
-
-      //  trips_list_rec_view.adapter = context?.let { TripAdapter(it,listOfTrips) }
         mCheckTripInfoInServer(childName)
 
     }
@@ -119,7 +102,6 @@ class TripResultFragment() : Fragment() {
         val date = dataSnapshot.child("date").value as String?
         val time = dataSnapshot.child("time").value as String?
         val vehicleModel= dataSnapshot.child("vehicleModel").value as String?
-        Log.i("V_Model",vehicleModel)
         val vehicleType =dataSnapshot.child("vehicleType").value as String?
         val vehicleColor = dataSnapshot.child("vehicleColor").value as String?
         val vehicleYear=dataSnapshot.child("vehicleYear").value as Long?
@@ -187,13 +169,15 @@ class TripResultFragment() : Fragment() {
         val currentUserIdRef = rootRef.child("users").child(child)
         val eventListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val user: LiteUser = setupUserLite(child,dataSnapshot)
+                listener.onSuccess(dataSnapshot)
+                /*
+                Log.i("INFO_ERROR","child = $child")
                 val mUser = dataSnapshot.getValue(User::class.java)
-                listOfUsersLite.add(user)
-                Log.i("Username is :", listOfUsersLite[0].name)
+                listOfUsersLite.add(mUser!!)
+                Log.i("Username is :", listOfUsersLite[0].fullName)
                 if (isFinalChild){
                     listener.onSuccess(dataSnapshot)
-                }
+                }*/
 
             }
 
@@ -222,62 +206,81 @@ class TripResultFragment() : Fragment() {
         listener.onStart()
         val rootRef = FirebaseDatabase.getInstance().reference
         val currentUserIdRef:Any
+        val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.US)
         Log.i("OPTiOPN", searchAgain.toString() +""+ isSameOriginCity.toString())
         currentUserIdRef = if (!searchAgain){
             rootRef.child("trips").child(childName).orderByChild("destSubCity").startAt(tsd.destSubCity)
-           //todo
         } else {
-            rootRef.child("trips").child(childName).orderByChild("destSubCity").startAt(wilayaArrayEN[tsd.destinationCode])  //todo
+            rootRef.child("trips").child(childName).orderByChild("destSubCity").startAt(wilayaArrayEN[tsd.destinationCode-1])  //todo
         }
 
         val eventListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.childrenCount.toInt() == 0){
-                    listener.onSuccess(dataSnapshot)
+                    if (!searchAgain){
+                        listener.onSuccess(dataSnapshot)
+                    } else {
+                        mCheckUserInfoInServer(null, noTrip = true, isFinalChild = true)
+                    }
                 }
                 for (ds in dataSnapshot.children) {
                     val lastDs = dataSnapshot.children.last()
-                    val childrenNb = dataSnapshot.childrenCount
                     val userIdRef = rootRef.child("trips").child(childName).child(ds.key!!)
                     val eventListener = object : ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
                             var isRepeated = false
                             val addTrip = getData(dataSnapshot)
+                            //check for repeated trips
                             for (mTrip in listOfTrips){
                                 if (mTrip.tripID == addTrip.tripID){
                                     isRepeated = true
                                     break
                                 }
                             }
+                            //if its not repeated
                             if (!isRepeated) {
-                                listOfTrips.add(addTrip)
+                                val dateAndTime = "${addTrip.date} ${addTrip.time}"
+                                val tripDate = sdf.parse(dateAndTime)
+                                //check if its after today
+                                Log.i("DATE CHECK", "${tripDate.toString()} // ${Date()}")
+                                if (tripDate.after(Date())){
+                                    //add trip
+                                    Log.i("CHECK-HERE1","DONE")
+                                    mCheckUserInfoInServer(addTrip, noTrip = false, isFinalChild = false)
+                                }
                             }
-
-
-
-
-
-                        if (ds.value == lastDs.value) {
+                            //check if it's the last element.
+                         if (ds.value == lastDs.value) {
+                             //check if its the same or we searched again
                             if (isSameDestinationCity || searchAgain){
-                                mCheckUserInfoInServer(addTrip.userID,true)
-                                Log.i("BOOL",isSameOriginCity.toString())
+                                val dateAndTime = "${addTrip.date} ${addTrip.time}"
+                                val tripDate = sdf.parse(dateAndTime)
+                                //check if its after today
+                                if (tripDate.after(Date())) {
+                                    Log.i("CHECK-HERE0","DONE")
+
+                                    mCheckUserInfoInServer(addTrip, noTrip = false, isFinalChild = true)
+                                } else {
+                                    Log.i("CHECK-HERE1","DONE")
+
+                                    mCheckUserInfoInServer(addTrip, noTrip = true, isFinalChild = true)
+                                }
                              //   listener.onSuccess(dataSnapshot)
                             } else {
-
                                 searchAgain = true
-                                mCheckUserInfoInServer(addTrip.userID,false)
+
                                 mCheckTripInfoInServer(childName)
 
                             }
 
-                        } else{
-                            mCheckUserInfoInServer(addTrip.userID,false)
                         }
 
                         }
 
                         override fun onCancelled(databaseError: DatabaseError) {
+                            listener.onFailed(databaseError)
                             throw databaseError.toException() // don't ignore errors
+
                         }
                     }
                     userIdRef.addListenerForSingleValueEvent(eventListener)
@@ -324,34 +327,63 @@ class TripResultFragment() : Fragment() {
             ratings.toDouble(),
             peopleDriven.toInt()
         )
-        liteUser.profilePic = profilePic!!
+        if (profilePic != null){
+        liteUser.profilePic = profilePic
+        }
+        else{
+            liteUser.profilePic = "https://firebasestorage.googleapis.com/v0/b/ridego-1555252117345.appspot.com/o/user_images%2Fmale_default.png?alt=media&token=658a01b5-ba18-4491-8aa7-e15c30284200"
+        }
         return liteUser
     }
-    private fun mCheckUserInfoInServer(child: String, isFinalChild:Boolean){
-        fetchUsers(child,isFinalChild,object : OnGetDataListener {
-            override fun onStart() {
-                setPb(1)
-                //DO SOME THING WHEN START GET DATA HERE
-                //todo add loading
-            }
-
-            override fun onSuccess(data: DataSnapshot) {
-                //DO SOME THING WHEN GET DATA SUCCESS HERE
-                setPb(0)
-                trips_list_rec_view.adapter = context?.let {
-                    TripAdapter(
-                        it,
-                        listOfTrips,
-                        listOfUsersLite
-                    )
+    private fun mCheckUserInfoInServer(trip:Trip?,noTrip:Boolean, isFinalChild:Boolean){
+                 var child = ""
+               if (trip != null){
+                     child = trip.userID
+                   Log.i("pos4",trip.userID)
+               }
+            fetchUsers(child,isFinalChild,object : OnGetDataListener {
+                override fun onStart() {
+                    setPb(1)
+                    //DO SOME THING WHEN START GET DATA HERE
+                    //todo add loading
                 }
-            }
 
-            override fun onFailed(databaseError: DatabaseError) {
-                //DO SOME THING WHEN GET DATA FAILED HERE
-                //todo
-            }
-        })
+                override fun onSuccess(data: DataSnapshot) {
+                    //DO SOME THING WHEN GET DATA SUCCESS HERE
+                    if (!noTrip){
+                    val mUser = data.getValue(User::class.java)
+                        Log.i("pos3",mUser?.fullName)
+                    trip?.poster = mUser
+                    if (!noTrip){
+                        listOfTrips.add(trip!!)
+                    }
+                    } else if (isFinalChild){
+                        Toast.makeText(this@TripResultFragment.context,"DONE",Toast.LENGTH_SHORT).show()
+                        val sortedList = listOfTrips.sortedWith(compareBy {it.date})
+                        Log.i("DONE 2", "${sortedList.size}")
+                        for (item in sortedList){
+                            Log.i("pos1",item.poster!!.fullName)
+                            listOfUsersLite.add(item.poster!!)
+                        }
+                        setPb(0)
+                        trips_list_rec_view.adapter = context?.let {
+                            TripAdapter(
+                                it,
+                                sortedList,
+                                listOfUsersLite
+                            )
+                        }
+                    }
+
+                }
+
+                override fun onFailed(databaseError: DatabaseError) {
+                    //DO SOME THING WHEN GET DATA FAILED HERE
+                    //todo
+                }
+            })
+
+
     }
     private fun mCheckTripInfoInServer(child: String) {
         mReadDataOnce(child, object : OnGetDataListener {
@@ -363,10 +395,19 @@ class TripResultFragment() : Fragment() {
 
             override fun onSuccess(data: DataSnapshot) {
                 //DO SOME THING WHEN GET DATA SUCCESS HERE
+
+                Toast.makeText(this@TripResultFragment.context,"DONE",Toast.LENGTH_SHORT).show()
+                val sortedList = listOfTrips.sortedWith(compareBy {it.date})
+                Log.i("FINAL C",  "${sortedList.toString()}")
+                Log.i("DONE 3", "${sortedList.size}")
+                for (item in sortedList){
+                    Log.i("pos2",item.poster!!.fullName)
+                    listOfUsersLite.add(item.poster!!)
+                }
                 trips_list_rec_view.adapter = context?.let {
                     TripAdapter(
                         it,
-                        listOfTrips,
+                        sortedList,
                         listOfUsersLite
                     )
                 }

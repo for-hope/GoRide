@@ -21,20 +21,21 @@ import me.lamine.goride.dataObjects.Trip
 import me.lamine.goride.dataObjects.User
 import org.jetbrains.anko.onClick
 import android.util.TypedValue
+import androidx.core.content.ContextCompat
+import me.lamine.goride.dataObjects.TripRequest
+import org.jetbrains.anko.backgroundColor
+import org.jetbrains.anko.find
 import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.math.round
 
 
-class TripAdapter(private var context: Context, private var tripsList: List<Trip>, private var userLiteList: List<User>): RecyclerView.Adapter<TripAdapter.TripViewHolder>() {
+class RequestsAdapter(private var context: Context, private var tripsList: List<TripRequest>, private var userLiteList: List<User>): RecyclerView.Adapter<RequestsAdapter.TripViewHolder>() {
     //val items: MutableList<String> = arrayListOf()
     private var orginazers = mutableListOf<String>()
 
     override fun onBindViewHolder(holder: TripViewHolder, position: Int) {
-
-        Log.i("NumberOfTrips", tripsList.size.toString() + "TRIPS")
         val trip = tripsList[position]
-        Log.i("TRIP-ID", trip.tripID + " TRIPS")
         val userLite = userLiteList[position]
         //val name = "Lamine Fet"
         val OLD_FORMAT = "dd/MM/yyyy"
@@ -90,39 +91,19 @@ class TripAdapter(private var context: Context, private var tripsList: List<Trip
         Picasso.get().load(userLite.profilePic).into(holder.profilePic)
         holder.origin.text = trip.originSubCity
         holder.destination.text = trip.destSubCity
-        val fod = "${trip.origin}, ${trip.originFullAddress}"
+        val fod = "${trip.tripOrigin}, ${trip.originFullAddress}"
         holder.fullOriginAddress.text = fod
-        val fdd = "${trip.destination}, ${trip.destFullAddress}"
+        val fdd = "${trip.tripDestination}, ${trip.destFullAddress}"
         holder.fullDestAddress.text = fdd
-        var vehiclePref = "${trip.vehicleModel} ${trip.vehicleColor} '${trip.vehicleYear}"
 
-        if (trip.hasVehicleInfo){
-            if (trip.vehicleYear == 0){
-                vehiclePref = "${trip.vehicleModel} ${trip.vehicleColor}"
-            }
-            holder.vehicleInfo.text = vehiclePref
 
-        }
         holder.luggageSize.text = trip.luggageSize
-        if (trip.noSmoking){
-            holder.noSmoking.visibility = View.VISIBLE
-        } else {
-            holder.noSmoking.visibility = View.GONE
-        }
-        if (trip.petsAllowed) {
-            holder.petsAllowed.visibility = View.VISIBLE
-        } else {
-            holder.petsAllowed.visibility = View.GONE
-        }
-        val nbSeats = "${trip.numberOfSeats} seats left"
+
+        val nbSeats = "${trip.numberOfSeats} seats"
         holder.numberOfSeats.text = nbSeats
-        val seatPrice = "${trip.pricePerSeat} DZD"
-        holder.pricePerSeat.text = seatPrice
-        if (trip.bookingPref == 0){
-            holder.bookingPref.visibility = View.GONE
-        } else {
-            holder.bookingPref.visibility = View.VISIBLE
-        }
+
+        requestViews(holder)
+
         when {
             DateUtils.isToday(d.time) -> {
                 val org = "Today"
@@ -139,8 +120,8 @@ class TripAdapter(private var context: Context, private var tripsList: List<Trip
         }
 
     }
+
     private fun setupOrg(org:String,holder: TripViewHolder){
-        Log.i("ORG",org +  " O")
         if (!orginazers.contains(org)){
             holder.tripOrginazer.visibility = View.VISIBLE
             holder.tripOrginazer.text = org
@@ -186,11 +167,11 @@ class TripAdapter(private var context: Context, private var tripsList: List<Trip
 
         return ageInt.toString()
     }
-    private fun startNextActivity(clickedTip: Trip, clickedUser: User){
+    private fun startNextActivity(clickedTrip: TripRequest, clickedUser: User){
         val i = Intent(context, TripActivity::class.java)
-        i.putExtra("ClickedTrip", clickedTip )
+        i.putExtra("ClickedTrip", clickedTrip )
         i.putExtra("ClickedTripUser",clickedUser)
-        i.putExtra("isRequest",false)
+        i.putExtra("isRequest",true)
         context.startActivity(i)
     }
 
@@ -205,20 +186,43 @@ class TripAdapter(private var context: Context, private var tripsList: List<Trip
         return this
     }
 
+    private fun requestViews(holder:TripViewHolder){
+        holder.noSmoking.visibility = View.INVISIBLE
+        holder.petsAllowed.visibility = View.INVISIBLE
+        holder.pricePerSeat.visibility = View.GONE
+        holder.bookingPref.visibility = View.INVISIBLE
+        holder.origin.setTextColor(ContextCompat.getColor(this.context,R.color.colorPrimaryDark))
+        holder.destination.setTextColor(ContextCompat.getColor(this.context,R.color.colorPrimaryDark))
+        holder.uRatings.setTextColor(ContextCompat.getColor(this.context,R.color.colorPrimaryDark))
+        holder.uPeopleDriven.setTextColor(ContextCompat.getColor(this.context,R.color.colorPrimaryDark))
+        holder.numberOfReviews.setTextColor(ContextCompat.getColor(this.context,R.color.colorPrimaryDark))
 
+        holder.cardp1.setTextColor(ContextCompat.getColor(this.context,R.color.colorPrimaryDark))
+        holder.cardp2.setTextColor(ContextCompat.getColor(this.context,R.color.colorPrimaryDark))
+        holder.div1.backgroundColor = ContextCompat.getColor(this.context,R.color.colorPrimaryDark)
+        holder.div2.backgroundColor = ContextCompat.getColor(this.context,R.color.colorPrimaryDark)
+        holder.ratingStar.setImageResource(R.drawable.ic_star_orange_24dp)
+        holder.peopleDriven.setImageResource(R.drawable.ic_person_pin_circle_orange_24dp)
+
+    }
     open class TripViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         var origin: TextView
         var destination: TextView
-        var stops:ArrayList<String> = ArrayList()
-        var numberOfStops = 0
+
+
         var date:TextView
+        //
         var vehicleInfo:TextView
+
         var luggageSize:TextView
+        //
         var noSmoking:ImageView
         var petsAllowed:ImageView
         var numberOfSeats:TextView
+        //
         var pricePerSeat:TextView
         var bookingPref:ImageView
+
         var vName: TextView
         var uPeopleDriven:TextView
         var uRatings:TextView
@@ -228,11 +232,25 @@ class TripAdapter(private var context: Context, private var tripsList: List<Trip
         var profilePic:ImageView
         var tripOrginazer:TextView
         var numberOfReviews:TextView
+        var div1:View
+        var div2:View
+        var cardp1:TextView
+        var cardp2:TextView
+        var ratingStar:ImageView
+        var peopleDriven:ImageView
+        //
+
        //  var vDestination: TextView
          //var vDate: TextView
         // var vOrigin: TextView
 
         init {
+            peopleDriven = v.findViewById(R.id.people_driven_card)
+            ratingStar = v.findViewById(R.id.rating_star_card)
+            div1 = v.findViewById(R.id.divider_card)
+            div2 = v.findViewById(R.id.divider2)
+            cardp1 = v.findViewById(R.id.card_point)
+            cardp2 = v.findViewById(R.id.card_point2)
             tripOrginazer = v.findViewById(R.id.trip_orginazer)
             profilePic = v.findViewById(R.id.trip_profile_image)
             uGenderAndAge = v.findViewById(R.id.trip_gender_age_card)

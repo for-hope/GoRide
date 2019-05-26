@@ -1,5 +1,6 @@
 package me.lamine.goride.mainActivities
 
+import android.content.Context
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -21,23 +22,25 @@ import android.util.Log
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import com.firebase.ui.auth.AuthUI
-import com.firebase.ui.auth.data.model.User
 import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
+import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import me.lamine.goride.postingActivity.PostOptionsActivity
 import me.lamine.goride.R
 import me.lamine.goride.interfaces.OnGetDataListener
 import me.lamine.goride.notificationActivity.InboxActivity
+import me.lamine.goride.reviewActivity.ReviewActivity
 import me.lamine.goride.searchActivity.SearchTripActivity
 import me.lamine.goride.signActivity.LoginActivity
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private var user:FirebaseUser? = null
+    private var menu:Menu?=null
     private lateinit var database:DatabaseReference
     private lateinit var drawerLayout: androidx.drawerlayout.widget.DrawerLayout
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -116,7 +119,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp)
         }
         toolbar.changeToolbarFont()
-
+        checkNotifications()
        initNavStripe(navigationTabStrip)
 
 
@@ -205,26 +208,30 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
     }
-    private fun Toolbar.changeToolbarFont(){
-        for (i in 0 until childCount) {
-            val view = getChildAt(i)
-            if (view is TextView && view.text == title) {
-                view.typeface = ResourcesCompat.getFont(context, R.font.poppins_bold)
-                break
-            }
-        }
+
+    override fun onRestart() {
+        checkNotifications()
+        super.onRestart()
+
     }
 
+    override fun onResume() {
+        checkNotifications()
+        super.onResume()
+    }
 
-
+    override fun onPause() {
+        super.onPause()
+        checkNotifications()
+    }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_add, menu)
-        menuInflater.inflate(R.menu.menu_main, menu)
+        this.menu = menu
+        menuInflater.inflate(R.menu.menu_notif, menu)
+        menuInflater.inflate(R.menu.menu_inbox, menu)
 
         return true
     }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -264,11 +271,77 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 //FirebaseAuth.getInstance().signOut()
 
             }
+            R.id.nav_settings -> {
+                startActivity(Intent(this@MainActivity, ReviewActivity::class.java))
+            }
         }
         //close navigation drawer
 
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
+    }
+    ///
+    private fun checkNotifications(){
+        mCheckTripInfoInServer()
+    }
+    private fun readTripRequests(listener: OnGetDataListener) {
+        listener.onStart()
+        val rootRef = FirebaseDatabase.getInstance().reference
+        val currentUserIdRef= rootRef.child("users").child(user?.uid!!).child("tripRequests")
+        val eventListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                listener.onSuccess(dataSnapshot)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                listener.onFailed(databaseError)
+                throw databaseError.toException()
+                // don't ignore errors
+            }
+        }
+        currentUserIdRef.addListenerForSingleValueEvent(eventListener)
+    }
+    private fun mCheckTripInfoInServer() {
+        readTripRequests(object : OnGetDataListener {
+            override fun onStart() {
+                    Log.i("MainActivity", "Looking for notificatons...")
+            }
+
+            override fun onSuccess(data: DataSnapshot) {
+                //DO SOME THING WHEN GET DATA SUCCESS HERE
+                if (menu!=null){
+                if (data.childrenCount.toInt() >0 ){
+                    menu?.getItem(0)!!.icon = ContextCompat.getDrawable(this@MainActivity,R.drawable.ic_notifications_active_orange_24dp)
+                } else {
+                    menu?.getItem(0)!!.icon = ContextCompat.getDrawable(this@MainActivity,R.drawable.ic_notifications_none_black_24dp)
+                }
+                }
+            }
+
+            override fun onFailed(databaseError: DatabaseError) {
+                    Toast.makeText(this@MainActivity,"Error occurred refreshing the page.",Toast.LENGTH_SHORT).show()
+            }
+        })
+
+    }
+    private fun Toolbar.changeToolbarFont(){
+        for (i in 0 until childCount) {
+            val view = getChildAt(i)
+            if (view is TextView && view.text == title) {
+                view.typeface = ResourcesCompat.getFont(context, R.font.poppins_bold)
+                break
+            }
+        }
+    }
+    private fun saveSharedUser(user:me.lamine.goride.dataObjects.User){
+        val mPrefs = this.getSharedPreferences("TripsPref", Context.MODE_PRIVATE)!!
+        val prefsEditor = mPrefs.edit()
+        //val nbTrips = mPrefs.getInt("savedTrips",0)
+        val gson = Gson()
+        val json = gson.toJson(user)
+        val currentUserStr = "currentUser"
+        prefsEditor.putString(currentUserStr, json)
+        prefsEditor.apply()
     }
     private fun getUser(){
 
@@ -283,7 +356,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 //todo save user object
 
                 val user  = data.getValue(me.lamine.goride.dataObjects.User::class.java)
-
+                saveSharedUser(user!!)
 
                 if (user == null) {
                     AuthUI.getInstance()
@@ -326,7 +399,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         newRef.addListenerForSingleValueEvent(eventListener)
     }
-
     private fun setHeaderImage(link:String,name:String){
         val hView = nav_view.inflateHeaderView(R.layout.nav_header)
 //

@@ -20,6 +20,17 @@
     <string name="log_out">Log out</string>
     <string name="notification">Notification</string>
     <string name="messages">Messages</string>
+    <string name="unverified">Unverified</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="more_dots">more_dots</string>
+    <string name="modify">Modify</string>
+    <string name="cancel">Cancel</string>
+    <string name="report">Report</string>
+    <string name="your_booked">You\'re Booked!</string>
+    <string name="full_trip">TRIP FULL AND READY</string>
+    <string name="post_review">Post review</string>
+    <string name="empty">EMPTY</string>
+    <string name="review">Review</string>
     <string-array name="countries_array">
         <item>Afghanistan</item>
         <item>Albania</item>

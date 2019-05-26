@@ -18,10 +18,9 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.fragment_notifications.*
 import me.lamine.goride.*
-import me.lamine.goride.dataObjects.BookingNotification
-import me.lamine.goride.dataObjects.ExtendedBookingNotif
-import me.lamine.goride.dataObjects.LiteUser
+import me.lamine.goride.dataObjects.*
 import me.lamine.goride.interfaces.OnGetDataListener
+import me.lamine.goride.utils.decodeWilaya
 
 
 /**
@@ -29,12 +28,13 @@ import me.lamine.goride.interfaces.OnGetDataListener
  */
 class NotificationFragment : androidx.fragment.app.Fragment() {
     private var user: FirebaseUser? = null
-    object statics {
-        @JvmField val TAG = "NotificationFragment"
-    }
     private lateinit var notifications:MutableList<BookingNotification>
     private lateinit var extendedNotification: MutableList<ExtendedBookingNotif>
+    private lateinit var standaredNotifications: MutableList<StandaredNotification>
     private var listOfLiteUser= mutableListOf<LiteUser>()
+    private var driverNotificationsList:MutableList<ExtendedBookingNotif> = mutableListOf()
+    private var listOfDrivers:MutableList<User> = mutableListOf()
+    private lateinit var llm2:LinearLayoutManager
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         user = FirebaseAuth.getInstance().currentUser
@@ -46,10 +46,22 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
         llm.orientation = RecyclerView.VERTICAL
        notif_list_res_view.isNestedScrollingEnabled = false;
         notif_list_res_view.layoutManager = llm
+
+        this.snotif_list_res_view.setHasFixedSize(true)
+        llm2 = LinearLayoutManager(this.context)
+        llm2.orientation = RecyclerView.VERTICAL
+        snotif_list_res_view.isNestedScrollingEnabled = false
+
+        this.req_notif_list_res_view.setHasFixedSize(true)
+        val llm3 = LinearLayoutManager(this.context)
+        llm3.orientation = RecyclerView.VERTICAL
+        req_notif_list_res_view.isNestedScrollingEnabled = false
+      //  snotif_list_res_view.layoutManager = llm2
         mCheckTripInfoInServer()
         notifications = mutableListOf()
         listOfLiteUser = mutableListOf()
         extendedNotification = mutableListOf()
+        standaredNotifications = mutableListOf()
 
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -67,22 +79,30 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
             eBN.timestamp = user.pendingTS
             eBN.tripID = tripID
             eBN.userID = user.userId
-            //eBN.timestamp = user.
+            //eBN.timestampf = user.
             extendedNotification.add(eBN)
 
             //todo
             if (tripID == notifications.last().tripID && user == listOfLiteUser.last()){
                 Log.i("Suc22", dataSnapshot.childrenCount.toString()!!)
-                notif_list_res_view.adapter = this.context?.let {
-                    NotificationAdapter(
-                        it,
-                        extendedNotification
-                    )
+                if (notif_list_res_view != null){
+                    notif_list_res_view.adapter = this.context?.let {
+                        NotificationAdapter(
+                            it,
+                            extendedNotification
+                        )
+                    }
+                    setPb(0)
+                } else {
+                    this.activity?.finish()
                 }
-                setPb(0)
+
+
             }
         }
     }
+
+
    private fun saveLiteUser(dataSnapshot: DataSnapshot,timestamp: String): LiteUser {
        var ratings = dataSnapshot.child("ratings").value as Long?
        var peopleDriven = dataSnapshot.child("peopleDriven").value as Long?
@@ -144,7 +164,6 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
             }
 
             override fun onSuccess(data: DataSnapshot) {
-                Log.i("pednis", data.childrenCount.toString()!!)
                saveNotif(data,t,o,d,date)
             }
 
@@ -156,8 +175,8 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
     }
     private fun getTripData(dataSnapshot: DataSnapshot){
         Log.i("DATA",dataSnapshot.childrenCount.toString())
-        val origin:String? = dataSnapshot.child("origin").value as String
-        val dest = dataSnapshot.child("destination").value as String
+        val origin:String? = dataSnapshot.child("originCity").value as String
+        val dest = dataSnapshot.child("destCity").value as String
         val date = dataSnapshot.child("date").value as String
         val tripID = dataSnapshot.key
 
@@ -169,7 +188,6 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
 
 
     }
-
     private fun getAllInfo(listener: OnGetDataListener){
         listener.onStart()
         val rootRef = FirebaseDatabase.getInstance().reference
@@ -237,25 +255,81 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
     private fun getData(dataSnapshot: DataSnapshot){
         val listOfUsers:MutableList<Pair<String,String>> = mutableListOf()
         val tripID = dataSnapshot.key
-        Log.i("getData",dataSnapshot.key)
         for (data in dataSnapshot.children){
             listOfUsers.add(Pair(data.key!!,data.value as String))
         }
        notifications.add(BookingNotification(tripID!!, listOfUsers))
     }
+    private fun getStandardData(ds: DataSnapshot){
+
+        when {
+            ds.key == "unbookedUsers" -> for (child in ds.children){
+                val tripId = child.key
+                var userId = ""
+                val sn = StandaredNotification(tripId!!)
+                for (otherChild in child.children){
+                    Log.i("CHILDREN", "${child.key}")
+                    when {
+                        otherChild.key == "otd" -> {sn.otd = otherChild.value as String
+                        Log.i("OTD ADDED","otd = ${sn.otd}")
+                        }
+                        otherChild.key == "timestamp" -> {
+                            val ts = otherChild.value as String
+                            sn.timestamp = ts
+                        }
+                        else -> userId = otherChild.key!!
+                    }
+                }
+                sn.userId = userId
+                sn.type = "unbookedUsers"
+
+                standaredNotifications.add(sn)
+
+            }
+            ds.key == "canceledTrips" -> for (child in ds.children){
+                Log.i("CANCEL", ":OL")
+                val tripId = child.key
+                val type = "canceledTrips"
+                val sn = StandaredNotification(tripId!!)
+                sn.type = type
+                sn.otd = child.child("otd").value as String
+                sn.timestamp = child.child("timestamp").value as String
+                Log.i("TIMESTAMP", "${sn.timestamp} lol")
+                standaredNotifications.add(sn)
+            }
+            ds.key =="modifiedTrips" -> for(child in ds.children){
+                val tripId = child.key
+                val type = "modifiedTrips"
+                val sn = StandaredNotification(tripId!!)
+                sn.type = type
+                sn.timestamp = child.value as String
+                standaredNotifications.add(sn)
+            }
+        }
+    }
     private fun readTripRequests(listener: OnGetDataListener) {
         listener.onStart()
         val rootRef = FirebaseDatabase.getInstance().reference
-        val currentUserIdRef= rootRef.child("users").child(user?.uid!!).child("tripRequests")
+       // val currentUserIdRef= rootRef.child("users").child(user?.uid!!).child("tripRequests")
+        val currentUserIdRef= rootRef.child("users").child(user?.uid!!).child("notifications")
         val eventListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.childrenCount.toInt() == 0){
                     listener.onSuccess(dataSnapshot)
-                    Log.i("READ",dataSnapshot.childrenCount.toString())
                 } else {
                     for (ds in dataSnapshot.children) {
+
                         if (ds.exists() && ds.key != null){
-                           getData(ds)
+                            if (ds.key == "tripRequests" && ds.hasChildren()){
+                                for (child in ds.children){
+                                    getData(ds)
+                                }
+
+                            } else if (ds.key != "tripRequests"){
+                                Log.i("pos1","ENTER ! ${dataSnapshot.childrenCount}")
+                                   getStandardData(ds)
+                            }
+
                         }
 
                     }
@@ -276,16 +350,19 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
             override fun onStart() {
                 //DO SOME THING WHEN START GET DATA HERE
                 setPb(1)
-                //todo add loading
             }
 
             override fun onSuccess(data: DataSnapshot) {
                 //DO SOME THING WHEN GET DATA SUCCESS HERE
-             //todo set adapter
                 if (notifications.isEmpty()){
                     setEmptyUI()
                 } else {
                     checkInfoInServer()
+                }
+                if (standaredNotifications.isEmpty()){
+                    setEmptyUI()
+                } else {
+                    checkAllNotifications()
                 }
 
                 //readPendingBookings
@@ -299,9 +376,71 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
         })
 
     }
+    private fun checkNotificationsInDB(notif:StandaredNotification,listener: OnGetDataListener){
+        listener.onStart()
+        val rootRef = FirebaseDatabase.getInstance().reference
+        val tripRef= rootRef.child("trips").child(notif.otd).child(notif.tripId)
+        val eventListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val mTrip = dataSnapshot.getValue(Trip::class.java)
+                Log.i("TRIP DATE", "MSG " +dataSnapshot.childrenCount.toString())
+                for ((i,n) in standaredNotifications.withIndex()){
+                    if (n.tripId == dataSnapshot.key){
+                        standaredNotifications[i].trip = mTrip
+                    }
+                }
+
+                if (notif == standaredNotifications.last()){
+                    listener.onSuccess(dataSnapshot)
+                }
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                listener.onFailed(databaseError)
+                throw databaseError.toException()
+                // don't ignore errors
+            }
+        }
+        tripRef.addListenerForSingleValueEvent(eventListener)
+
+
+    }
+    private fun checkAllNotifications(){
+        Log.i("NotifyMe","${standaredNotifications.size}")
+        for (notif in standaredNotifications) {
+            checkNotificationsInDB(notif, object : OnGetDataListener {
+                override fun onStart() {
+                    //DO SOME THING WHEN START GET DATA HERE
+
+                    //todo add loading
+                }
+
+                override fun onSuccess(data: DataSnapshot) {
+                    //DO SOME THING WHEN GET DATA SUCCESS HERE
+                    empty_list_notif.visibility = View.GONE
+                    snotif_list_res_view.adapter = this@NotificationFragment.context?.let {
+                        ExtraNotifAdapter(
+                            it,
+                            standaredNotifications
+                        )
+                    }
+                    snotif_list_res_view.layoutManager = llm2
+
+                    //readPendingBookings
+                    //    setPb(0)
+                }
+
+                override fun onFailed(databaseError: DatabaseError) {
+                    //DO SOME THING WHEN GET DATA FAILED HERE
+                    //todo
+                }
+            })
+        }
+    }
     private fun setEmptyUI(){
        empty_list_notif.visibility = View.VISIBLE
-        scrolling.visibility = View.GONE
+        //todo scrolling.visibility = View.GONE
         setPb(0)
     }
     private fun setPb(visibility: Int){

@@ -27,7 +27,13 @@ class MyTripResultPageAdapter(fm: FragmentManager, private var tsd: TripSearchDa
 
             }
             else -> {
-                return PassengerFragment()
+                val bundle = Bundle()
+                bundle.putString("toText",toText)
+                bundle.putString("fromText",fromText)
+                bundle.putSerializable("tsd",tsd)
+                val requestsResultsFragment:Fragment = RequestsResultFragment()
+                requestsResultsFragment.arguments = bundle
+                return requestsResultsFragment
             }
         }
     }

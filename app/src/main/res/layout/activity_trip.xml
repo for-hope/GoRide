@@ -318,15 +318,27 @@
                                     android:textSize="16sp" android:layout_weight="0"
                                     android:gravity="top|start"
                                     android:paddingStart="5dp" android:paddingBottom="5dp" android:paddingTop="5dp"/>
-                            <TextView
-                                    android:text="0123456789"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content" android:id="@+id/trip_ac_lisence"
-                                    android:textColor="@color/browser_actions_title_color"
-                                    android:textSize="17sp" android:layout_weight="0"
-                                    android:gravity="top|start"
-                                    android:paddingStart="5dp" android:textStyle="bold" android:paddingBottom="5dp"
-                                    android:paddingTop="5dp"/>
+                            <LinearLayout
+                                    android:orientation="horizontal"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" android:layout_weight="0"
+                                    android:paddingTop="5dp" android:id="@+id/plate_layout">
+                                <ImageView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        app:srcCompat="@drawable/ic_license_plate_black_24dp"
+                                        android:id="@+id/imageView15" android:layout_weight="0"
+                                        android:paddingStart="5dp"/>
+                                <TextView
+                                        android:text="0123456789"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content" android:id="@+id/trip_ac_lisence"
+                                        android:textColor="@color/browser_actions_title_color"
+                                        android:textSize="17sp" android:layout_weight="0"
+                                        android:paddingStart="15dp" android:textStyle="bold"
+                                        android:gravity="center"
+                                        android:layout_gravity="center"/>
+                            </LinearLayout>
                             <LinearLayout
                                     android:orientation="horizontal"
                                     android:layout_width="match_parent"
@@ -428,18 +440,17 @@
     </RelativeLayout>
 
     <Button
-
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:text="INSTANT BOOK" android:id="@+id/trip_ac_submit_btn"
+            android:id="@+id/trip_ac_submit_btn"
             android:padding="0dp"
             android:layout_marginLeft="-5dip"
             android:layout_marginRight="-5dip"
             android:layout_marginTop="-10dip"
             android:layout_marginBottom="-6dip"
-
-            android:textSize="18sp" app:icon="@drawable/ic_flash_on_yellow_24dp_true"
-
-            android:layout_gravity="bottom" android:foregroundGravity="bottom" app:iconPadding="20dp"
-            app:iconGravity="textStart"/>
+            android:textSize="18sp"
+            android:layout_gravity="bottom"
+            android:foregroundGravity="bottom"
+            app:iconPadding="20dp"
+            app:iconGravity="textStart" android:visibility="gone"/>
 </LinearLayout>

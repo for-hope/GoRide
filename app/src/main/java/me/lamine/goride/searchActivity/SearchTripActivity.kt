@@ -17,6 +17,7 @@ import android.app.DatePickerDialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.util.Log
@@ -268,11 +269,16 @@ class SearchTripActivity : AppCompatActivity(), OnMapReadyCallback {
     }
     @Throws(IOException::class)
     private fun getCityNameByCoordinates(lat: Double, lon: Double,isOrigin:Boolean): String? {
+        var addresses:MutableList<Address> = mutableListOf()
+      try {
+           addresses = mGeocoder.getFromLocation(lat, lon, 3)
+      } catch (e:IOException){
+          Toast.makeText(this,"Error precessing locations, try again!",Toast.LENGTH_SHORT).show()
+      }
 
-        val addresses = mGeocoder.getFromLocation(lat, lon, 3)
 
 
-        return if (addresses != null && addresses.size > 0) {
+        return if (addresses.size > 0) {
             // Here are some results you can geocode
             val city: String
             val state: String
@@ -386,8 +392,12 @@ class SearchTripActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         val latLongB = LatLngBounds.Builder()
-        val origin = fromLatLng!!
-        val dest = toLatLng!!
+        var origin:LatLng = LatLng(0.0,0.0)
+        var dest:LatLng = LatLng(0.0,0.0)
+        if (fromLatLng != null && toLatLng!=null){
+         origin = fromLatLng!!
+            dest = toLatLng!!
+        }
         val sydney = origin
         val opera = dest
         val options = PolylineOptions()

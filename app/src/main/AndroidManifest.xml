@@ -36,6 +36,8 @@
         <activity android:name=".tripActivity.TripActivity"/>
         <activity android:name=".notificationActivity.InboxActivity"/>
         <activity android:name=".userActivity.UserActivity"/>
+        <activity android:name=".reviewActivity.ReviewActivity"/>
+        <activity android:name=".requestActivity.RequestTripActivity"/>
         <meta-data android:name="preloaded_fonts" android:resource="@array/preloaded_fonts"/>
     </application>
 

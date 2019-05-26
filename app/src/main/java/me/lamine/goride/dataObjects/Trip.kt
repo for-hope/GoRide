@@ -1,14 +1,19 @@
 package me.lamine.goride.dataObjects
 
-import android.os.Parcelable
-import android.util.Log
-import kotlinx.android.parcel.Parcelize
-import java.io.Serializable
 
-class Trip( tripOrigin: String,  tripDestination: String,  allStops:ArrayList<String>,  date:String, luggageSizeInt:Int, time:String, numberOfSeats:Int, price:Int, bookingPref:Int):Serializable {
+import android.util.Log
+import java.io.Serializable
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+
+
+class Trip( tripOrigin: String="",  tripDestination: String="",  allStops:ArrayList<String> = ArrayList(),  date:String="", luggageSizeInt:Int=0, time:String="", numberOfSeats:Int=0, price:Int=0, bookingPref:Int=0):Serializable {
      var origin:String = tripOrigin
      var destination:String = tripDestination
      var stops:ArrayList<String> = ArrayList()
+     var bookedUsers:HashMap<String,Int> = hashMapOf()
      var date:String = date
      var time:String = time
      var vehicleModel:String = ""
@@ -33,7 +38,8 @@ class Trip( tripOrigin: String,  tripDestination: String,  allStops:ArrayList<St
      var destSubCity = ""
      var destFullAddress = ""
      var tripID = ""
-
+     var timestamp:Long = 0
+     var poster: User? = null
 
     init {
         when (luggageSizeInt) {
@@ -48,6 +54,14 @@ class Trip( tripOrigin: String,  tripDestination: String,  allStops:ArrayList<St
         for (stop in allStops){
             stops.add(stop)
         }
+        if (date !=""){
+            val fullDate = "$date $time "
+            val datetimeFormatter1 = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.US)
+            val lFromDate1 = datetimeFormatter1.parse(fullDate)
+            timestamp = lFromDate1.time
+        }
+
+
 
     }
     fun addTripDestinations(originCity:String, originSubCity:String,

@@ -29,6 +29,7 @@ class NotificationAdapter(private var context: Context, private var notify:List<
     private var currentUser: FirebaseUser? = null
     private var mAuth: FirebaseAuth? = null
     override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
+        Log.i("NotificationAdapter", "CALLED")
         mAuth = FirebaseAuth.getInstance()
         if (mAuth?.currentUser == null) {
             Toast.makeText(context,"LOGIN FIRST",Toast.LENGTH_LONG).show()
@@ -67,7 +68,9 @@ class NotificationAdapter(private var context: Context, private var notify:List<
     private fun acceptUser(pos:Int,response:Boolean){
         val item = notify[pos]
         val destCode = decodeWilaya(item.dest)
+        Log.i("DEST", item.dest)
         val originCode = decodeWilaya(item.origin)
+
         val newRef = database.child("trips").child("${originCode}_$destCode").child(item.tripID)
         if (response){
 

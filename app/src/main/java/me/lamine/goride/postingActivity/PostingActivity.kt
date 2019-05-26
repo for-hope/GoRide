@@ -1,6 +1,7 @@
 package me.lamine.goride.postingActivity
 import android.annotation.SuppressLint
 import android.app.*
+import android.content.Context
 
 import android.content.Intent
 import android.graphics.Bitmap
@@ -37,11 +38,13 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.google.gson.Gson
 import com.tooltip.Tooltip
 import com.wajahatkarim3.easyvalidation.core.rules.*
 import com.wajahatkarim3.easyvalidation.core.view_ktx.validator
 import me.lamine.goride.R
 import me.lamine.goride.dataObjects.Trip
+import me.lamine.goride.dataObjects.User
 import me.lamine.goride.utils.decodeWilaya
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -68,7 +71,7 @@ class PostingActivity : AppCompatActivity() {
     private lateinit var originFullAddress:String
     private var destCity:String = ""
     private var destSubCity:String = ""
-    private lateinit var destFullAddress:String
+    private var destFullAddress:String = ""
     private var AUTOCOMPLETE_REQUEST_CODE = 10
     private var AUTOCOMPLETE_REQUEST_CODE_DES = 20
     private var downloadUrl:String = ""
@@ -79,7 +82,7 @@ class PostingActivity : AppCompatActivity() {
     private  var vehicleType:String = ""
     private var vehicleColor:String = ""
     private var vehicleYear:Int = 0
-    private lateinit var licensePlate:String
+    private var licensePlate:String = ""
     private var tripPrice:Int = 0
     private lateinit var tripDescription:String
     private lateinit var tripDate:String
@@ -96,6 +99,8 @@ class PostingActivity : AppCompatActivity() {
     private var currentUser: FirebaseUser? = null
     private var originLatLng: LatLng? = null
     private var desLatLng:LatLng? = null
+    private lateinit var tripToModify:Trip
+    private var isModifyMode = false
 
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -126,6 +131,16 @@ class PostingActivity : AppCompatActivity() {
             currentUser = mAuth?.currentUser
         }
 
+        isModifyMode = intent.getBooleanExtra("modifyTrip",false)
+        if (isModifyMode){
+            tripToModify = intent.getSerializableExtra("tripToModify") as Trip
+        }
+        if (isModifyMode){
+            modifyTrip(tripToModify)
+        }
+
+
+
         addStops()
         vehicleTypeSpinner()
         vehicleColorSpinner()
@@ -138,13 +153,20 @@ class PostingActivity : AppCompatActivity() {
         skipVehicleOption()
         showPictureDialog()
         trip_ac_submit_btn.setOnClickListener {
-            Log.i("onCreate","FILLING FORMS")
         fillAllForm()
         }
 
 
 
 
+
+    }
+    private fun modifyTrip(trip:Trip){
+        Log.i("modifyTrip",isModifyMode.toString())
+        setOrigin(trip.origin)
+        setDestination(trip.destination)
+        edittext_tripdesc.setText(trip.description)
+        edittext_price.setText(trip.pricePerSeat.toString())
 
     }
     private fun setPb(visibility: Int){
@@ -440,7 +462,9 @@ class PostingActivity : AppCompatActivity() {
 
         tripDescription = edittext_tripdesc.text.toString()
         tripDate=search_date_edittext.text.toString()
-        val isValidDate = isValidDate(tripDate)
+         val isValidDate = isValidDate(tripDate)
+
+
         if (!isValidDate){
             correctForm = false
             add_datebtn.setError("Please enter valid date at least after 24h",false)
@@ -516,7 +540,8 @@ class PostingActivity : AppCompatActivity() {
         trip.originSubCity = originSubCity
         trip.originCity = originCity
         trip.destCity = destCity
-        trip.tripID = UUID.randomUUID().toString()
+        //trip.tripID = UUID.randomUUID().toString()
+        trip.userID = currentUser?.uid!!
         trip.addTripDestinations(originCity,originSubCity,originFullAddress,destCity,destSubCity,destFullAddress)
         trip.printAllInfo()
         /*
@@ -524,10 +549,23 @@ class PostingActivity : AppCompatActivity() {
         intent.putExtra("PostingActivity",trip)
         startActivity(intent) */
         Log.i("DB", trip.origin)
+
         saveToDB(trip)
 
 
 
+    }
+    private fun saveData(trip:Trip){
+        val mPrefs = this.getSharedPreferences("TripsPref", Context.MODE_PRIVATE)!!
+        val prefsEditor = mPrefs.edit()
+        val nbTrips = mPrefs.getInt("savedTrips",0)
+        val gson = Gson()
+        val json = gson.toJson(trip)
+        val tripID:String = "TripID$nbTrips"
+        prefsEditor.putString(tripID, json)
+        prefsEditor.putInt("savedTrips",nbTrips)
+        prefsEditor.apply()
+        //showDoneDialog()
     }
     private fun showDoneDialog(){
         androidx.appcompat.app.AlertDialog.Builder(this)
@@ -1011,25 +1049,49 @@ class PostingActivity : AppCompatActivity() {
             stops.add(edit.text.toString())
         }
     }
-    private fun saveToDB(trip: Trip){
+    private fun saveToDB(trip: Trip) {
         setPb(1)
+        if (!isModifyMode){
         val childName = "${originCode}_$destinationCode"
-       val newRef = database.child("trips").child(childName).push()
+        val newRef = database.child("trips").child(childName).push()
         val tripID = newRef.key
         trip.tripID = tripID!!
         newRef.setValue(trip) { databaseError, _ ->
             if (databaseError != null) {
-                Log.i("FireBaseEroor",databaseError.message)
-                Toast.makeText(this, "Error $databaseError", Toast.LENGTH_LONG).show()}
+                Log.i("FireBaseEroor", databaseError.message)
+                Toast.makeText(this, "Error $databaseError", Toast.LENGTH_LONG).show()
+            }
         }
-        if (currentUser != null){
-        newRef.child("userID").setValue(currentUser?.uid)
-        database.child("users").child(currentUser?.uid!!).child("activeTrips").child(tripID).setValue(1)}
+            newRef.child("userID").setValue(currentUser?.uid)
+        } else {
+            val childName = "${originCode}_$destinationCode"
+            val newRef = database.child("trips").child(childName).child(tripToModify.tripID)
+            trip.tripID = tripToModify.tripID
+            newRef.setValue(trip) { databaseError, _ ->
+                if (databaseError != null) {
+                    Log.i("FireBaseEroor", databaseError.message)
+                    Toast.makeText(this, "Error $databaseError", Toast.LENGTH_LONG).show()
+                }
+            }
+            newRef.child("userID").setValue(currentUser?.uid)
+        }
+        if (currentUser != null) {
+            database.child("users").child(currentUser?.uid!!).child("trips").child(trip.tripID).setValue(1)
+            database.child("users").child(currentUser?.uid!!).child("activeTrips").child(trip.tripID).setValue(1)
+        }
         database.push()
         setPb(0)
+        saveData(trip)
         showDoneDialog()
 
 
+    }
+    private fun getSharedUser():User{
+        val mPrefs = this.getSharedPreferences("TripsPref", Context.MODE_PRIVATE)!!
+        val gson = Gson()
+        val json = mPrefs.getString("currentUser", "")
+        val obj = gson.fromJson<User>(json, User::class.java)
+        return obj
     }
 
 }

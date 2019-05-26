@@ -3,23 +3,30 @@
               xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
               android:layout_height="wrap_content" android:orientation="vertical">
 
+    <View
+            android:id="@+id/divider9"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+    />
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:paddingEnd="10dp">
+            android:layout_height="wrap_content" android:paddingEnd="10dp"
+            android:paddingTop="10dp" android:paddingBottom="10dp">
         <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
             <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/review_user_pfp"
-                    android:layout_width="80dp"
+                    android:layout_width="60dp"
                     android:src="@mipmap/ic_launcher_round"
                     app:civ_border_width="2dp"
                     app:civ_border_color="#FF000000" android:layout_weight="0"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp" android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp" android:layout_gravity="center" android:layout_height="80dp"/>
+                    android:layout_marginTop="10dp" android:layout_gravity="center" android:layout_height="60dp"/>
             <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
@@ -45,13 +52,14 @@
                 <TextView
                         android:text="Origin to destination on May 20"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" android:id="@+id/review_type2" android:layout_weight="0"
+                        android:layout_height="wrap_content" android:id="@+id/review_otdAndDate"
+                        android:layout_weight="0"
                         android:textSize="15sp" android:gravity="start"
                         android:paddingEnd="5dp"/>
                 <TextView
                         android:text="Review Goes Here"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" android:id="@+id/review_type3" android:layout_weight="0"
+                        android:layout_height="wrap_content" android:id="@+id/review_desc" android:layout_weight="0"
                         android:textSize="16sp" android:gravity="start"
                         android:paddingEnd="5dp" android:textColor="@color/quantum_grey800"/>
             </LinearLayout>

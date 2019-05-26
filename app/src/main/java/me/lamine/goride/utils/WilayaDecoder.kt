@@ -1,5 +1,5 @@
 package me.lamine.goride.utils
-var wilayaArrayEN = arrayOf("Adrar",
+public var wilayaArrayEN = arrayOf("Adrar",
     "Chlef",
     "Laghouat",
     "Oumel-Bouaghi",
