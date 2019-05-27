@@ -8,5 +8,6 @@ data class ExtendedBookingNotif(var origin:String, var dest:String,var date:Stri
     var timestamp: String= ""
     var tripID:String = ""
     var userID:String=""
+    var otd = ""
 
 }

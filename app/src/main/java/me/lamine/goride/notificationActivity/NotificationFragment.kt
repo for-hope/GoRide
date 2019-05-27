@@ -12,15 +12,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.fragment_notifications.*
 import me.lamine.goride.*
+import me.lamine.goride.R
 import me.lamine.goride.dataObjects.*
 import me.lamine.goride.interfaces.OnGetDataListener
 import me.lamine.goride.utils.decodeWilaya
+import java.sql.Driver
 
 
 /**
@@ -28,11 +27,12 @@ import me.lamine.goride.utils.decodeWilaya
  */
 class NotificationFragment : androidx.fragment.app.Fragment() {
     private var user: FirebaseUser? = null
+    private lateinit var database:DatabaseReference
     private lateinit var notifications:MutableList<BookingNotification>
     private lateinit var extendedNotification: MutableList<ExtendedBookingNotif>
     private lateinit var standaredNotifications: MutableList<StandaredNotification>
     private var listOfLiteUser= mutableListOf<LiteUser>()
-    private var driverNotificationsList:MutableList<ExtendedBookingNotif> = mutableListOf()
+    private var driverNotificationsList:MutableList<DriveNotification> = mutableListOf()
     private var listOfDrivers:MutableList<User> = mutableListOf()
     private lateinit var llm2:LinearLayoutManager
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -41,6 +41,7 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
         if (user==null) {
             this.activity?.finish()
         }
+        database = FirebaseDatabase.getInstance().reference
         this.notif_list_res_view.setHasFixedSize(true)
         val llm = LinearLayoutManager(this.context)
         llm.orientation = RecyclerView.VERTICAL
@@ -56,12 +57,14 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
         val llm3 = LinearLayoutManager(this.context)
         llm3.orientation = RecyclerView.VERTICAL
         req_notif_list_res_view.isNestedScrollingEnabled = false
+        req_notif_list_res_view.layoutManager = llm3
       //  snotif_list_res_view.layoutManager = llm2
         mCheckTripInfoInServer()
         notifications = mutableListOf()
         listOfLiteUser = mutableListOf()
         extendedNotification = mutableListOf()
         standaredNotifications = mutableListOf()
+        driverNotificationsList = mutableListOf()
 
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -101,8 +104,6 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
             }
         }
     }
-
-
    private fun saveLiteUser(dataSnapshot: DataSnapshot,timestamp: String): LiteUser {
        var ratings = dataSnapshot.child("ratings").value as Long?
        var peopleDriven = dataSnapshot.child("peopleDriven").value as Long?
@@ -133,6 +134,123 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
        return lU
 
    }
+    private fun fetchDrivingNotif(listener: OnGetDataListener){
+        listener.onStart()
+        val ref = database.child("users").child(user?.uid!!).child("driveRequests")
+        val eventListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                listener.onSuccess(dataSnapshot)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                listener.onFailed(databaseError)
+                throw databaseError.toException()
+                // don't ignore errors
+            }
+        }
+        ref.addListenerForSingleValueEvent(eventListener)
+
+
+    }
+    private fun fetchDrivers(userId:String,listener: OnGetDataListener){
+        val ref = database.child("users").child(userId)
+        val eventListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                listener.onSuccess(dataSnapshot)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                listener.onFailed(databaseError)
+                throw databaseError.toException()
+                // don't ignore errors
+            }
+        }
+        ref.addListenerForSingleValueEvent(eventListener)
+    }
+    private fun setDriverRequestsAdapter(){
+        Log.i("Adapter", "SettingUP")
+        setPb(0)
+        if (req_notif_list_res_view != null){
+            req_notif_list_res_view.adapter = this.context?.let {
+               DriveRequestsAdapter(
+                    it,
+                    driverNotificationsList
+                )
+
+            }
+
+
+        }
+    }
+    private fun readDrivers(){
+            //fill drivers list if it causes errors
+        for ((index,notif) in driverNotificationsList.withIndex()){
+            fetchDrivers(notif.userId, object: OnGetDataListener{
+                override fun onStart() {
+
+                }
+
+                override fun onSuccess(data: DataSnapshot) {
+                    val mDriver = data.getValue(User::class.java)
+                    Log.i("KEY_",data.key!!)
+                    notif.userObject = mDriver!!
+                    if (index == driverNotificationsList.lastIndex){
+                        setDriverRequestsAdapter()
+                    }
+
+                }
+
+                override fun onFailed(databaseError: DatabaseError) {
+
+                }
+
+            })
+        }
+
+    }
+    private fun readDrivingNotifications(){
+        fetchDrivingNotif(object : OnGetDataListener{
+            override fun onStart() {
+                    setPb(1)
+            }
+
+            override fun onSuccess(data: DataSnapshot) {
+               for (ds in data.children){
+                   val tripId = ds.key!!
+                   var userId = ""
+                   var otd = ""
+                   var timestamp = ""
+                   var date = ""
+                   for (dataChild in ds.children){
+                       Log.i("datachild", dataChild.key)
+                       if (dataChild.key == "otd"){
+                            otd = dataChild.value as String
+                           Log.i("HERE IS OTD", otd + "MHM")
+                       }  else if (dataChild.key == "date"){
+                           date = dataChild.value as String
+                           Log.i("HERE IS DATE", otd + "MHM")
+                       }
+                       else {
+                            userId = dataChild.key!!
+                            timestamp = dataChild.value as String
+                       }
+                   }
+                   Log.i("after otd", otd + "N")
+                   val dNotif = DriveNotification(tripId,userId,otd,date,timestamp)
+                   driverNotificationsList.add(dNotif)
+                   readDrivers()
+
+               }
+
+            }
+
+            override fun onFailed(databaseError: DatabaseError) {
+
+            }
+
+        })
+
+    }
     private fun readUserInfo(listOfPairs: List<Pair<String, String>>, listener: OnGetDataListener){
         listener.onStart()
         val rootRef = FirebaseDatabase.getInstance().reference
@@ -305,6 +423,15 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
                 sn.timestamp = child.value as String
                 standaredNotifications.add(sn)
             }
+            ds.key == "acceptedDriveRequest" -> for(child in ds.children) {
+                val tripId = child.key
+                val type = "acceptedDriveRequest"
+                val sn = StandaredNotification(tripId!!)
+                sn.type = type
+                sn.otd = child.child("otd").value as String
+                sn.timestamp = child.child("timestamp").value as String
+                standaredNotifications.add(sn)
+            }
         }
     }
     private fun readTripRequests(listener: OnGetDataListener) {
@@ -363,6 +490,7 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
                     setEmptyUI()
                 } else {
                     checkAllNotifications()
+                    readDrivingNotifications()
                 }
 
                 //readPendingBookings
@@ -439,9 +567,12 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
         }
     }
     private fun setEmptyUI(){
-       empty_list_notif.visibility = View.VISIBLE
-        //todo scrolling.visibility = View.GONE
-        setPb(0)
+        if (empty_list_notif !== null){
+            empty_list_notif.visibility = View.VISIBLE
+            //todo scrolling.visibility = View.GONE
+            setPb(0)
+        }
+
     }
     private fun setPb(visibility: Int){
         val mProgressBar = activity!!.findViewById<ProgressBar>(R.id.pb_notif)

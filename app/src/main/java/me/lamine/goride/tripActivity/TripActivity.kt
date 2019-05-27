@@ -142,6 +142,14 @@ class TripActivity:AppCompatActivity() {
         //show icon of booked users
         pendingUsers = trip.pendingDrivers
         trip_ac_luggage.text = trip.luggageSize
+        if(trip.acceptedDriver.size > 0){
+            booked_layout.visibility = View.VISIBLE
+            val txt = "Trip Accepted"
+            trip_ac_booked.text = txt
+        } else {
+            booked_layout.visibility = View.GONE
+        }
+
         //todo change icon
         when {
             trip.luggageSize == "N" -> trip_ac_luggage_text.text = getString(R.string.no_luggage)
@@ -157,8 +165,8 @@ class TripActivity:AppCompatActivity() {
         seatsLeft = trip.numberOfSeats
         val nbSeats = "$seatsLeft Seats Required"
         trip_ac_seats.text = nbSeats
+
         pref_layout.visibility = View.GONE
-        booked_layout.visibility = View.GONE
         val checkCode = checkRequestStatus(trip)
         if (checkCode == 0){
             trip_ac_submit_btn.visibility = View.VISIBLE
@@ -175,10 +183,12 @@ class TripActivity:AppCompatActivity() {
         }
     }
 private fun submitRideRequest(trip:TripRequest){
+    Log.i("RideRequest","Requesting a ride")
     val childName = trip.tripID
     val destCode = decodeWilaya(trip.destCity)
     val originCode = decodeWilaya(trip.originCity)
-    var newRef = database.child("tripRequests").child("${originCode}_$destCode").child(childName)
+    val otdPath = "${String.format("%02d", originCode)}_${String.format("%02d", destCode)}"
+    var newRef = database.child("tripRequests").child(otdPath).child(childName)
 
     newRef.child("pendingDrivers").child(currentUser?.uid!!).setValue(0){ databaseError, _ ->
         if (databaseError != null) {
@@ -187,10 +197,13 @@ private fun submitRideRequest(trip:TripRequest){
     }
     newRef = database.child("users").child(trip.userID).child("driveRequests").child(trip.tripID)
     newRef.child(currentUser?.uid!!).setValue(Timestamp(System.currentTimeMillis()).toString())
-    newRef.child("otd").setValue("${originCode}_$destCode")
+    newRef.child("otd").setValue(otdPath)
+    newRef.child("date").setValue("${trip.date} ${trip.time}")
     database.push()
     trip_users_layout.removeAllViews()
     pendingUsers[currentUser?.uid!!] = 1
+    val text = "Pending Request"
+    trip_ac_submit_btn.text = text
 }
 private fun checkRequestStatus(trip:TripRequest):Int{
     return when {
@@ -237,8 +250,9 @@ private fun checkRequestStatus(trip:TripRequest):Int{
         //2 -> owner
         val destCode = decodeWilaya(tripR.destCity)
         val originCode = decodeWilaya(tripR.originCity)
+        val otdPath = "${String.format("%02d", originCode)}_${String.format("%02d", destCode)}"
         val userRef = database.child("users")
-        val tripRef = database.child("trips").child("${originCode}_$destCode").child(tripR.tripID)
+        val tripRef = database.child("trips").child(otdPath).child(tripR.tripID)
 
         when (type) {
             0 -> {
@@ -278,7 +292,7 @@ private fun checkRequestStatus(trip:TripRequest):Int{
                         }
                         bookedUsers(trip) }
                 val notifRef = userRef.child(tripR.userID).child("notifications").child("unbookedUsers").child(trip.tripID)
-                notifRef.child("otd").setValue("${originCode}_$destCode")
+                notifRef.child("otd").setValue(otdPath)
                 notifRef.child("timestamp").setValue(Date().toString())
                 database.push()
 
@@ -288,7 +302,7 @@ private fun checkRequestStatus(trip:TripRequest):Int{
                    // userRef.child(user.userId).child("notifications").child("canceledTrips").child(trip.tripID).setValue(1)
                     val notifRef =  userRef.child(user.userId).child("notifications")
                         .child("canceledTrips").child(trip.tripID)
-                    notifRef.child("otd").setValue("${originCode}_$destCode")
+                    notifRef.child("otd").setValue(otdPath)
                     notifRef.child("timestamp").setValue(Date().toString())
                     //todo
                     userRef.child(user.userId).child("bookedTrips").child(trip.tripID).removeValue()
@@ -298,14 +312,14 @@ private fun checkRequestStatus(trip:TripRequest):Int{
                 //notify users
             }
             3 -> {
-                val ref = database.child("tripRequests").child("${originCode}_$destCode").child(tripR.tripID)
+                val ref = database.child("tripRequests").child(otdPath).child(tripR.tripID)
                     .child("pendingDrivers")
                 ref.child(currentUser?.uid!!).removeValue()
                 val uRef = database.child("users").child(tripR.userID).child("driveRequests").child(tripR.tripID)
                     uRef.child(tripR.userID).removeValue()
             }
             4 -> {
-                val ref = database.child("tripRequests").child("${originCode}_$destCode").child(tripR.tripID)
+                val ref = database.child("tripRequests").child(otdPath).child(tripR.tripID)
                 ref.removeValue()
             }
         }
@@ -616,7 +630,8 @@ private fun checkRequestStatus(trip:TripRequest):Int{
         val childName = trip.tripID
         val destCode = decodeWilaya(trip.destCity)
         val originCode = decodeWilaya(trip.originCity)
-        val newRef = database.child("trips").child("${originCode}_$destCode").child(childName).child("pendingBookedUsers")
+        val otdPath = "${String.format("%02d", originCode)}_${String.format("%02d", destCode)}"
+        val newRef = database.child("trips").child(otdPath).child(childName).child("pendingBookedUsers")
         val eventListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 listener.onSuccess(dataSnapshot)
@@ -782,7 +797,8 @@ private fun checkRequestStatus(trip:TripRequest):Int{
         val childName = trip.tripID
         val destCode = decodeWilaya(trip.destCity)
         val originCode = decodeWilaya(trip.originCity)
-        val newRef = database.child("trips").child("${originCode}_$destCode").child(childName).child("bookedUsers")
+        val otdPath = "${String.format("%02d", originCode)}_${String.format("%02d", destCode)}"
+        val newRef = database.child("trips").child(otdPath).child(childName).child("bookedUsers")
 
         val eventListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -801,7 +817,8 @@ private fun checkRequestStatus(trip:TripRequest):Int{
         Log.i("FireBase", trip.tripID)
         val destCode = decodeWilaya(trip.destCity)
         val originCode = decodeWilaya(trip.originCity)
-        val newRef = database.child("trips").child("${originCode}_$destCode").child(childName)
+        val otdPath = "${String.format("%02d", originCode)}_${String.format("%02d", destCode)}"
+        val newRef = database.child("trips").child(otdPath).child(childName)
 
         newRef.child("bookedUsers").child(currentUser?.uid!!).setValue(1){ databaseError, _ ->
             if (databaseError != null) {
@@ -817,7 +834,7 @@ private fun checkRequestStatus(trip:TripRequest):Int{
         val notifRef= database.child("users").child(trip.userID).child("notifications")
             .child("bookedUsers").child(trip.tripID)
             notifRef.child("userId").setValue(currentUser?.uid)
-             notifRef.child("otd").setValue("${originCode}_$destCode")
+             notifRef.child("otd").setValue(otdPath)
             notifRef.child("timestamp").setValue(Date().toString())
 
 
@@ -830,7 +847,8 @@ private fun checkRequestStatus(trip:TripRequest):Int{
         Log.i("savePendingToDB", trip.tripID)
         val destCode = decodeWilaya(trip.destCity)
         val originCode = decodeWilaya(trip.originCity)
-        var newRef = database.child("trips").child("${originCode}_$destCode").child(childName)
+        val otdPath = "${String.format("%02d", originCode)}_${String.format("%02d", destCode)}"
+        var newRef = database.child("trips").child(otdPath).child(childName)
 
         newRef.child("pendingBookedUsers").child(currentUser?.uid!!).setValue(0){ databaseError, _ ->
             if (databaseError != null) {

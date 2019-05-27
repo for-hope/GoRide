@@ -559,8 +559,9 @@ class RequestTripActivity:AppCompatActivity() {
     private fun saveToDB(trip: TripRequest) {
         setPb(1)
         if (!isModifyMode){
+            val otdPath = "${String.format("%02d", originCode)}_${String.format("%02d", destinationCode)}"
             val childName = "${originCode}_$destinationCode"
-            val newRef = database.child("tripRequests").child(childName).push()
+            val newRef = database.child("tripRequests").child(otdPath).push()
             val tripID = newRef.key
             trip.tripID = tripID!!
             newRef.setValue(trip) { databaseError, _ ->
@@ -571,8 +572,9 @@ class RequestTripActivity:AppCompatActivity() {
             }
             newRef.child("userID").setValue(currentUser?.uid)
         } else {
+            val otdPath = "${String.format("%02d", originCode)}_${String.format("%02d", destinationCode)}"
             val childName = "${originCode}_$destinationCode"
-            val newRef = database.child("tripRequests").child(childName).child(tripToModify.tripID)
+            val newRef = database.child("tripRequests").child(otdPath).child(tripToModify.tripID)
             trip.tripID = tripToModify.tripID
             newRef.setValue(trip) { databaseError, _ ->
                 if (databaseError != null) {
@@ -584,8 +586,9 @@ class RequestTripActivity:AppCompatActivity() {
         }
         if (currentUser != null) {
             val childName = "${originCode}_$destinationCode"
-            database.child("users").child(currentUser?.uid!!).child("tripsRequested").child(trip.tripID).setValue(childName)
-            database.child("users").child(currentUser?.uid!!).child("activeTripRequests").child(trip.tripID).setValue(childName)
+            val otdPath = "${String.format("%02d", originCode)}_${String.format("%02d", destinationCode)}"
+            database.child("users").child(currentUser?.uid!!).child("tripsRequested").child(trip.tripID).setValue(otdPath)
+            database.child("users").child(currentUser?.uid!!).child("activeTripRequests").child(trip.tripID).setValue(otdPath)
         }
         database.push()
         setPb(0)

@@ -74,7 +74,8 @@ class TripResultFragment : Fragment() {
         }
         //pass here
         //val childName = "${fromText}_$toText"
-        val childName ="${tsd.originCode}_${tsd.destinationCode}"
+        //val childName ="${tsd.originCode}_${tsd.destinationCode}"
+        val childName = "${String.format("%02d", tsd.originCode)}_${String.format("%02d", tsd.destinationCode)}"
         //database.child("trips").child(childName)
         //database.child("trips").child(childName).orderByChild("date").equalTo("lol")
         Log.i("CITY 1", wilayaArrayEN[tsd.originCode-1])

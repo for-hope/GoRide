@@ -65,7 +65,8 @@ class RequestsResultFragment:Fragment() {
         }
         //pass here
         //val childName = "${fromText}_$toText"
-        val childName ="${tsd.originCode}_${tsd.destinationCode}"
+        val childName = "${String.format("%02d", tsd.originCode)}_${String.format("%02d", tsd.destinationCode)}"
+        //val childName ="${tsd.originCode}_${tsd.destinationCode}"
         //database.child("trips").child(childName)
         //database.child("trips").child(childName).orderByChild("date").equalTo("lol")
 
@@ -138,6 +139,7 @@ class RequestsResultFragment:Fragment() {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
                             var isRepeated = false
                             val addTrip = dataSnapshot.getValue(TripRequest::class.java)
+                            if (addTrip?.acceptedDriver!!.size > 0)
                             //check for repeated trips
                             for (mTrip in listOfTrips){
                                 if (mTrip.tripID == addTrip?.tripID!!){
@@ -150,7 +152,7 @@ class RequestsResultFragment:Fragment() {
                                 val dateAndTime = "${addTrip?.date} ${addTrip?.time}"
                                 val tripDate = sdf.parse(dateAndTime)
                                 //check if its after today
-                                if (tripDate.after(Date())){
+                                if (tripDate.after(Date()) && addTrip.acceptedDriver.size == 0){
                                     //add trip
                                     mCheckUserInfoInServer(addTrip, noTrip = false, isFinalChild = false)
                                 }
@@ -162,7 +164,7 @@ class RequestsResultFragment:Fragment() {
                                     val dateAndTime = "${addTrip?.date} ${addTrip?.time}"
                                     val tripDate = sdf.parse(dateAndTime)
                                     //check if its after today
-                                    if (tripDate.after(Date())) {
+                                    if (tripDate.after(Date()) && addTrip.acceptedDriver.size == 0) {
                                         mCheckUserInfoInServer(addTrip, noTrip = false, isFinalChild = true)
                                     } else {
                                         mCheckUserInfoInServer(addTrip, noTrip = true, isFinalChild = true)

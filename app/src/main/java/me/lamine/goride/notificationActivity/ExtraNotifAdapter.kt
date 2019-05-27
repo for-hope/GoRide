@@ -71,8 +71,12 @@ class ExtraNotifAdapter(private var context: Context, private var notify:List<St
             notify[position].type == "bookedUsers" -> {
                 val ds1 = "Someone just booked! Check your trip feed to see more info."
                 holder.desc1.text = ds1
-
             }
+            notify[position].type == "acceptedDriveRequest" -> {
+                val ds1 = "Your request to drive a trip got accepted! check your feed for more info."
+                holder.desc1.text = ds1
+            }
+
         }
         holder.timestamp.text = notify[position].timestamp
         Log.i("NotifyMe3","adapter set")

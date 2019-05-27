@@ -20,6 +20,7 @@ data class TripRequest(var tripOrigin: String="",  var tripDestination: String="
     var luggageSize:String = "N"
     var pendingDrivers:HashMap<String,Any> = hashMapOf()
     var poster: User? = null
+    var acceptedDriver:HashMap<String,Int> = hashMapOf()
     init {
         when (luggageSizeInt) {
             0 -> luggageSize = "N"

@@ -701,6 +701,7 @@ class PostingActivity : AppCompatActivity() {
             }
             val decodedOriginCity = decodeWilaya(originCity)
             originCode = decodedOriginCity
+
             Log.i("DECODE",decodedOriginCity.toString())
             setOrigin(place.name!!)
             Log.i("SetOrigin",originSubCity)
@@ -1052,8 +1053,9 @@ class PostingActivity : AppCompatActivity() {
     private fun saveToDB(trip: Trip) {
         setPb(1)
         if (!isModifyMode){
+            val otdPath = "${String.format("%02d", originCode)}_${String.format("%02d", destinationCode)}"
         val childName = "${originCode}_$destinationCode"
-        val newRef = database.child("trips").child(childName).push()
+        val newRef = database.child("trips").child(otdPath).push()
         val tripID = newRef.key
         trip.tripID = tripID!!
         newRef.setValue(trip) { databaseError, _ ->
@@ -1064,8 +1066,10 @@ class PostingActivity : AppCompatActivity() {
         }
             newRef.child("userID").setValue(currentUser?.uid)
         } else {
+            //todo
+            val otdPath = "${String.format("%02d", originCode)}_${String.format("%02d", destinationCode)}"
             val childName = "${originCode}_$destinationCode"
-            val newRef = database.child("trips").child(childName).child(tripToModify.tripID)
+            val newRef = database.child("trips").child(otdPath).child(tripToModify.tripID)
             trip.tripID = tripToModify.tripID
             newRef.setValue(trip) { databaseError, _ ->
                 if (databaseError != null) {
