@@ -1,54 +1,58 @@
 package me.lamine.goride.tripActivity
 
 import android.content.Context
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
-import android.view.LayoutInflater
-import android.widget.ImageView
-import android.widget.Toast
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.collections.ArrayList
 import android.content.Intent
 import android.text.format.DateUtils
-import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import me.lamine.goride.R
-import me.lamine.goride.dataObjects.Trip
-import me.lamine.goride.dataObjects.User
-import org.jetbrains.anko.onClick
-import android.util.TypedValue
-import androidx.core.content.ContextCompat
 import me.lamine.goride.dataObjects.TripRequest
+import me.lamine.goride.dataObjects.User
 import org.jetbrains.anko.backgroundColor
-import org.jetbrains.anko.find
 import java.math.BigDecimal
 import java.math.RoundingMode
-import kotlin.math.round
+import java.text.SimpleDateFormat
+import java.util.*
+import com.google.android.gms.maps.GoogleMap
+import android.widget.Toast
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.MarkerOptions
 
 
-class RequestsAdapter(private var context: Context, private var tripsList: List<TripRequest>, private var userLiteList: List<User>): RecyclerView.Adapter<RequestsAdapter.TripViewHolder>() {
+
+
+
+
+class RequestsAdapter(
+    private var context: Context,
+    private var tripsList: List<TripRequest>,
+    private var userLiteList: List<User>
+) : RecyclerView.Adapter<RequestsAdapter.TripViewHolder>() {
     //val items: MutableList<String> = arrayListOf()
-    private var orginazers = mutableListOf<String>()
+    private var organizers = mutableListOf<String>()
 
     override fun onBindViewHolder(holder: TripViewHolder, position: Int) {
         val trip = tripsList[position]
         val userLite = userLiteList[position]
-        //val name = "Lamine Fet"
-        val OLD_FORMAT = "dd/MM/yyyy"
-        val NEW_FORMAT = "EEE, MMM dd"
-        val age_format = "dd, MMM yyyy"
-
-        val peopleDriven = userLite.peopleDriven
-        val ratings = userLite.userRating
+        val mOldFormat = "dd/MM/yyyy"
+        val mNewFormat = "EEE, MMM dd"
+        val mAgeFormat = "dd, MMM yyyy"
+        // val peopleDriven = userLite.peopleDriven
+        //   val ratings = userLite.userRating
         val userBirthday = userLite.birthday
-        val df = SimpleDateFormat(age_format, Locale.US)
-        val uBirthdate = df.parse(userBirthday)
+        val df = SimpleDateFormat(mAgeFormat, Locale.US)
+        val uBirthday = df.parse(userBirthday)
         val cal = Calendar.getInstance()
-        cal.time = uBirthdate
+        cal.time = uBirthday
         val year = cal.get(Calendar.YEAR)
         val month = cal.get(Calendar.MONTH)
         val day = cal.get(Calendar.DAY_OF_MONTH)
@@ -56,7 +60,7 @@ class RequestsAdapter(private var context: Context, private var tripsList: List<
 
         val age = getAge(year, month, day)
         var gender = userLite.gender.capitalize()
-        gender = if (gender=="F"){
+        gender = if (gender == "F") {
             "Female"
         } else {
             "Male"
@@ -65,19 +69,18 @@ class RequestsAdapter(private var context: Context, private var tripsList: List<
         holder.vName.text = name
         val genderAndAge = "$gender, $age"
         holder.uGenderAndAge.text = genderAndAge
-        val roundedDouble =  BigDecimal(userLite.userRating).setScale(1, RoundingMode.HALF_UP).toString()
-        holder.uRatings.text =roundedDouble
+        val roundedDouble = BigDecimal(userLite.userRating).setScale(1, RoundingMode.HALF_UP).toString()
+        holder.uRatings.text = roundedDouble
         holder.uPeopleDriven.text = userLite.peopleDriven.toString()
         val nbReviews = "${userLite.userReviews.size} reviews"
         holder.numberOfReviews.text = nbReviews
 
 
-
         val newDate: String
 
-        val sdf = SimpleDateFormat(OLD_FORMAT, Locale.US)
+        val sdf = SimpleDateFormat(mOldFormat, Locale.US)
         val d = sdf.parse(trip.date)
-        sdf.applyPattern(NEW_FORMAT)
+        sdf.applyPattern(mNewFormat)
         newDate = sdf.format(d)
 
         val fullDate = "$newDate at ${trip.time}"
@@ -85,8 +88,9 @@ class RequestsAdapter(private var context: Context, private var tripsList: List<
 
 
         holder.date.text = fullDate
-        if (userLite.profilePic == ""){
-            userLite.profilePic = "https://firebasestorage.googleapis.com/v0/b/ridego-1555252117345.appspot.com/o/user_images%2Fmale_default.png?alt=media&token=658a01b5-ba18-4491-8aa7-e15c30284200"
+        if (userLite.profilePic == "") {
+            userLite.profilePic =
+                "https://firebasestorage.googleapis.com/v0/b/ridego-1555252117345.appspot.com/o/user_images%2Fmale_default.png?alt=media&token=658a01b5-ba18-4491-8aa7-e15c30284200"
         }
         Picasso.get().load(userLite.profilePic).into(holder.profilePic)
         holder.origin.text = trip.originSubCity
@@ -107,48 +111,48 @@ class RequestsAdapter(private var context: Context, private var tripsList: List<
         when {
             DateUtils.isToday(d.time) -> {
                 val org = "Today"
-                setupOrg(org,holder)
+                setupOrg(org, holder)
                 //tomorrow
             }
             DateUtils.isToday(d.time - DateUtils.DAY_IN_MILLIS) -> {
                 val org = "Tomorrow"
-                setupOrg(org,holder)
+                setupOrg(org, holder)
             }
             else -> {
-                setupOrg(newDate,holder)
+                setupOrg(newDate, holder)
             }
         }
 
     }
 
-    private fun setupOrg(org:String,holder: TripViewHolder){
-        if (!orginazers.contains(org)){
-            holder.tripOrginazer.visibility = View.VISIBLE
-            holder.tripOrginazer.text = org
-            orginazers.add(org)
+    private fun setupOrg(org: String, holder: TripViewHolder) {
+        if (!organizers.contains(org)) {
+            holder.tripOrganizer.visibility = View.VISIBLE
+            holder.tripOrganizer.text = org
+            organizers.add(org)
         } else {
-            holder.tripOrginazer.visibility = View.GONE
+            holder.tripOrganizer.visibility = View.GONE
         }
     }
+
     override fun getItemCount(): Int {
-       return  tripsList.size
+        return tripsList.size
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TripViewHolder {
-       // val itemView = LayoutInflater.from(parent.context).inflate(R.layout.trip_card_layout, parent, false)
+        // val itemView = LayoutInflater.from(parent.context).inflate(R.layout.trip_card_layout, parent, false)
         val inflater = LayoutInflater.from(parent.context)
         val view = inflater.inflate(R.layout.trip_card_layout, parent, false)
 
-        return TripViewHolder(view).listen { pos, type ->
+        return TripViewHolder(view).listen { pos, _ ->
             val item = tripsList[pos]
             val userItem = userLiteList[pos]
 
-            startNextActivity(item,userItem)
-
+            startNextActivity(item, userItem)
 
 
         }
-       // return TripViewHolder(itemView)
+        // return TripViewHolder(itemView)
     }
 
     private fun getAge(year: Int, month: Int, day: Int): String {
@@ -167,11 +171,12 @@ class RequestsAdapter(private var context: Context, private var tripsList: List<
 
         return ageInt.toString()
     }
-    private fun startNextActivity(clickedTrip: TripRequest, clickedUser: User){
+
+    private fun startNextActivity(clickedTrip: TripRequest, clickedUser: User) {
         val i = Intent(context, TripActivity::class.java)
-        i.putExtra("ClickedTrip", clickedTrip )
-        i.putExtra("ClickedTripUser",clickedUser)
-        i.putExtra("isRequest",true)
+        i.putExtra("ClickedTrip", clickedTrip)
+        i.putExtra("ClickedTripUser", clickedUser)
+        i.putExtra("isRequest", true)
         context.startActivity(i)
     }
 
@@ -179,98 +184,70 @@ class RequestsAdapter(private var context: Context, private var tripsList: List<
         itemView.findViewById<CardView>(R.id.trip_card_view).setOnClickListener {
             val item = tripsList[adapterPosition]
             val userItem = userLiteList[adapterPosition]
-            startNextActivity(item,userItem) }
+            startNextActivity(item, userItem)
+        }
         itemView.setOnClickListener {
             event.invoke(adapterPosition, itemViewType)
         }
         return this
     }
 
-    private fun requestViews(holder:TripViewHolder){
+    private fun requestViews(holder: TripViewHolder) {
         holder.noSmoking.visibility = View.INVISIBLE
         holder.petsAllowed.visibility = View.INVISIBLE
         holder.pricePerSeat.visibility = View.GONE
         holder.bookingPref.visibility = View.INVISIBLE
-        holder.origin.setTextColor(ContextCompat.getColor(this.context,R.color.colorPrimaryDark))
-        holder.destination.setTextColor(ContextCompat.getColor(this.context,R.color.colorPrimaryDark))
-        holder.uRatings.setTextColor(ContextCompat.getColor(this.context,R.color.colorPrimaryDark))
-        holder.uPeopleDriven.setTextColor(ContextCompat.getColor(this.context,R.color.colorPrimaryDark))
-        holder.numberOfReviews.setTextColor(ContextCompat.getColor(this.context,R.color.colorPrimaryDark))
+        holder.origin.setTextColor(ContextCompat.getColor(this.context, R.color.colorPrimaryDark))
+        holder.destination.setTextColor(ContextCompat.getColor(this.context, R.color.colorPrimaryDark))
+        holder.uRatings.setTextColor(ContextCompat.getColor(this.context, R.color.colorPrimaryDark))
+        holder.uPeopleDriven.setTextColor(ContextCompat.getColor(this.context, R.color.colorPrimaryDark))
+        holder.numberOfReviews.setTextColor(ContextCompat.getColor(this.context, R.color.colorPrimaryDark))
 
-        holder.cardp1.setTextColor(ContextCompat.getColor(this.context,R.color.colorPrimaryDark))
-        holder.cardp2.setTextColor(ContextCompat.getColor(this.context,R.color.colorPrimaryDark))
-        holder.div1.backgroundColor = ContextCompat.getColor(this.context,R.color.colorPrimaryDark)
-        holder.div2.backgroundColor = ContextCompat.getColor(this.context,R.color.colorPrimaryDark)
+        holder.cardP1.setTextColor(ContextCompat.getColor(this.context, R.color.colorPrimaryDark))
+        holder.cardP2.setTextColor(ContextCompat.getColor(this.context, R.color.colorPrimaryDark))
+        holder.div1.backgroundColor = ContextCompat.getColor(this.context, R.color.colorPrimaryDark)
+        holder.div2.backgroundColor = ContextCompat.getColor(this.context, R.color.colorPrimaryDark)
         holder.ratingStar.setImageResource(R.drawable.ic_star_orange_24dp)
         holder.peopleDriven.setImageResource(R.drawable.ic_person_pin_circle_orange_24dp)
 
     }
+
     open class TripViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        var origin: TextView
-        var destination: TextView
+        var origin: TextView = v.findViewById(R.id.trip_origin_card)
+        var destination: TextView = v.findViewById(R.id.trip_destination_card)
 
 
-        var date:TextView
+        var date: TextView = v.findViewById(R.id.trip_date_card)
         //
-        var vehicleInfo:TextView
-
-        var luggageSize:TextView
+       // private var vehicleInfo: TextView = v.findViewById(R.id.trip_vehicleperf_card)
+        var luggageSize: TextView = v.findViewById(R.id.trip_luggage_card)
         //
-        var noSmoking:ImageView
-        var petsAllowed:ImageView
-        var numberOfSeats:TextView
+        var noSmoking: ImageView = v.findViewById(R.id.trip_ic_smoke_card)
+        var petsAllowed: ImageView = v.findViewById(R.id.trip_ic_pet_card)
+        var numberOfSeats: TextView = v.findViewById(R.id.trip_seats_card)
         //
-        var pricePerSeat:TextView
-        var bookingPref:ImageView
-
-        var vName: TextView
-        var uPeopleDriven:TextView
-        var uRatings:TextView
-        var uGenderAndAge:TextView
-        var fullOriginAddress: TextView
-        var fullDestAddress: TextView
-        var profilePic:ImageView
-        var tripOrginazer:TextView
-        var numberOfReviews:TextView
-        var div1:View
-        var div2:View
-        var cardp1:TextView
-        var cardp2:TextView
-        var ratingStar:ImageView
-        var peopleDriven:ImageView
+        var pricePerSeat: TextView = v.findViewById(R.id.trip_price_card)
+        var bookingPref: ImageView = v.findViewById(R.id.trip_ic_instant_card)
+        var vName: TextView = v.findViewById(R.id.trip_fullname_card)
+        var uPeopleDriven: TextView = v.findViewById(R.id.trip_driven_card4)
+        var uRatings: TextView = v.findViewById(R.id.trip_ratings_card2)
+        var uGenderAndAge: TextView = v.findViewById(R.id.trip_gender_age_card)
+        var fullOriginAddress: TextView = v.findViewById(R.id.trip_desc1_card)
+        var fullDestAddress: TextView = v.findViewById(R.id.trip_desc2_card)
+        var profilePic: ImageView = v.findViewById(R.id.trip_profile_image)
+        var tripOrganizer: TextView = v.findViewById(R.id.trip_orginazer)
+        var numberOfReviews: TextView = v.findViewById(R.id.trip_reviews_card3)
+        var div1: View = v.findViewById(R.id.divider_card)
+        var div2: View = v.findViewById(R.id.divider2)
+        var cardP1: TextView = v.findViewById(R.id.card_point)
+        var cardP2: TextView = v.findViewById(R.id.card_point2)
+        var ratingStar: ImageView = v.findViewById(R.id.rating_star_card)
+        var peopleDriven: ImageView = v.findViewById(R.id.people_driven_card)
         //
 
-       //  var vDestination: TextView
-         //var vDate: TextView
-        // var vOrigin: TextView
 
-        init {
-            peopleDriven = v.findViewById(R.id.people_driven_card)
-            ratingStar = v.findViewById(R.id.rating_star_card)
-            div1 = v.findViewById(R.id.divider_card)
-            div2 = v.findViewById(R.id.divider2)
-            cardp1 = v.findViewById(R.id.card_point)
-            cardp2 = v.findViewById(R.id.card_point2)
-            tripOrginazer = v.findViewById(R.id.trip_orginazer)
-            profilePic = v.findViewById(R.id.trip_profile_image)
-            uGenderAndAge = v.findViewById(R.id.trip_gender_age_card)
-            uRatings = v.findViewById(R.id.trip_ratings_card2)
-            uPeopleDriven = v.findViewById(R.id.trip_driven_card4)
-            vName = v.findViewById(R.id.trip_fullname_card)
-            date = v.findViewById(R.id.trip_date_card)
-            origin = v.findViewById(R.id.trip_origin_card)
-            destination = v.findViewById(R.id.trip_destination_card)
-            vehicleInfo = v.findViewById(R.id.trip_vehicleperf_card)
-            luggageSize = v.findViewById(R.id.trip_luggage_card)
-            noSmoking = v.findViewById(R.id.trip_ic_smoke_card)
-            petsAllowed = v.findViewById(R.id.trip_ic_pet_card)
-            numberOfSeats = v.findViewById(R.id.trip_seats_card)
-            pricePerSeat = v.findViewById(R.id.trip_price_card)
-            bookingPref = v.findViewById(R.id.trip_ic_instant_card)
-            fullOriginAddress = v.findViewById(R.id.trip_desc1_card)
-            fullDestAddress = v.findViewById(R.id.trip_desc2_card)
-            numberOfReviews = v.findViewById(R.id.trip_reviews_card3)
-        }
     }
+
+
 }
 

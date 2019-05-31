@@ -27,8 +27,11 @@
                     android:layout_height="wrap_content" app:srcCompat="@drawable/ic_swap_vertical_circle_blue_40dp"
                     android:id="@+id/switchBtn" android:layout_gravity="center"
                     android:adjustViewBounds="true"
-                    android:clickable="true" android:cropToPadding="true" android:elevation="1dp"
-                    android:background="@drawable/ic_circle_1_black_40dp"/>
+                    android:clickable="true"
+                    android:cropToPadding="true"
+                    android:elevation="1dp"
+                    android:background="@drawable/ic_circle_1_black_40dp"
+                    android:focusable="true" android:contentDescription="@string/switch_btn"/>
             <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
@@ -117,7 +120,7 @@
                 android:id="@+id/search_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Search" android:layout_marginEnd="20dp" android:layout_marginStart="20dp"
+                android:text="@string/search" android:layout_marginEnd="20dp" android:layout_marginStart="20dp"
                 android:padding="15dp" android:layout_marginTop="25dp"/>
 
     </LinearLayout>

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
+import com.google.firebase.database.core.utilities.Utilities
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_driver.*
 import me.lamine.goride.R
@@ -21,7 +22,9 @@ import me.lamine.goride.dataObjects.Trip
 import me.lamine.goride.dataObjects.User
 import me.lamine.goride.interfaces.OnGetDataListener
 import me.lamine.goride.tripActivity.TripAdapter
+import me.lamine.goride.utils.Database
 import me.lamine.goride.utils.decodeWilaya
+import me.lamine.goride.utils.setPb
 import me.lamine.goride.utils.wilayaArrayEN
 import java.text.SimpleDateFormat
 import java.util.*
@@ -50,7 +53,7 @@ class DriverFragment : androidx.fragment.app.Fragment() {
         this.driver_trips.setHasFixedSize(true)
         val llm = LinearLayoutManager(this.context)
         llm.orientation = RecyclerView.VERTICAL
-        driver_trips.isNestedScrollingEnabled = false;
+        driver_trips.isNestedScrollingEnabled = false
         driver_trips.layoutManager = llm
        // getSharedTrips()
         pullToRefreshDriverTrips.setOnRefreshListener {
@@ -59,7 +62,7 @@ class DriverFragment : androidx.fragment.app.Fragment() {
        // getUserTrips()
 
     }
-    private fun setPb(visibility: Int){
+/*    private fun setPb(visibility: Int){
 
         if (visibility == 1) {
             //trip_ac_submit_btn.visibility = View.GONE
@@ -75,7 +78,7 @@ class DriverFragment : androidx.fragment.app.Fragment() {
             // trip_ac_submit_btn.visibility = View.VISIBLE
 
         }
-    }
+    }*/
     private fun getSharedTrips(){
         listUser = arrayListOf()
         listOfCurrentTrips= arrayListOf()
@@ -131,25 +134,12 @@ class DriverFragment : androidx.fragment.app.Fragment() {
             .show()
     }
     private fun addTripStats(trip: Trip){
-        //todo DONT delete trip
         val nbTrips = listUser[0].tripsTraveled + 1
         val pplDriven = listUser[0].peopleDriven + trip.bookedUsers.size
-        val newRef = database.child("users").child(currentUser?.uid!!)
-        newRef.child("tripsTraveled").setValue(nbTrips){ databaseError, _ ->
-            if (databaseError != null) {
-                Log.i("FireBaseEroor",databaseError.message)
-                Toast.makeText(activity?.applicationContext!!, "Error $databaseError", Toast.LENGTH_LONG).show()}
-        }
-       newRef.child("peopleDriven").setValue(pplDriven){ databaseError, _ ->
-               if (databaseError != null) {
-                   Log.i("FireBaseEroor",databaseError.message)
-                   Toast.makeText(activity?.applicationContext!!, "Error $databaseError", Toast.LENGTH_LONG).show()}
-
-       }
-        val userRef = database.child("users").child(currentUser?.uid!!).child("activeTrips").child(trip.tripID)
-        userRef.removeValue()
-        database.push()
-
+        val path = "users/${Database().currentUserId()}"
+        Database().addToPath("$path/tripsTraveled",nbTrips)
+        Database().addToPath("$path/peopleDriven",pplDriven)
+        Database().removeFromPath("$path/activeTrips/${trip.tripID}")
 
     }
     private fun isTripDone(trip:Trip):Boolean{
@@ -176,9 +166,9 @@ class DriverFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun getUser(){
-        getUserInfo(object : OnGetDataListener {
+        Database().fetchUser(Database().currentUserId(),object : OnGetDataListener {
             override fun onStart() {
-               setPb(1)
+               setPb(driver_empty_layout,pb_driver,greyout_driver,1)
             }
             override fun onSuccess(data: DataSnapshot) {
                 //DO SOME THING WHEN GET DATA SUCCESS HERE
@@ -189,7 +179,7 @@ class DriverFragment : androidx.fragment.app.Fragment() {
                 }
                 setAdapter()
                 checkEndedTrips()
-                setPb(0)
+                setPb(driver_empty_layout,pb_driver,greyout_driver,0)
                 }
 
             override fun onFailed(databaseError: DatabaseError) {
@@ -197,24 +187,6 @@ class DriverFragment : androidx.fragment.app.Fragment() {
             }
         })
 
-    }
-    private fun getUserInfo(listener: OnGetDataListener){
-        listener.onStart()
-
-        val newRef = database.child("users").child(currentUser?.uid!!)
-        val eventListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                listener.onSuccess(dataSnapshot)
-               // setAdapter()
-               // checkEndedTrips()
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                listener.onFailed(databaseError)
-                throw databaseError.toException() as Throwable // don't ignore errors
-            }
-        }
-        newRef.addListenerForSingleValueEvent(eventListener)
     }
     private fun setAdapter(){
         if (listOfCurrentTrips.isNotEmpty()){
@@ -274,9 +246,10 @@ class DriverFragment : androidx.fragment.app.Fragment() {
     private fun getUserTrips(){
         listOfCurrentTrips = arrayListOf()
         listUser = arrayListOf()
-        findUserTrips(object : OnGetDataListener{
+        //todo add 1 to otd
+        Database().fetchFromCurrentUser("activeTrips",object : OnGetDataListener{
             override fun onStart() {
-                setPb(1)
+              setPb(driver_empty_layout,pb_driver,greyout_driver,1)
             }
 
             override fun onSuccess(data: DataSnapshot) {
@@ -286,6 +259,8 @@ class DriverFragment : androidx.fragment.app.Fragment() {
                         tripIDs.add(child.key.toString())
                     }
                     fetchTrips(tripIDs)
+                } else {
+                    setPb(driver_empty_layout,pb_driver,greyout_driver,0)
                 }
 
             }
@@ -295,18 +270,5 @@ class DriverFragment : androidx.fragment.app.Fragment() {
             }
         })
     }
-    private fun findUserTrips(listener: OnGetDataListener){
-        listener.onStart()
-        val userRef = database.child("users").child(currentUser?.uid!!).child("activeTrips")
-        val eventListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                listener.onSuccess(dataSnapshot)
 
-            }
-            override fun onCancelled(error: DatabaseError) {
-                listener.onFailed(error)
-            }
-        }
-        userRef.addListenerForSingleValueEvent(eventListener)
-    }
 }

@@ -31,6 +31,208 @@
     <string name="post_review">Post review</string>
     <string name="empty">EMPTY</string>
     <string name="review">Review</string>
+    <string name="logout">Logout</string>
+    <string name="send_a_message">Send a message…</string>
+    <string name="send_btn">send_btn</string>
+    <string name="type_a_message">Type a message…</string>
+    <string name="message">Message</string>
+    <string name="applogo">AppLogo</string>
+    <string name="log_in">Log In</string>
+    <string name="forgot_your_pasword">Forgot your password?</string>
+    <string name="dont_have_an_account">Don\'t have an account?</string>
+    <string name="create_one">Create one</string>
+    <string name="logo">logo</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="login_here">Login here.</string>
+    <string name="trip_form">Trip Form</string>
+    <string name="enter_your_origin_destination_and_stops_you_re_willing_to_make_to_pick_up_and_drop_off_passengers_on_the_way">
+        Enter your origin, destination, and stops you\'re willing to make to pick up and drop off passengers on the way.
+    </string>
+    <string name="stops">Stops</string>
+    <string name="helper_icon">helper icon</string>
+    <string name="ride_shcedule">Ride Shcedule</string>
+    <string name="ride_schedule">Ride Schedule</string>
+    <string name="enter_a_pricise_date_and_make_sure_to_post_the_correct_time_format">Enter a precise date and make sure
+        to post the correct time format.
+    </string>
+    <string name="at">at</string>
+    <string name="vehicle_details">Vehicle details</string>
+    <string name="this_helps_get_more_bookings_and_gives_passengers_a_way_to_identify_your_car_during_pick_up">This
+        helps get more bookings and gives passengers a way to identify your car during pick-up
+    </string>
+    <string name="skip_vehicle">Skip Vehicle</string>
+    <string name="vehcile_image">vehcile image</string>
+    <string name="vehicle_image">Vehicle Image</string>
+    <string name="add_a_photo">Add a photo</string>
+    <string name="model">Model</string>
+    <string name="type">Type</string>
+    <string name="color">Color</string>
+    <string name="year">Year</string>
+    <string name="license_plate">License Plate</string>
+    <string name="trip_preferences">Trip preferences</string>
+    <string name="this_informs_passengers_of_how_much_space_you_have_for_their_luggage_and_extras_before_they_book">This
+        informs passengers of how much space you have for their luggage and extras before they book
+    </string>
+    <string name="luggage">Luggage</string>
+    <string name="none">None</string>
+    <string name="luggage_ic">luggage_ic</string>
+    <string name="s">S</string>
+    <string name="m">M</string>
+    <string name="l">L</string>
+    <string name="other">Other</string>
+    <string name="smoke_icon">smoke_icon</string>
+    <string name="no_smoking">No Smoking</string>
+    <string name="pet_icon">pet_icon</string>
+    <string name="empty_seats">Empty Seats</string>
+    <string name="we_reccomend_putting_maximum_2_people_in_the_back_to_ensure_everyone_s_comfort">We recommend putting
+        maximum 2 people in the back to ensure everyone\'s comfort
+    </string>
+    <string name="select_a_number">Select a number</string>
+    <string name="_1">1</string>
+    <string name="_2">2</string>
+    <string name="_3">3</string>
+    <string name="_4">4</string>
+    <string name="_5">5</string>
+    <string name="_6">6</string>
+    <string name="_7">7</string>
+    <string name="price_per_seat">Price per seat</string>
+    <string name="enter_a_price">Enter a price</string>
+    <string name="we_suggest_prices_based_on_similar_trips_and_note_all_prices_are_in_dza">We suggest prices based on
+        similar trips and note all prices are in DZA
+    </string>
+    <string name="origin_to_destination">Origin to Destination</string>
+    <string name="consider_making_the_price_cheap">Consider making the price cheap</string>
+    <string name="booking_prefrence">Booking prefrence</string>
+    <string name="we_give_you_the_choice_of_either_reviewing_each_booking_or_accepting_all_bookings_instantly">We give
+        you the choice of either reviewing each booking or accepting all bookings instantly
+    </string>
+    <string name="select_a_type">Select a type</string>
+    <string name="credit_card">credit_Card</string>
+    <string name="request_to_book">Request to book</string>
+    <string name="you_approve_or_decline_passengers_manually">You approve or decline passengers manually</string>
+    <string name="you_control_on_who_gets_in_your_car">You control on who gets in your car</string>
+    <string name="passengers_are_instantly_booked">Passengers are instantly booked</string>
+    <string name="sit_back_relax_and_watch_the_bookings_roll_in">Sit back, relax and watch the bookings roll in</string>
+    <string name="policies">Policies</string>
+    <string name="our_policies_ensure_that_both_the_drivers_and_passengers_are_happy_with_the_service">Our policies
+        ensure that both the drivers and passengers are happy with the service.
+    </string>
+    <string name="passengers_pay_with_cash">Passengers pay with cash</string>
+    <string name="all_passengers_must_pay_using_cash_to_protect_you_from_scammed">All passengers must pay using cash to
+        protect you from scammed.
+    </string>
+    <string name="money_ic">money_ic</string>
+    <string name="you_get_paid_after_the_trip">You get paid after the trip</string>
+    <string name="you_ll_recieve_your_payout_after_the_trip_from_passengers_to_ensure_a_successful_trip">You\'ll receive
+        your payout after the trip from passengers to ensure a successful trip.
+    </string>
+    <string name="flash_ic">flash_ic</string>
+    <string name="ic_interested">ic_interested</string>
+    <string name="you_re_committed_to_driving_when_you_post_a_trip_and_you_could_be_suspended_if_you_cancel">You\'re
+        committed to driving when you post a trip and you could be suspended if you cancel.
+    </string>
+    <string name="trip_description">Trip Description</string>
+    <string name="use_this_space_to_write_any_details_relavant_to_your_trip_for_passengers_before_they_book">Use this
+        space to write any details relevant to your trip for passengers before they book
+    </string>
+    <string name="post_a_trip">Post a trip</string>
+    <string name="search">Search</string>
+    <string name="switch_btn">switch_btn</string>
+    <string name="origin">Origin</string>
+    <string name="destination">Destination</string>
+    <string name="address">Address</string>
+    <string name="description">Description</string>
+    <string name="people_driven">people_driven</string>
+    <string name="star_ic">star_ic</string>
+    <string name="arrow_ic">arrow_ic</string>
+    <string name="car_photo">car_photo</string>
+    <string name="ic_pet">ic_pet</string>
+    <string name="no_smoking_inside">No Smoking Inside</string>
+    <string name="type_color_year">Type, Color, Year</string>
+    <string name="car_model">Car Model</string>
+    <string name="_0123456789">0123456789</string>
+    <string name="date">Date</string>
+    <string name="rate_the">Rate the</string>
+    <string name="safety">Safety</string>
+    <string name="clear">Clear</string>
+    <string name="timeliness">Timeliness</string>
+    <string name="tell_us_more_optional">Tell us more (optional)</string>
+    <string name="how_was_your_driver">How was your driver?</string>
+    <string name="communications">Communications</string>
+    <string name="going_somewhere">Going Somewhere?</string>
+    <string name="driver_ic">driver_ic</string>
+    <string name="card_arrow">Card Arrow</string>
+    <string name="you_re_a_driver_with_empty_seats_that_you_re_looking_to_fill">You\'re a driver with empty seats that
+        you\'re looking to fill
+    </string>
+    <string name="passenger_ic">passenger_ic</string>
+    <string name="post_a_request">Post a request</string>
+    <string name="you_re_looking_for_a_shared_ride_and_want_to_get_notified_once_it_get_posted">You\'re looking for a
+        shared ride and want to get notified once it get posted.
+    </string>
+    <string name="plus_btn">plus_btn</string>
+    <string name="car_btn">car_btn</string>
+    <string name="user_img">user_img</string>
+    <string name="username">Username</string>
+    <string name="female_42">Female, 42</string>
+    <string name="_0_0">0.0</string>
+    <string name="_0_reviews">0 reviews</string>
+    <string name="_0">0</string>
+    <string name="trips_traveled">trips traveled</string>
+    <string name="user_rating">user_rating</string>
+    <string name="dummy">dummy</string>
+    <string name="joined">Joined</string>
+    <string name="phone_number">Phone number</string>
+    <string name="verified">Verified</string>
+    <string name="email">Email</string>
+    <string name="reviews_0">Reviews (0)</string>
+    <string name="pets">Pets</string>
+    <string name="you_have_no_messages">You have no messages!</string>
+    <string name="day_mon_01_at_01am">Day, Mon 01 at 01am</string>
+    <string name="do_you_wanna_accept_them_into_your_trip">Do you want to accept them into your trip?</string>
+    <string name="wants_to_join_your_ride">Wants to join your ride!</string>
+    <string name="may_23_at_16_20">May 23 at 16:20</string>
+    <string name="messages_goes_here">Messages goes here</string>
+    <string name="registration_progress">Registration Progress</string>
+    <string name="_0_0_0_reviews">0.0 * 0 reviews</string>
+    <string name="phone_number_verfication">Phone Number Verification</string>
+    <string name="please_enter_a_valid_phone_number_to_verify_your_identity">Please enter a valid phone number to verify
+        your identity.
+    </string>
+    <string name="code_verification">Code Verification</string>
+    <string name="please_enter_the_code_sent_to_you_by_an_sms_to_complete_the_registration">Please enter the code sent
+        to you by an SMS to complete the registration
+    </string>
+    <string name="didn_t_recieve_it_in_1_minute_click_here_to_try_again">Didn\'t receive it in 1 minute?, click here to
+        try again.
+    </string>
+    <string name="what_is_your_birthday">What is your birthday?</string>
+    <string name="you_must_be_at_least_18_years_old_to_use_ridego_please_enter_your_correct_birthday_below">You must be
+        at least 18 years old to use RideGo. Please enter your correct birthday below.
+    </string>
+    <string name="what_is_your_gender">What is your gender?</string>
+    <string name="please_enter_your_gender_for_better_safety_and_specification_when_traveling">Please enter your gender
+        for better safety and specification when traveling.
+    </string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="are_you_a_driver">Are you a driver?</string>
+    <string name="check_this_box_if_you_will_be_driving_this_will_adjust_your_prefrences">Check this box if you will be
+        driving, this will adjust your prefrences.
+    </string>
+    <string name="write_some_interesting_things_about_you_to_help_people_understand_what_type_of_person_you_are">Write
+        some interesting things about you to help people understand what type of person you are!
+    </string>
+    <string name="upload_a_picture_of_yourself">Upload a picture of yourself!</string>
+    <string name="take_a_selfie">Take a selfie!</string>
+    <string name="choose_from_photo_library">Choose from photo library</string>
+    <string name="terms_of_service">Terms of service</string>
+    <string name="please_agree_to_our">Please agree to our</string>
+    <string name="to_complete_your_registration_please_check_the_box_on_the_right">to complete your registration please
+        check the box on the right.
+    </string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
     <string-array name="countries_array">
         <item>Afghanistan</item>
         <item>Albania</item>

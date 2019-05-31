@@ -45,9 +45,9 @@ android:orientation="vertical">
 
     <TextView android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:text="Registration Progress"
+              android:text="@string/registration_progress"
               android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
-              android:layout_marginLeft="20dp"/>
+              android:layout_marginStart="20dp"/>
     <ProgressBar
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="match_parent"
@@ -58,7 +58,8 @@ android:orientation="vertical">
             android:layout_marginBottom="20dp"/>
     <ViewFlipper
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:id="@+id/view_flipper" android:layout_weight="0">
+            android:id="@+id/view_flipper"
+            android:layout_height="match_parent">
 
         <LinearLayout
                 android:layout_width="match_parent"
@@ -66,15 +67,15 @@ android:orientation="vertical">
                 android:orientation="vertical" android:id="@+id/phone_verf_layout">
             <TextView android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:text="Phone Number Verfication"
+                      android:text="@string/phone_number_verfication"
                       android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="40dp"
-                      android:layout_marginLeft="20dp" android:id="@+id/phone_verf_title"
+                      android:layout_marginStart="20dp" android:id="@+id/phone_verf_title"
                       android:textColor="@android:color/black"/>
             <TextView android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:text="Please enter a valid phone number to verify your identity."
+                      android:text="@string/please_enter_a_valid_phone_number_to_verify_your_identity"
                       android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
-                      android:layout_marginLeft="20dp" android:id="@+id/phone_verf_desc"/>
+                      android:layout_marginStart="20dp" android:id="@+id/phone_verf_desc"/>
             <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
                     android:id="@+id/phone_nb_label"
                     android:soundEffectsEnabled="false"
@@ -103,15 +104,15 @@ android:orientation="vertical">
                 android:orientation="vertical" android:id="@+id/code_verf_layout">
             <TextView android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:text="Code Verification"
+                      android:text="@string/code_verification"
                       android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="40dp"
-                      android:layout_marginLeft="20dp" android:id="@+id/code_verf_title"
+                      android:layout_marginStart="20dp" android:id="@+id/code_verf_title"
                       android:textColor="@android:color/black"/>
             <TextView android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:text="Please enter the code sent to you by an SMS to complete the registration"
+                      android:text="@string/please_enter_the_code_sent_to_you_by_an_sms_to_complete_the_registration"
                       android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
-                      android:layout_marginLeft="20dp" android:id="@+id/code_verf_desc"/>
+                      android:layout_marginStart="20dp" android:id="@+id/code_verf_desc"/>
             <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
                     android:id="@+id/code_label"
                     android:soundEffectsEnabled="false"
@@ -122,7 +123,7 @@ android:orientation="vertical">
                     app:helperTextColor="@color/colorAccent" app:counterTextColor="@color/colorSecondary"
                     android:layout_marginStart="20dp" android:layout_marginRight="20dp"
                     android:layout_marginLeft="20dp" android:layout_marginTop="20dp" android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="20dp" app:maxCharacters="6">
+                    app:maxCharacters="6" android:layout_marginBottom="10dp">
 
                 <studio.carbonylgroup.textfieldboxes.ExtendedEditText
                         android:id="@+id/code_edittext"
@@ -132,6 +133,12 @@ android:orientation="vertical">
 
 
             </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+            <TextView
+                    android:text="@string/didn_t_recieve_it_in_1_minute_click_here_to_try_again"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/send_code_again"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16sp" android:gravity="center"/>
 
         </LinearLayout>
         <LinearLayout
@@ -140,15 +147,15 @@ android:orientation="vertical">
                 android:orientation="vertical" android:id="@+id/pref_layout">
             <TextView android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:text="What is your birthday?"
+                      android:text="@string/what_is_your_birthday"
                       android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="40dp"
-                      android:layout_marginLeft="20dp" android:id="@+id/pref_bday_title"
+                      android:layout_marginStart="20dp" android:id="@+id/pref_bday_title"
                       android:textColor="@android:color/black"/>
             <TextView android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:text="You must be at least 18 years old to use RideGo. Please enter your correct birthday below."
+                      android:text="@string/you_must_be_at_least_18_years_old_to_use_ridego_please_enter_your_correct_birthday_below"
                       android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
-                      android:layout_marginLeft="20dp" android:id="@+id/pref_bday_desc"/>
+                      android:layout_marginStart="20dp" android:id="@+id/pref_bday_desc"/>
 
             <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
                     android:id="@+id/age_label"
@@ -172,27 +179,27 @@ android:orientation="vertical">
             </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
             <TextView android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:text="What is your gender?"
+                      android:text="@string/what_is_your_gender"
                       android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="40dp"
-                      android:layout_marginLeft="20dp" android:id="@+id/pref_bday_title2"
+                      android:layout_marginStart="20dp" android:id="@+id/pref_bday_title2"
                       android:textColor="@android:color/black"/>
             <TextView android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:text="Please enter your gender for better safety and specification when traveling."
+                      android:text="@string/please_enter_your_gender_for_better_safety_and_specification_when_traveling"
                       android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
-                      android:layout_marginLeft="20dp" android:id="@+id/pref_bday_desc2"/>
+                      android:layout_marginStart="20dp" android:id="@+id/pref_bday_desc2"/>
             <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" android:layout_marginStart="20dp"
                     android:layout_marginTop="10dp">
                 <CheckBox
-                        android:text="Male"
+                        android:text="@string/male"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" android:id="@+id/male_checkbox" android:layout_weight="1"
                         android:textStyle="bold" android:textSize="18sp"/>
                 <CheckBox
-                        android:text="Female"
+                        android:text="@string/female"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" android:id="@+id/female_checkbox" android:layout_weight="1"
                         android:textStyle="bold" android:textSize="18sp"/>
@@ -205,9 +212,9 @@ android:orientation="vertical">
                 android:orientation="vertical" android:id="@+id/desc_layout">
             <TextView android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:text="Are you a driver?"
+                      android:text="@string/are_you_a_driver"
                       android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="40dp"
-                      android:layout_marginLeft="20dp" android:id="@+id/driver_title"
+                      android:layout_marginStart="20dp" android:id="@+id/driver_title"
                       android:textColor="@android:color/black"/>
             <LinearLayout
                     android:orientation="horizontal"
@@ -215,27 +222,27 @@ android:orientation="vertical">
                     android:layout_height="wrap_content">
                 <TextView android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
-                          android:text="Check this box if you will be driving, this will adjust your prefrences."
+                          android:text="@string/check_this_box_if_you_will_be_driving_this_will_adjust_your_prefrences"
                           android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
-                          android:layout_marginLeft="20dp" android:id="@+id/driver_desc" android:layout_weight="1"
+                          android:layout_marginStart="20dp" android:id="@+id/driver_desc" android:layout_weight="1"
                           android:layout_marginBottom="20dp"/>
                 <CheckBox
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" android:id="@+id/driver_checkbox" android:layout_weight="0"
                         android:gravity="center" android:foregroundGravity="center" android:layout_gravity="center"
-                        android:layout_marginEnd="10dp" android:layout_marginRight="10dp"/>
+                        android:layout_marginEnd="10dp"/>
             </LinearLayout>
             <TextView android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:text="Description"
+                      android:text="@string/description"
                       android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="40dp"
-                      android:layout_marginLeft="20dp" android:id="@+id/desc_title"
+                      android:layout_marginStart="20dp" android:id="@+id/desc_title"
                       android:textColor="@android:color/black"/>
             <TextView android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:text="Write some interesting things about you to help people understand what type of person you are!"
+                      android:text="@string/write_some_interesting_things_about_you_to_help_people_understand_what_type_of_person_you_are"
                       android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
-                      android:layout_marginLeft="20dp" android:id="@+id/desc_description"/>
+                      android:layout_marginStart="20dp" android:id="@+id/desc_description"/>
             <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
                     android:id="@+id/desc_label"
                     android:soundEffectsEnabled="false"
@@ -262,9 +269,9 @@ android:orientation="vertical">
                 android:orientation="vertical" android:id="@+id/terms_layout">
             <TextView android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:text="Upload a picture of yourself!"
+                      android:text="@string/upload_a_picture_of_yourself"
                       android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="5dp"
-                      android:layout_marginLeft="20dp" android:id="@+id/pfp_title"
+                      android:layout_marginStart="20dp" android:id="@+id/pfp_title"
                       android:textColor="@android:color/black"/>
             <RelativeLayout
                     android:layout_width="match_parent"
@@ -292,18 +299,20 @@ android:orientation="vertical">
             <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:id="@+id/selfie_btn">
+                    android:layout_height="wrap_content" android:id="@+id/selfie_btn" android:paddingTop="10dp"
+                    android:paddingBottom="10dp" android:paddingStart="5dp" android:paddingEnd="5dp">
                 <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" app:srcCompat="@drawable/ic_add_a_photo_blue_40dp"
-                        android:id="@+id/imageView9" android:layout_weight="0" android:layout_marginLeft="10dp"/>
+                        android:id="@+id/imageView9" android:layout_weight="0" android:layout_marginStart="10dp"
+                        android:contentDescription="@string/dummy"/>
                 <TextView android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
-                          android:text="Take a selfie!"
+                          android:text="@string/take_a_selfie"
                           android:textSize="16sp" android:textStyle="bold"
                           android:id="@+id/pfp_title2"
                           android:textColor="@color/colorSecondary" android:layout_weight="0"
-                          android:layout_marginLeft="20dp" android:gravity="center" android:layout_gravity="center"/>
+                          android:layout_marginStart="20dp" android:gravity="center" android:layout_gravity="center"/>
             </LinearLayout>
             <View
                     android:id="@+id/divider14"
@@ -314,18 +323,20 @@ android:orientation="vertical">
             <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:id="@+id/gallery_btn">
+                    android:layout_height="wrap_content" android:id="@+id/gallery_btn" android:paddingEnd="5dp"
+                    android:paddingTop="10dp" android:paddingStart="5dp" android:paddingBottom="10dp">
                 <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" app:srcCompat="@drawable/ic_photo_library_24dp"
-                        android:id="@+id/photo_imgview" android:layout_weight="0" android:layout_marginStart="10dp"/>
+                        android:id="@+id/photo_imgview" android:layout_weight="0" android:layout_marginStart="10dp"
+                        android:contentDescription="@string/dummy"/>
                 <TextView android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
-                          android:text="Choose from photo library"
+                          android:text="@string/choose_from_photo_library"
                           android:textSize="16sp" android:textStyle="bold"
                           android:id="@+id/pfp_upload_text"
                           android:textColor="@color/colorSecondary" android:layout_weight="0"
-                          android:layout_marginLeft="20dp" android:gravity="center" android:layout_gravity="center"/>
+                          android:layout_marginStart="20dp" android:gravity="center" android:layout_gravity="center"/>
             </LinearLayout>
             <View
                     android:id="@+id/divider15"
@@ -335,9 +346,9 @@ android:orientation="vertical">
             />
             <TextView android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:text="Terms of service "
+                      android:text="@string/terms_of_service"
                       android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="20dp"
-                      android:layout_marginLeft="20dp" android:id="@+id/terms_title"
+                      android:layout_marginStart="20dp" android:id="@+id/terms_title"
                       android:textColor="@android:color/black"/>
             <LinearLayout
                     android:orientation="horizontal"
@@ -354,41 +365,56 @@ android:orientation="vertical">
                             android:layout_height="wrap_content">
                         <TextView android:layout_width="wrap_content"
                                   android:layout_height="wrap_content"
-                                  android:text="Please agree to our  "
+                                  android:text="@string/please_agree_to_our"
                                   android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
                                   android:id="@+id/terms_desc1"
-                                  android:layout_weight="0" android:layout_marginLeft="20dp"/>
+                                  android:layout_weight="0"
+                                  android:layout_marginStart="20dp"/>
                         <TextView android:layout_width="wrap_content"
                                   android:layout_height="wrap_content"
-                                  android:text="terms of service "
+                                  android:text="@string/terms_of_service"
                                   android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
                                   android:id="@+id/terms_desc" android:layout_weight="0"
                                   android:textColor="@color/colorAccent"/>
                     </LinearLayout>
                     <TextView android:layout_width="wrap_content"
                               android:layout_height="wrap_content"
-                              android:text="to complete your registration please check the box on the right."
+                              android:text="@string/to_complete_your_registration_please_check_the_box_on_the_right"
                               android:textSize="16sp" android:textStyle="bold"
                               android:id="@+id/terms_desc2"
-                              android:layout_weight="0" android:layout_marginLeft="20dp"
+                              android:layout_marginLeft="20dp"
                               android:layout_marginRight="20dp"/>
                 </LinearLayout>
                 <CheckBox
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" android:id="@+id/terms_checkbox" android:layout_weight="0"
-                        android:layout_gravity="center" android:layout_marginRight="10dp"/>
+                        android:layout_gravity="center" android:layout_marginEnd="10dp"/>
             </LinearLayout>
 
         </LinearLayout>
 
 
     </ViewFlipper>
-    <Button
-            android:text="Next"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:id="@+id/next_button" android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp" android:layout_weight="0" android:layout_marginBottom="50dp"
-            android:layout_marginTop="20dp"/>
+    <RelativeLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <Button
+                android:text="@string/previous"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/previous_btn"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="20dp"/>
+        <Button
+                android:layout_alignEnd="@+id/previous_btn"
+                android:layout_alignParentEnd="true"
+                android:text="@string/next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/next_button"
+                android:layout_marginEnd="20dp"/>
+    </RelativeLayout>
 </LinearLayout>
 </ScrollView>
 </LinearLayout>

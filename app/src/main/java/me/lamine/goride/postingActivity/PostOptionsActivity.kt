@@ -1,7 +1,7 @@
 package me.lamine.goride.postingActivity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import kotlinx.android.synthetic.main.activity_post_something.*
@@ -18,7 +18,6 @@ class PostOptionsActivity: AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
          val postARideCard = findViewById<CardView>(R.id.card_img)
         postARideCard.setOnClickListener {
-            Log.i("Options","ACTIVITY STARTED")
             val intent = Intent(this, PostingActivity::class.java)
             startActivity(intent)
             this.finish()

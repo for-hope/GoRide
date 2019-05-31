@@ -13,7 +13,6 @@ class InboxActivity: AppCompatActivity() {
     private val tag = "InboxActivity"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         setContentView(R.layout.activity_inbox)
         setSupportActionBar(findViewById(R.id.inbox_toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

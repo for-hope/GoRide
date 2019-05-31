@@ -30,23 +30,29 @@
                 android:paddingLeft="10dp" android:paddingRight="10dp">
             <ImageView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" app:srcCompat="@drawable/ic_directions_car_black_40dp"
-                    android:id="@+id/imageView11" android:layout_weight="0"/>
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_directions_car_black_40dp"
+                    android:id="@+id/car_image" android:contentDescription="@string/car_btn"/>
             <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="10dp">
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="10dp">
                 <TextView
-                        android:text="Origin to Destination"
+                        android:text="@string/origin_to_destination"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:id="@+id/origin_to_des" android:layout_weight="1"
-                        android:textSize="16sp" android:textColor="@android:color/white" android:textStyle="bold"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/origin_to_des"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/white"
+                        android:textStyle="bold"
                 />
                 <TextView
-                        android:text="Post Request"
+                        android:text="@string/post_a_request"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" android:id="@+id/card_txt_postreq"
-                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/card_txt_postreq"
                         android:textSize="15sp" android:textColor="@android:color/white" android:textStyle="normal"
                 />
             </LinearLayout>
@@ -54,7 +60,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/imageView8" android:layout_weight="0" app:srcCompat="@drawable/ic_add_white_24dp"
-                    android:foregroundGravity="center" android:layout_gravity="center" android:layout_marginEnd="10dp"/>
+                    android:foregroundGravity="center" android:layout_gravity="center" android:layout_marginEnd="10dp"
+                    android:contentDescription="@string/plus_btn"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
     <com.gigamole.navigationtabstrip.NavigationTabStrip

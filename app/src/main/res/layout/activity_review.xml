@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
-              android:layout_height="match_parent" android:orientation="vertical">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
-    <com.google.android.material.appbar.AppBarLayout android:layout_width="match_parent"
-                                                     android:layout_height="wrap_content">
+    <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.Toolbar
                 android:id="@+id/review_toolbar"
@@ -22,7 +25,7 @@
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                       android:orientation="vertical">
             <TextView
-                    android:text="How was your driver?"
+                    android:text="@string/how_was_your_driver"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" android:id="@+id/review_text1" android:gravity="center"
                     android:textSize="18sp" android:textColor="@color/colorSecondary" android:textStyle="bold"
@@ -77,45 +80,60 @@
 
             </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
             <TextView
-                    android:text="Tell us more (optional)"
+                    android:text="@string/tell_us_more_optional"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" android:id="@+id/review_text2"
                     android:textSize="18sp" android:textColor="@color/colorSecondary"
-                    android:paddingBottom="10dp" android:paddingTop="10dp" android:paddingStart="20dp"/>
-            <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:background="@drawable/custom_border"
-                    android:layout_marginStart="20dp" android:layout_marginEnd="20dp"
-                    android:id="@+id/review_timeliness_layout">
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp"
+                   android:layout_marginStart="20dp"
+                   android:layout_marginEnd="20dp"/>
+
 
                 <LinearLayout
                         android:orientation="vertical"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/custom_border"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp">
                     <LinearLayout
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent">
                         <TextView
-                                android:text="Rate the "
+                                android:text="@string/rate_the"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" android:id="@+id/review_text3"
-                                android:textSize="16sp" android:textColor="@color/btnBlack"
-                                android:paddingBottom="5dp" android:paddingTop="5dp" android:paddingStart="15dp"/>
-                        <TextView
-                                android:text="Timeliness"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content" android:id="@+id/review_text4"
-                                android:textSize="16sp" android:textColor="@color/colorAccent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/review_text3"
+                                android:textSize="16sp"
+                                android:textColor="@color/btnBlack"
+                                android:paddingBottom="5dp"
                                 android:paddingTop="5dp"
-                                android:layout_weight="1" android:paddingBottom="5dp" android:textStyle="bold"/>
+                                android:layout_marginStart="15dp"/>
                         <TextView
-                                android:text="Clear"
+                                android:text="@string/timeliness"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content" android:id="@+id/review_clear_t"
-                                android:textSize="14sp" android:textColor="@color/browser_actions_title_color"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/review_text4"
+                                android:textSize="16sp"
+                                android:textColor="@color/colorAccent"
                                 android:paddingTop="5dp"
-                                android:layout_weight="1" android:paddingBottom="5dp" android:gravity="end"/>
+                                android:layout_weight="1"
+                                android:paddingBottom="5dp"
+                                android:layout_marginStart="5dp"
+                                android:textStyle="bold"/>
+                        <TextView
+                                android:text="@string/clear"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/review_clear_t"
+                                android:textSize="14sp"
+                                android:textColor="@color/browser_actions_title_color"
+                                android:paddingTop="5dp"
+                                android:layout_weight="1"
+                                android:paddingBottom="5dp"
+                                android:gravity="end"/>
                     </LinearLayout>
                     <LinearLayout
                             android:orientation="horizontal"
@@ -145,36 +163,39 @@
                                 android:id="@+id/review_t_star_5" android:contentDescription="@string/empty"/>
                     </LinearLayout>
                 </LinearLayout>
-            </FrameLayout>
-            <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:background="@drawable/custom_border"
-                    android:layout_marginStart="20dp" android:layout_marginEnd="20dp"
-                    android:id="@+id/review_safety_layout" android:layout_marginTop="10dp">
+
+
 
                 <LinearLayout
                         android:orientation="vertical"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" android:id="@+id/linearlayout">
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/custom_border"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:id="@+id/review_safety_layout"
+                        android:layout_marginTop="10dp">
                     <LinearLayout
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
                         <TextView
-                                android:text="Rate the "
+                                android:text="@string/rate_the"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" android:id="@+id/textview_ratethes"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/textview_ratethes"
                                 android:textSize="16sp" android:textColor="@color/btnBlack"
-                                android:paddingBottom="5dp" android:paddingTop="5dp" android:paddingStart="15dp"/>
+                                android:paddingBottom="5dp" android:paddingTop="5dp"
+                                android:layout_marginStart="15dp"/>
                         <TextView
-                                android:text="Safety"
+                                android:text="@string/safety"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content" android:id="@+id/review_safety_text"
                                 android:textSize="16sp" android:textColor="@color/colorAccent"
                                 android:paddingTop="5dp"
                                 android:layout_weight="1" android:paddingBottom="5dp" android:textStyle="bold"/>
                         <TextView
-                                android:text="Clear"
+                                android:text="@string/clear"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content" android:id="@+id/review_clear_s"
                                 android:textSize="14sp" android:textColor="@color/browser_actions_title_color"
@@ -209,37 +230,36 @@
                                 android:id="@+id/review_s_star_5" android:contentDescription="@string/empty"/>
                     </LinearLayout>
                 </LinearLayout>
-            </FrameLayout>
-            <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" android:background="@drawable/custom_border"
-                    android:layout_marginStart="20dp" android:layout_marginEnd="20dp"
-                    android:id="@+id/review_com_layout" android:layout_marginTop="10dp"
-                    android:layout_marginBottom="30dp">
+
+
 
                 <LinearLayout
                         android:orientation="vertical"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent" android:background="@drawable/custom_border"
+                        android:layout_marginStart="20dp" android:layout_marginEnd="20dp"
+                        android:id="@+id/review_com_layout" android:layout_marginTop="10dp"
+                        android:layout_marginBottom="30dp">
                     <LinearLayout
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
                         <TextView
-                                android:text="Rate the "
+                                android:text="@string/rate_the"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content" android:id="@+id/textview_ratethec"
                                 android:textSize="16sp" android:textColor="@color/btnBlack"
-                                android:paddingBottom="5dp" android:paddingTop="5dp" android:paddingStart="15dp"/>
+                                android:paddingBottom="5dp" android:paddingTop="5dp"
+                                android:layout_marginStart="15dp"/>
                         <TextView
-                                android:text="Communications"
+                                android:text="@string/communications"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content" android:id="@+id/review_com_text"
                                 android:textSize="16sp" android:textColor="@color/colorAccent"
                                 android:paddingTop="5dp"
                                 android:layout_weight="0" android:paddingBottom="5dp" android:textStyle="bold"/>
                         <TextView
-                                android:text="Clear"
+                                android:text="@string/clear"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content" android:id="@+id/review_clear_c"
                                 android:textSize="14sp" android:textColor="@color/browser_actions_title_color"
@@ -274,7 +294,7 @@
                                 android:id="@+id/review_c_star_5" android:contentDescription="@string/empty"/>
                     </LinearLayout>
                 </LinearLayout>
-            </FrameLayout>
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

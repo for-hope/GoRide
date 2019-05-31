@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:foregroundGravity="center"
+        android:layout_gravity="center"
+        android:id="@+id/luggage_layout" xmlns:android="http://schemas.android.com/apk/res/android">
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_work_black_24dp"
+            android:id="@+id/luggage_ic_ac"
+            android:contentDescription="@string/luggage"/>
+    <TextView
+            android:text=""
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/trip_ac_luggage"
+            android:textColor="@color/backgroundColor"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:foregroundGravity="center"
+            android:layout_gravity="center"/>
+</FrameLayout>

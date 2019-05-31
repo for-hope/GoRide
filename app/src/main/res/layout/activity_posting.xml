@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/rl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <ProgressBar android:indeterminate="true"
+                 android:layout_centerInParent="true"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+
+                 android:id="@+id/progressBar1" android:visibility="gone"
+                 android:elevation="@dimen/design_touchable_tab_text_size_2line"/>
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" android:background="#B0000000" android:id="@+id/greout_layout"
+            android:elevation="1dp" android:visibility="gone">
+    </LinearLayout>
+    <ScrollView
+            android:id="@+id/scrolling"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" android:background="#eeeeee" android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true" android:layout_marginTop="0dp" android:layout_marginStart="0dp"
+            android:elevation="0dp">
+
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#eeeeee"
+                android:paddingTop="40dp" android:paddingEnd="20dp" android:paddingRight="20dp"
+                android:paddingLeft="20dp"
+                android:paddingStart="20dp" android:id="@+id/atf_Linear_Layout" android:orientation="vertical">
+
+            <TextView
+                    android:text="@string/trip_form"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/form_title"
+                    android:textSize="22sp"
+                    android:textColor="@android:color/black"
+                    android:fontFamily="@font/roboto_black"
+                    android:paddingBottom="20dp"/>
+            <TextView
+                    android:text="@string/enter_your_origin_destination_and_stops_you_re_willing_to_make_to_pick_up_and_drop_off_passengers_on_the_way"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/form_desc1" android:textSize="16sp"
+                    android:layout_marginBottom="20dp"/>
+            <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:id="@+id/origin_label"
+                    android:soundEffectsEnabled="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:primaryColor="@color/colorSecondary"
+                    app:labelText="Origin"
+                    android:layout_marginBottom="30dp"
+                    app:helperTextColor="@color/colorAccent"
+                    app:counterTextColor="@color/colorSecondary">
+
+                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                        android:id="@+id/edittext_origin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                />
+
+            </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+            <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:id="@+id/destination_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:primaryColor="@color/colorSecondary"
+                    android:soundEffectsEnabled="false"
+                    app:labelText="Destination"
+                    app:helperTextColor="@color/colorAccent"
+                    android:layout_marginBottom="30dp">
+
+                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                        android:id="@+id/edittext_destination"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                />
+
+
+            </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+            <TextView
+                        android:text="@string/stops"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/Stops_textfield"
+                        android:textColor="#a4232323"
+                        android:textSize="15sp"
+                        android:layout_marginBottom="8dp"
+                        android:textStyle="bold"/>
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/relative_layout_form">
+
+            </LinearLayout>
+            <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:id="@+id/add_field_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:primaryColor="@color/colorSecondary"
+                    app:labelText="Stop: Pick up people along the way"
+                    app:helperTextColor="@color/colorAccent"
+                    app:iconSignifier="@drawable/ic_add_black_24dp"
+                    app:enabled="false">
+
+                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                        android:id="@+id/edittext_origin4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                />
+
+
+            </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+            <View
+                    android:id="@+id/divider1"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider"
+                    android:layout_marginTop="60dp" android:layout_marginBottom="30dp"/>
+            <TextView
+                    android:text="@string/ride_schedule"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ride_shcedule_txt"
+                    android:textSize="22sp"
+                    android:textColor="@android:color/black"
+                    android:fontFamily="@font/roboto_black"
+                    android:paddingBottom="20dp"/>
+            <TextView
+                    android:text="@string/enter_a_pricise_date_and_make_sure_to_post_the_correct_time_format"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView7"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="20dp"/>
+            <include layout="@layout/view_ride_schedule"/>
+            <View
+                    android:id="@+id/divider2"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider"
+                    android:layout_marginTop="60dp" android:layout_marginBottom="30dp"/>
+            <TextView
+                    android:text="@string/vehicle_details"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/cardetails_shcedule_txt2"
+                    android:textSize="22sp"
+                    android:textColor="@android:color/black"
+                    android:fontFamily="@font/roboto_black"
+                    android:layout_marginBottom="20dp"/>
+            <TextView
+                    android:text="@string/this_helps_get_more_bookings_and_gives_passengers_a_way_to_identify_your_car_during_pick_up"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/vehicle_details_desc"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="20dp"/>
+            <CheckBox
+                    android:text="@string/skip_vehicle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:id="@+id/skip_vehicle_check"/>
+            <include layout="@layout/view_vehicle_form"/>
+            <View
+                    android:id="@+id/divider4"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider"
+                    android:layout_marginTop="60dp"
+                    android:layout_marginBottom="30dp"/>
+            <TextView
+                    android:text="@string/trip_preferences"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/cardetails_tirp_pref"
+                    android:textSize="22sp"
+                    android:textColor="@android:color/black"
+                    android:fontFamily="@font/roboto_black"
+                    android:paddingBottom="20dp"/>
+            <TextView
+                    android:text="@string/this_informs_passengers_of_how_much_space_you_have_for_their_luggage_and_extras_before_they_book"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tip_p_desc"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="20dp"/>
+            <TextView
+                    android:text="@string/luggage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/text_title"
+                    android:textSize="20sp"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"/>
+           <include layout="@layout/view_luggage"/>
+            <TextView
+                    android:text="@string/other"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/text_other"
+                    android:textSize="20sp"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"/>
+           <include layout="@layout/view_preferences"/>
+            <View
+                    android:id="@+id/divider5"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="?android:attr/listDivider"
+                    android:layout_marginTop="60dp"
+                    android:layout_marginBottom="30dp"
+                    android:layout_weight="1"/>
+            <include layout="@layout/view_seats"/>
+            <View
+                    android:id="@+id/divider6"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="?android:attr/listDivider"
+                    android:layout_marginTop="60dp" android:layout_marginBottom="30dp" android:layout_weight="1"/>
+            <include layout="@layout/view_price_seat"/>
+            <View
+                    android:id="@+id/divider7"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="?android:attr/listDivider"
+                    android:layout_marginTop="60dp" android:layout_marginBottom="30dp" android:layout_weight="1"/>
+            <TextView
+                    android:text="@string/booking_prefrence"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/cardetails_price_pref2"
+                    android:textSize="22sp"
+                    android:textColor="@android:color/black" android:fontFamily="@font/roboto_black"
+                    android:layout_marginBottom="20dp"/>
+            <TextView
+                    android:text="@string/we_give_you_the_choice_of_either_reviewing_each_booking_or_accepting_all_bookings_instantly"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/tip_booking_desc4" android:textSize="16sp"
+                    android:paddingBottom="20dp"/>
+            <TextView
+                    android:text="@string/select_a_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/text_other4" android:textSize="16sp"
+                    android:textColor="@color/btnBlack" android:textStyle="bold" android:paddingBottom="10dp"/>
+         <include layout="@layout/view_request_book"/>
+            <View
+                    android:id="@+id/divider10"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="?android:attr/listDivider"
+                    android:layout_marginTop="10dp" android:layout_marginBottom="10dp" android:layout_weight="1"
+                    android:visibility="invisible"/>
+          <include layout="@layout/view_instant_book"/>
+            <View
+                    android:id="@+id/divider11"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="?android:attr/listDivider"
+                    android:layout_marginTop="60dp" android:layout_marginBottom="30dp" android:layout_weight="1"/>
+            <include layout="@layout/view_policies_form"/>
+            <View
+                    android:id="@+id/divider12"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="?android:attr/listDivider"
+                    android:layout_marginTop="60dp" android:layout_marginBottom="30dp" android:layout_weight="1"/>
+            <TextView
+                    android:text="@string/trip_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/cardetails_price_pref5"
+                    android:textSize="22sp"
+                    android:textColor="@android:color/black" android:fontFamily="@font/roboto_black"
+                    android:paddingBottom="20dp"/>
+            <TextView
+                    android:text="@string/use_this_space_to_write_any_details_relavant_to_your_trip_for_passengers_before_they_book"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/tip_booking_desc3" android:textSize="16sp"
+                    android:paddingBottom="30dp"/>
+            <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:id="@+id/tripdesc_label"
+                    android:soundEffectsEnabled="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    app:primaryColor="@color/colorSecondary"
+                    app:labelText="Description"
+                    app:helperTextColor="@color/colorAccent" app:counterTextColor="@color/colorSecondary"
+                    android:paddingBottom="30dp">
+
+                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/edittext_tripdesc" android:inputType="textMultiLine|textLongMessage"/>
+
+
+            </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+            <com.google.android.material.button.MaterialButton
+                    android:id="@+id/trip_ac_submit_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/post_a_trip"/>
+        </LinearLayout>
+
+
+    </ScrollView>
+</RelativeLayout>
+
+

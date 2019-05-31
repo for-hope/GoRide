@@ -10,6 +10,10 @@ import kotlinx.android.synthetic.main.activity_trips_list.*
 import me.lamine.goride.R
 import me.lamine.goride.dataObjects.TripSearchData
 import java.util.*
+import com.google.android.gms.maps.model.LatLng
+import android.location.Geocoder
+
+
 
 
 class TripsListActivity : AppCompatActivity() {
@@ -18,10 +22,10 @@ class TripsListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_trips_list)
         setSupportActionBar(findViewById(R.id.results_toolbar))
-        supportActionBar?.setDisplayHomeAsUpEnabled(true);
-        supportActionBar?.setDisplayShowHomeEnabled(true);
-        val toText:String = intent.getStringExtra("to")
-        val fromText:String = intent.getStringExtra("from")
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        val toText: String = intent.getStringExtra("to")
+        val fromText: String = intent.getStringExtra("from")
         val tsd: TripSearchData = intent.getSerializableExtra("tsd") as TripSearchData
         val listOfStringTrips: ArrayList<String> = arrayListOf()
 
@@ -29,13 +33,10 @@ class TripsListActivity : AppCompatActivity() {
         Log.i("SEARCH_TRIPS", listOfStringTrips.size.toString())
         bundle.putStringArrayList("TripsList", listOfStringTrips)
         bundle.putSerializable("PassedTrip", intent.getSerializableExtra("PostingActivity"))
-        bundle.putString("toText",toText)
-        bundle.putString("fromText",fromText)
+        bundle.putString("toText", toText)
+        bundle.putString("fromText", fromText)
         val str = "${tsd.originSubCity} to ${tsd.destSubCity}"
         origin_to_des.text = str
-
-        //val tripResultsFragment:Fragment = TripResultFragment()
-        //tripResultsFragment.arguments = bundle
 
         val navigationTabStrip = findViewById<NavigationTabStrip>(R.id.trip_results_tablayout)
         val fragmentAdapter =
@@ -43,8 +44,7 @@ class TripsListActivity : AppCompatActivity() {
         viewpager_r.adapter = fragmentAdapter
         navigationTabStrip.setViewPager(viewpager_r)
         initNavStripe(navigationTabStrip)
-        // tabLayout.setupWithViewPager(viewpager_v)
-        //  tabLayout.setTabTextColors(ContextCompat.getColor(this,R.color.colorPrimary), ContextCompat.getColor(this,R.color.whiteColor))
+
 
 
     }

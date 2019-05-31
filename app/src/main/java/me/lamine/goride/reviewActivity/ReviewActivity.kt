@@ -1,21 +1,19 @@
 package me.lamine.goride.reviewActivity
 
-import android.media.Image
+
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_review.*
 import me.lamine.goride.R
 import me.lamine.goride.dataObjects.User
 import me.lamine.goride.dataObjects.UserReview
 import me.lamine.goride.interfaces.OnGetDataListener
+import me.lamine.goride.utils.Database
 import org.jetbrains.anko.image
 import java.util.*
 import kotlin.collections.ArrayList
@@ -27,9 +25,7 @@ class ReviewActivity:AppCompatActivity() {
     private lateinit var arrayOfSStars:ArrayList<ImageView>
     private lateinit var arrayOfCStars:ArrayList<ImageView>
     private var userID = ""
-    private lateinit var database: DatabaseReference
-    private var mAuth: FirebaseAuth? = null
-    private var currentUser: FirebaseUser? = null
+    private lateinit var mDatabase : Database
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_review)
@@ -38,14 +34,8 @@ class ReviewActivity:AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_blackest_24dp)
-        database = FirebaseDatabase.getInstance().reference
-        mAuth = FirebaseAuth.getInstance()
-        if (mAuth?.currentUser == null) {
-            Toast.makeText(this,"You're not logged in.", Toast.LENGTH_SHORT).show()
-            this.finish()
-        }else {
-            currentUser = mAuth?.currentUser
-        }
+        mDatabase = Database()
+
         //
         arrayOfStars = arrayListOf(review_star_1,review_star_2,review_star_3,review_star_4,review_star_5)
         setupRatingStars(arrayOfStars)
@@ -60,23 +50,8 @@ class ReviewActivity:AppCompatActivity() {
         review_clear_c.setOnClickListener { clearRatingStars(arrayOfCStars) }
 
     }
-    private fun getUserInfo(listener: OnGetDataListener){
-        listener.onStart()
-        val newRef = database.child("users").child(userID)
-        val eventListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                listener.onSuccess(dataSnapshot)
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                listener.onFailed(databaseError)
-                throw databaseError.toException() // don't ignore errors
-            }
-        }
-        newRef.addListenerForSingleValueEvent(eventListener)
-    }
     private fun fetchUser(userReview: UserReview){
-       getUserInfo(object :OnGetDataListener{
+       Database().fetchUser(userID,object :OnGetDataListener{
            override fun onStart() {
                //setPB
            }
@@ -93,9 +68,8 @@ class ReviewActivity:AppCompatActivity() {
        })
     }
     private fun saveToDB(userReview: UserReview,user: User){
-        Log.i("HASHMAP",user.userReviews[currentUser?.uid].toString())
-        if (user.userReviews[currentUser?.uid] != null){
-            val userReviewMap= user.userReviews[currentUser?.uid] as HashMap<*, *>
+        if (user.userReviews[mDatabase.currentUserId()] != null){
+            val userReviewMap= user.userReviews[mDatabase.currentUserId()] as HashMap<*, *>
             //todo add review button on userprofile
             user.userRatingCount= user.userRatingCount - 1
             user.rawRating = user.rawRating - (userReviewMap["globalRating"].toString().toInt())
@@ -116,48 +90,54 @@ class ReviewActivity:AppCompatActivity() {
             }
 
         }
-        val userRef = database.child("users").child(userID).child("userReviews").child(currentUser?.uid!!)
-        userRef.setValue(userReview) { databaseError, _ ->
-            if (databaseError != null) {
-                Log.i("FireBaseEroor", databaseError.message)
-                Toast.makeText(this, "Error $databaseError", Toast.LENGTH_LONG).show()
-            }
-            userRef.child("timestamp").setValue(Date().toString())
-        }
+        var path = "users/$userID/userReviews/${mDatabase.currentUserId()}"
+        mDatabase.addToPath(path,userReview)
+        path = "$path/timestamp"
+        mDatabase.addToPath(path,Date().toString())
         val rawRating = user.rawRating + userReview.globalRating
         val userRatingCount = user.userRatingCount+1
         val userRating =rawRating / userRatingCount
-        val ratingRef = database.child("users").child(userID)
-        ratingRef.child("userRating").setValue(userRating)
-        ratingRef.child("rawRating").setValue(rawRating)
-        ratingRef.child("userRatingCount").setValue(userRatingCount)
+        //val ratingRef = database.child("users").child(userID)
+        val userPath = "users/${mDatabase.currentUserId()}"
+        mDatabase.addToPath("$userPath/userRating",userRating)
+     //   ratingRef.child("userRating").setValue(userRating)
+        mDatabase.addToPath("$userPath/rawRating",rawRating)
+     //   ratingRef.child("rawRating").setValue(rawRating)
+        mDatabase.addToPath("$userPath/userRatingCount",userRatingCount)
+     //   ratingRef.child("userRatingCount").setValue(userRatingCount)
         if (userReview.tRating != 0f){
             val rawTRating = user.rawTRating + userReview.tRating
             val tRatingCount = user.tRatingCount + 1
             val tRating = rawTRating / tRatingCount
-            ratingRef.child("tRating").setValue(tRating)
-            ratingRef.child("rawTRating").setValue(rawTRating)
-            ratingRef.child("tRatingCount").setValue(tRatingCount)
+            mDatabase.addToPath("$userPath/tRating",tRating)
+           // ratingRef.child("tRating").setValue(tRating)
+            mDatabase.addToPath("$userPath/rawTRating",rawTRating)
+            //ratingRef.child("rawTRating").setValue(rawTRating)
+            mDatabase.addToPath("$userPath/tRatingCount",tRatingCount)
+            //ratingRef.child("tRatingCount").setValue(tRatingCount)
         }
         if (userReview.sRating != 0f){
             val rawSRating = user.rawSRating + userReview.sRating
             val sRatingCount = user.sRatingCount + 1
             val sRating = rawSRating / sRatingCount
-            ratingRef.child("sRating").setValue(sRating)
-            ratingRef.child("rawSRating").setValue(rawSRating)
-            ratingRef.child("sRatingCount").setValue(sRatingCount)
+            mDatabase.addToPath("$userPath/sRating",sRating)
+           // ratingRef.child("sRating").setValue(sRating)
+            mDatabase.addToPath("$userPath/rawSRating",rawSRating)
+          //  ratingRef.child("rawSRating").setValue(rawSRating)
+            mDatabase.addToPath("$userPath/sRatingCount",sRatingCount)
+          // ratingRef.child("sRatingCount").setValue(sRatingCount)
         }
         if (userReview.cRating != 0f){
             val rawCRating = user.rawCRating + userReview.cRating
             val cRatingCount = user.cRatingCount + 1
             val cRating = rawCRating / cRatingCount
-            ratingRef.child("cRating").setValue(cRating)
-            ratingRef.child("rawCRating").setValue(rawCRating)
-            ratingRef.child("cRatingCount").setValue(cRatingCount)
+            mDatabase.addToPath("$userPath/cRating",cRating)
+           // ratingRef.child("cRating").setValue(cRating)
+            mDatabase.addToPath("$userPath/rawCRating",rawCRating)
+          //  ratingRef.child("rawCRating").setValue(rawCRating)
+            mDatabase.addToPath("$userPath/cRatingCount",cRatingCount)
+           // ratingRef.child("cRatingCount").setValue(cRatingCount)
         }
-    }
-    private fun formatRatingToDB(){
-
     }
     private fun postUserReview(){
         if (userID!=""){

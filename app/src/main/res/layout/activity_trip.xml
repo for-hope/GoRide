@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
+              android:layout_height="match_parent" xmlns:tools="http://schemas.android.com/tools"
               android:orientation="vertical">
-    <com.google.android.material.appbar.AppBarLayout android:layout_width="match_parent"
-                                                     android:layout_height="wrap_content">
+    <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.Toolbar
                 android:id="@+id/trip_toolbar"
@@ -22,7 +24,9 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/rl"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" android:elevation="1dp" android:layout_weight="1">
+            android:layout_height="0dp"
+            android:elevation="1dp"
+            android:layout_weight="1">
         <ProgressBar android:indeterminate="true"
                      android:layout_centerInParent="true"
                      android:layout_width="wrap_content"
@@ -40,115 +44,162 @@
 
         <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" android:layout_weight="1">
-            <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                android:layout_height="match_parent">
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
                           android:orientation="vertical" android:id="@+id/trip_layout"
                           android:background="@color/quantum_grey200">
-                <LinearLayout
-                        android:orientation="vertical"
+                <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" android:layout_weight="0"
+                        android:layout_height="match_parent"
                         android:id="@+id/card_trip_layout"
-                        android:background="@android:color/white" android:layout_marginBottom="20dp">
+                        android:background="@android:color/white"
+                        android:layout_marginBottom="20dp">
                     <TextView
-                            android:text="Day, Mon 01 at 01:00"
-                            android:layout_width="match_parent"
+                            android:text="@string/date"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content" android:id="@+id/trip_ac_date"
                             android:textColor="@android:color/black"
-                            android:textSize="18sp" android:textStyle="bold" android:layout_weight="1"
-                            android:layout_marginStart="10dp" android:paddingBottom="8dp" android:paddingTop="5dp"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:layout_marginStart="10dp"
+                            android:paddingBottom="8dp"
+                            android:paddingTop="5dp"
                             android:layout_marginTop="10dp"/>
                     <LinearLayout
+                            android:layout_below="@id/trip_ac_date"
                             android:orientation="vertical"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" android:id="@+id/orgin_des_layout"
+                            android:layout_height="match_parent"
+                            android:id="@+id/orgin_des_layout"
                             android:paddingBottom="10dp">
-                        <LinearLayout
+                        <!--<LinearLayout
                                 android:orientation="horizontal"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent" android:id="@+id/horz_second_line"
-                        >
+                                android:layout_height="match_parent" android:id="@+id/horz_second_line">-->
+
+                        <RelativeLayout android:layout_width="match_parent"
+                                        android:layout_height="match_parent">
+
                             <View
                                     android:id="@+id/divider"
                                     android:layout_width="5dp"
                                     android:layout_height="match_parent"
-                                    android:background="@color/colorSecondary"
-                                    android:layout_weight="0"/>
+
+                                    android:layout_alignParentTop="true"
+                                    android:layout_alignBottom="@id/trip__ac_desc1_card"
+                                    android:background="@color/colorSecondary"/>
                             <TextView
-                                    android:text="Origin"
+                                    android:layout_toEndOf="@id/divider"
+                                    android:text="@string/origin"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content" android:id="@+id/trip_ac_origin"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/trip_ac_origin"
                                     android:textColor="@color/colorSecondary"
-                                    android:textSize="18sp" android:textStyle="bold" android:layout_weight="0"
-                                    android:paddingStart="10dp" android:paddingBottom="10dp" android:paddingTop="10dp"/>
+                                    android:textSize="18sp" android:textStyle="bold"
+                                    android:layout_marginStart="10dp"
+                                    android:paddingBottom="5dp"
+                                    android:paddingTop="5dp"/>
                             <TextView
+                                    android:layout_toEndOf="@id/divider"
+                                    android:layout_below="@id/trip_ac_origin"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content" android:id="@+id/trip__ac_desc1_card"
-                                    android:layout_weight="0" android:textSize="16sp" android:text="Full Address"
-                                    android:layout_marginStart="20dp" android:paddingBottom="10dp"
-                                    android:paddingTop="10dp" android:layout_marginBottom="10dp"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/trip__ac_desc1_card"
+                                    android:textSize="16sp"
+                                    android:maxLines="2"
+                                    android:text="@string/address"
+                                    android:layout_marginStart="10dp"
+                                    android:paddingBottom="5dp"
+                                    android:paddingTop="5dp"
+                                    android:layout_marginBottom="10dp"
                                     android:layout_marginEnd="10dp"/>
-                        </LinearLayout>
-                        <LinearLayout
+
+                        </RelativeLayout>
+
+                        <!--   <LinearLayout
                                 android:orientation="horizontal"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent" android:id="@+id/horz_second2_line"
-                        >
+                                android:layout_height="match_parent" android:id="@+id/horz_second2_line">-->
+
+                        <RelativeLayout android:layout_width="match_parent"
+                                        android:layout_height="match_parent">
                             <View
                                     android:id="@+id/divider2"
+                                    android:layout_alignParentStart="true"
                                     android:layout_width="5dp"
                                     android:layout_height="match_parent"
-                                    android:background="@color/colorSecondary"
-                                    android:layout_weight="0"/>
+
+                                    android:layout_alignParentTop="true"
+                                    android:layout_alignBottom="@id/trip_ac_desc2"
+                                    android:background="@color/colorSecondary"/>
                             <TextView
-                                    android:text="Destination"
+                                    android:text="@string/destination"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content" android:id="@+id/trip_ac_des"
                                     android:textColor="@color/colorSecondary"
-                                    android:textSize="18sp" android:textStyle="bold" android:layout_weight="0"
-                                    android:paddingStart="10dp" android:paddingBottom="10dp" android:paddingTop="10dp"/>
+                                    android:textSize="18sp" android:textStyle="bold"
+                                    android:layout_marginStart="10dp"
+                                    android:paddingBottom="5dp"
+                                    android:paddingTop="5dp"/>
                             <TextView
+                                    android:layout_below="@id/trip_ac_des"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content" android:id="@+id/trip_ac_desc2"
-                                    android:layout_weight="0" android:textSize="16sp" android:text="Full Address"
-                                    android:layout_marginStart="20dp" android:lines="2" android:maxLines="2"
-                                    android:layout_marginBottom="10dp" android:layout_marginEnd="10dp"/>
-                        </LinearLayout>
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/trip_ac_desc2"
+                                    android:textSize="16sp"
+                                    android:text="@string/address"
+                                    android:layout_marginStart="10dp"
+                                    android:maxLines="2"
+                                    android:paddingTop="5dp"
+                                    android:paddingBottom="5dp"
+                                    android:layout_marginBottom="10dp"
+                                    android:layout_marginEnd="10dp"/>
+                        </RelativeLayout>
+                        <!--  </LinearLayout>-->
                     </LinearLayout>
                     <LinearLayout
+                            android:layout_below="@id/orgin_des_layout"
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" android:layout_weight="1"
+                            android:layout_height="match_parent"
                             android:id="@+id/seats_price_layout">
                         <TextView
                                 android:layout_width="wrap_content"
-                                android:layout_height="match_parent" android:id="@+id/trip_ac_seats"
+                                android:layout_height="match_parent"
+                                android:id="@+id/trip_ac_seats"
                                 android:textColor="@android:color/black"
-                                android:textSize="18sp" android:textStyle="bold" android:layout_weight="1"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:layout_weight="1"
                                 android:gravity="center"
-                                android:background="@drawable/border" android:paddingBottom="10dp"
-                                android:paddingTop="10dp"/>
+                                android:background="@drawable/border" android:paddingBottom="15dp"
+                                android:paddingTop="15dp"/>
                         <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content" android:id="@+id/trip_ac_price"
                                 android:textColor="@color/quantum_googgreen600"
-                                android:textSize="18sp" android:textStyle="bold" android:layout_weight="1"
-                                android:text="20 DZD"
+                                android:textSize="16sp" android:textStyle="bold" android:layout_weight="1"
+                                android:text=""
                                 android:gravity="center" android:background="@drawable/border"
-                                android:paddingBottom="10dp"
-                                android:paddingTop="10dp"/>
+                                android:paddingBottom="15dp"
+                                android:paddingTop="15dp"/>
                     </LinearLayout>
                     <TextView
-                            android:text='"Description"'
+                            android:text="@string/description"
+                            android:layout_below="@id/seats_price_layout"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" android:id="@+id/trip_ac_desc"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/trip_ac_desc"
                             android:textColor="@android:color/black"
-                            android:textSize="18sp" android:layout_weight="1"
-                            android:layout_marginStart="10dp" android:paddingBottom="15dp"
-                            android:paddingTop="15dp" android:paddingStart="5dp" android:fontFamily="serif"/>
-                </LinearLayout>
-                <LinearLayout
-                        android:orientation="horizontal"
+                            android:textSize="18sp"
+                            android:paddingBottom="15dp"
+                            android:paddingTop="15dp"
+                            android:paddingStart="15dp"
+                            android:paddingEnd="5dp"
+                            android:fontFamily="serif"/>
+                </RelativeLayout>
+                <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:id="@+id/booked_layout"
@@ -157,284 +208,248 @@
                     <TextView
                             android:text="@string/booked"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" android:id="@+id/trip_ac_booked"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/trip_ac_booked"
                             android:textColor="@android:color/black"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:layout_marginStart="10dp" android:paddingBottom="10dp" android:paddingTop="10dp"/>
+                            android:textSize="16sp"
+                            android:layout_marginStart="15dp"
+                            android:paddingBottom="15dp"
+                            android:paddingTop="15dp"/>
                     <LinearLayout
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:id="@+id/trip_users_layout">
-
-
                     </LinearLayout>
-                </LinearLayout>
+                </RelativeLayout>
                 <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" android:layout_weight="0"
+                        android:layout_height="match_parent"
                         android:id="@+id/profile_card_view"
-                        android:elevation="4dp" android:layout_marginBottom="20dp"
+                        android:elevation="4dp"
+                        android:layout_marginBottom="20dp"
                         style="@style/Widget.MaterialComponents.CardView"
                         android:clickable="true"
                         android:focusable="true"
                         android:foreground="@drawable/custom_bg">
-                    <LinearLayout
-                            android:orientation="horizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent" android:layout_weight="0"
-                            android:background="@android:color/white" android:paddingTop="10dp"
-                            android:paddingBottom="10dp" android:id="@+id/license_plate">
-                        <de.hdodenhof.circleimageview.CircleImageView
-                                android:id="@+id/trip__ac_user_pfp"
-                                android:layout_width="100dp"
-                                android:layout_height="90dp"
-                                android:src="@mipmap/ic_launcher_round"
-                                app:civ_border_width="2dp"
-                                app:civ_border_color="#FF000000" android:layout_weight="0"
-                                android:layout_marginStart="10dp"
-                                android:layout_marginEnd="10dp" android:layout_marginBottom="10dp"
-                                android:layout_marginTop="10dp"/>
-                        <LinearLayout
+                        <RelativeLayout
                                 android:orientation="vertical"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent" android:layout_weight="1"
-                                android:id="@+id/profile_layout">
-                            <LinearLayout
-                                    android:orientation="vertical"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent" android:layout_weight="1">
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/profile_layout"
+                                android:background="@android:color/white"
+                                android:paddingTop="10dp"
+                                android:paddingBottom="10dp">
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                    android:id="@+id/trip__ac_user_pfp"
+                                    android:layout_width="100dp"
+                                    android:layout_height="90dp"
+                                    android:src="@mipmap/ic_launcher_round"
+                                    app:civ_border_width="1dp"
+                                    app:civ_border_color="#FF000000"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_gravity="start"
+                                    android:layout_marginEnd="10dp"/>
                                 <TextView
-                                        android:text="FirstName"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content" android:id="@+id/trip_ac_user_name"
+                                        android:layout_toEndOf="@id/trip__ac_user_pfp"
+                                        android:layout_toStartOf="@+id/ic_arrow"
+                                        android:text="@string/username"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:id="@+id/trip_ac_user_name"
                                         android:textColor="@android:color/black"
-                                        android:textSize="20sp" android:textStyle="bold" android:layout_weight="0"
+                                        android:textSize="20sp"
+                                        android:textStyle="bold"
                                         android:gravity="top|start"
-                                        android:paddingBottom="5dp"
-                                        android:paddingTop="5dp" android:paddingStart="15dp"/>
-                                <LinearLayout
-                                        android:orientation="vertical"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent" android:layout_weight="1"
-                                        android:paddingStart="10dp">
-                                    <LinearLayout
-                                            android:orientation="horizontal"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="match_parent" android:layout_weight="1">
-                                        <LinearLayout
-                                                android:orientation="horizontal"
-                                                android:layout_width="match_parent"
-                                                android:layout_height="match_parent" android:layout_weight="0">
+                                        android:layout_marginStart="10dp"
+                                        android:layout_marginBottom="10dp"/>
+
                                             <ImageView
+                                                    android:layout_toEndOf="@id/trip__ac_user_pfp"
+                                                    android:layout_below="@id/trip_ac_user_name"
                                                     android:layout_width="wrap_content"
                                                     android:layout_height="wrap_content"
                                                     app:srcCompat="@drawable/ic_person_pin_circle_black_24dp"
-                                                    android:id="@+id/peopel_ic" android:layout_weight="0"/>
+                                                    android:id="@+id/peopel_ic"
+                                                    android:contentDescription="@string/people_driven"/>
                                             <TextView
-                                                    android:text="0 people driven"
+                                                    android:layout_below="@id/trip_ac_user_name"
+                                                    android:layout_toEndOf="@id/peopel_ic"
+                                                    android:text="@string/people_driven"
                                                     android:layout_width="wrap_content"
                                                     android:layout_height="wrap_content"
                                                     android:id="@+id/trip_ac_people_drv"
                                                     android:textColor="@android:color/black"
                                                     android:textSize="18sp"
-                                                    android:layout_weight="0"
                                                     android:layout_marginStart="10dp"
                                                     android:fontFamily="sans-serif"/>
-                                        </LinearLayout>
-                                    </LinearLayout>
-                                    <LinearLayout
-                                            android:orientation="horizontal"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="match_parent" android:layout_weight="1">
-                                        <LinearLayout
-                                                android:orientation="horizontal"
-                                                android:layout_width="match_parent"
-                                                android:layout_height="match_parent" android:layout_weight="0">
+
                                             <ImageView
+                                                    android:layout_toEndOf="@id/trip__ac_user_pfp"
                                                     android:layout_width="wrap_content"
                                                     android:layout_height="wrap_content"
                                                     app:srcCompat="@drawable/ic_star_blue_24dp"
-                                                    android:id="@+id/star_ic" android:layout_weight="0"/>
+                                                    android:id="@+id/star_ic"
+                                                    android:layout_below="@id/trip_ac_people_drv"
+                                                    android:contentDescription="@string/star_ic"/>
                                             <TextView
-                                                    android:text="0.0 * 0 reviews"
+                                                    android:text="@string/_0_0_0_reviews"
+                                                    android:layout_below="@id/trip_ac_people_drv"
+                                                    android:layout_toEndOf="@id/star_ic"
                                                     android:layout_width="wrap_content"
                                                     android:layout_height="wrap_content"
                                                     android:id="@+id/trip_ac_rating_review"
                                                     android:textColor="@android:color/black"
                                                     android:textSize="18sp"
-                                                    android:layout_weight="0"
-                                                    android:layout_marginStart="10dp"
-                                            />
-                                        </LinearLayout>
-                                    </LinearLayout>
-                                </LinearLayout>
-                            </LinearLayout>
-                        </LinearLayout>
-                        <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:srcCompat="@drawable/ic_keyboard_arrow_right_black_24dp" android:id="@+id/ic_arrow"
-                                android:layout_weight="0" android:foregroundGravity="center"
-                                android:layout_gravity="center"/>
-                    </LinearLayout>
+                                                    android:layout_marginStart="10dp"/>
+
+
+                            <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_centerVertical="true"
+                                    app:srcCompat="@drawable/ic_keyboard_arrow_right_black_24dp"
+                                    android:id="@+id/ic_arrow"
+                                    android:foregroundGravity="center"
+                                    android:layout_gravity="center" android:contentDescription="@string/arrow_ic"/>
+                            </RelativeLayout>
+
+
                 </androidx.cardview.widget.CardView>
-                <LinearLayout
-                        android:orientation="vertical"
+                <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" android:layout_weight="0"
-                        android:background="@android:color/white" android:paddingStart="10dp"
+                        android:layout_height="match_parent"
+                        android:background="@android:color/white"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
                         android:id="@+id/pref_layout"
                         android:paddingBottom="10dp">
-                    <LinearLayout
-                            android:orientation="horizontal"
+                    <ImageView
+                            android:layout_width="180dp"
+                            android:layout_height="200dp"
+                            android:id="@+id/trip_ac_car_photo"
+                            android:paddingEnd="10dp"
+                            android:paddingStart="5dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_directions_car_150dp"
+                            android:minHeight="150dp"
+                            android:minWidth="180dp"
+                            android:contentDescription="@string/car_photo"/>
+                 <!--   <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_toEndOf="@id/trip_ac_car_photo"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" android:layout_weight="1">
-                        <ImageView
-                                android:layout_width="180dp"
-                                android:layout_height="200dp"
-                                android:id="@+id/trip_ac_car_photo" android:paddingEnd="10dp"
-                                android:paddingStart="5dp"
-                                android:scaleType="fitCenter" android:src="@drawable/ic_directions_car_150dp"
-                                android:minHeight="150dp" android:minWidth="180dp"/>
-                        <LinearLayout
-                                android:orientation="vertical"
+                            android:layout_height="match_parent"
+                            android:gravity="center|start">-->
+                        <TextView
+                                android:layout_toEndOf="@id/trip_ac_car_photo"
+                                android:text="@string/car_model"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/trip_ac_car_model"
+                                android:textColor="@android:color/black"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:gravity="top|start"
+                                android:paddingBottom="5dp"
+                                android:paddingTop="5dp"/>
+                        <TextView
+                                android:layout_toEndOf="@id/trip_ac_car_photo"
+                                android:layout_below="@id/trip_ac_car_model"
+                                android:text="@string/type_color_year"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/trip_ac_type_color_year"
+                                android:textColor="@color/browser_actions_title_color"
+                                android:textSize="16sp"
+                                android:gravity="top|start"
+                                android:paddingBottom="5dp"
+                                android:paddingTop="5dp"/>
+
+                        <TextView
+                                android:text="@string/_0123456789"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent" android:layout_weight="1">
+                                android:layout_height="wrap_content"
+                                android:layout_toEndOf="@id/trip_ac_car_photo"
+                                android:layout_below="@id/trip_ac_type_color_year"
+                                android:drawableStart="@drawable/ic_license_plate_black_24dp"
+                                android:drawablePadding="10dp"
+                                android:id="@+id/trip_ac_licence"
+                                android:textColor="@color/browser_actions_title_color"
+                                android:textSize="16sp"
+                                android:textStyle="bold"/>
+                        <LinearLayout
+                                android:layout_toEndOf="@id/trip_ac_car_photo"
+                                android:layout_below="@id/trip_ac_licence"
+                                android:orientation="horizontal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/luggage_layout">
+                            <include layout="@layout/view_luggage_icon"/>
                             <TextView
-                                    android:text="Car Model"
+                                    android:text="@string/small_luggage"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content" android:id="@+id/trip_ac_car_model"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/trip_ac_luggage_text"
                                     android:textColor="@android:color/black"
-                                    android:textSize="18sp" android:textStyle="bold" android:layout_weight="0"
-                                    android:gravity="top|start"
-                                    android:paddingStart="5dp" android:paddingBottom="5dp" android:paddingTop="5dp"/>
-                            <TextView
-                                    android:text="Type, Color, Year"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content" android:id="@+id/trip_ac_type_color_year"
-                                    android:textColor="@color/browser_actions_title_color"
-                                    android:textSize="16sp" android:layout_weight="0"
-                                    android:gravity="top|start"
-                                    android:paddingStart="5dp" android:paddingBottom="5dp" android:paddingTop="5dp"/>
-                            <LinearLayout
-                                    android:orientation="horizontal"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content" android:layout_weight="0"
-                                    android:paddingTop="5dp" android:id="@+id/plate_layout">
-                                <ImageView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        app:srcCompat="@drawable/ic_license_plate_black_24dp"
-                                        android:id="@+id/imageView15" android:layout_weight="0"
-                                        android:paddingStart="5dp"/>
-                                <TextView
-                                        android:text="0123456789"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content" android:id="@+id/trip_ac_lisence"
-                                        android:textColor="@color/browser_actions_title_color"
-                                        android:textSize="17sp" android:layout_weight="0"
-                                        android:paddingStart="15dp" android:textStyle="bold"
-                                        android:gravity="center"
-                                        android:layout_gravity="center"/>
-                            </LinearLayout>
-                            <LinearLayout
-                                    android:orientation="horizontal"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent" android:layout_weight="1"
-                                    android:id="@+id/luaggage_layout">
-                                <FrameLayout
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content" android:layout_weight="0"
-                                        android:paddingStart="5dp"
-                                        android:paddingEnd="5dp" android:foregroundGravity="center"
-                                        android:layout_gravity="center"
-                                        android:id="@+id/luggage_layout">
-                                    <ImageView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            app:srcCompat="@drawable/ic_work_black_24dp"
-                                            android:id="@+id/imageView10" android:layout_weight="0"
-                                    />
-                                    <TextView
-                                            android:text="M"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content" android:id="@+id/trip_ac_luggage"
-                                            android:textColor="@color/backgroundColor"
-                                            android:textSize="12sp" android:layout_weight="1"
-                                            android:textStyle="bold" android:gravity="center"
-                                            android:foregroundGravity="center"
-                                            android:layout_gravity="center"/>
-                                </FrameLayout>
-                                <TextView
-                                        android:text="Small Luggage"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content" android:id="@+id/trip_ac_luggage_text"
-                                        android:textColor="@android:color/black"
-                                        android:textSize="17sp" android:textStyle="bold" android:layout_weight="1"
-                                        android:layout_marginStart="10dp"
-                                        android:layout_gravity="center" android:paddingBottom="5dp"
-                                        android:paddingTop="5dp"/>
-                            </LinearLayout>
-                            <LinearLayout
-                                    android:orientation="horizontal"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent" android:layout_weight="1"
-                                    android:id="@+id/smoke_layout">
-                                <ImageView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        app:srcCompat="@drawable/ic_smoke_free_black_24dp"
-                                        android:id="@+id/ic_smoke" android:layout_weight="0"
-                                        android:layout_gravity="center" android:paddingStart="5dp"
-                                        android:paddingEnd="5dp"/>
-                                <TextView
-                                        android:text="No Smoking Inside"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content" android:id="@+id/trip_ac_smokeprf"
-                                        android:textColor="@android:color/black"
-                                        android:textSize="17sp" android:textStyle="bold" android:layout_weight="1"
-                                        android:layout_marginStart="10dp"
-                                        android:layout_gravity="center" android:paddingBottom="5dp"
-                                        android:paddingTop="5dp"/>
-                            </LinearLayout>
-                            <LinearLayout
-                                    android:orientation="horizontal"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent" android:layout_weight="1"
-                                    android:id="@+id/pets_layout">
-                                <ImageView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        app:srcCompat="@drawable/ic_pets_black_24dp"
-                                        android:id="@+id/ic_pet" android:layout_weight="0"
-                                        android:layout_gravity="center" android:paddingStart="5dp"
-                                        android:paddingEnd="5dp"/>
-                                <TextView
-                                        android:text="Pets"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content" android:id="@+id/trip_ac_pets_pref"
-                                        android:textColor="@android:color/black"
-                                        android:textSize="17sp" android:textStyle="bold" android:layout_weight="1"
-                                        android:layout_marginStart="10dp"
-                                        android:layout_gravity="center" android:paddingBottom="5dp"
-                                        android:paddingTop="5dp"/>
-                            </LinearLayout>
+                                    android:textSize="16sp"
+                                    android:textStyle="bold"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_gravity="center"
+                                    android:paddingBottom="5dp"
+                                    android:paddingTop="5dp"/>
                         </LinearLayout>
-                    </LinearLayout>
-                </LinearLayout>
+                        <TextView
+                                android:layout_toEndOf="@id/trip_ac_car_photo"
+                                android:layout_below="@id/luggage_layout"
+                                android:drawableStart="@drawable/ic_smoke_free_black_24dp"
+                                android:drawablePadding="10dp"
+                                android:text="@string/no_smoking_inside"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/trip_ac_smoke_pref"
+                                android:textColor="@android:color/black"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:layout_gravity="center"
+                                android:paddingBottom="5dp"
+                                android:paddingTop="5dp"/>
+
+                        <!--android:id="@+id/pets_layout"-->
+                        <TextView
+                                android:layout_toEndOf="@id/trip_ac_car_photo"
+                                android:layout_below="@id/trip_ac_smoke_pref"
+                                android:id="@+id/trip_ac_pets_pref"
+                                android:drawableStart="@drawable/ic_pets_black_24dp"
+                                android:drawablePadding="10dp"
+                                android:gravity="start"
+                                android:text="@string/pets"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@android:color/black"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:paddingBottom="5dp"
+                                android:paddingTop="5dp"/>
+
+
+
+                </RelativeLayout>
                 <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" android:layout_marginTop="20dp" android:layout_weight="0"
-                        android:background="@android:color/white" android:foregroundGravity="bottom"
-                        android:layout_gravity="bottom">
-
-                    <com.google.android.gms.maps.MapView
+                        android:layout_height="450dp"
+                        android:layout_marginTop="30dp"
+                        android:background="@color/whiteColor">
+                    <fragment
                             android:layout_width="match_parent"
-                            android:layout_height="200dp" android:id="@+id/trip_ac_map" android:layout_gravity="bottom"
-                            android:foregroundGravity="bottom"/>
+                            android:layout_height="match_parent"
+                            android:id="@+id/map_fragment"
+                            tools:context=".tripActivity.TripActivity"
+                            android:name="com.google.android.gms.maps.SupportMapFragment"/>
+
                 </FrameLayout>
+
             </LinearLayout>
         </ScrollView>
     </RelativeLayout>

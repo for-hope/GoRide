@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+    <TextView
+            android:text="@string/empty_seats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/cardetails_tirpp_pref2"
+            android:textSize="22sp"
+            android:textColor="@android:color/black"
+            android:fontFamily="@font/roboto_black"
+            android:layout_marginBottom="20dp"/>
+    <TextView
+            android:text="@string/we_reccomend_putting_maximum_2_people_in_the_back_to_ensure_everyone_s_comfort"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tip_p_desc2"
+            android:textSize="16sp"
+            android:paddingBottom="20dp"/>
+    <TextView
+            android:text="@string/select_a_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_other2"
+            android:textSize="16sp"
+            android:textColor="@color/btnBlack"
+            android:textStyle="bold"/>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/seat_layout">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/seat1" android:layout_weight="1"
+                android:textColor="@color/btnBlack"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:background="@drawable/custom_border_circle"
+                android:text="@string/_1"
+                android:gravity="center"
+                android:layout_margin="5dp"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/seat2" android:layout_weight="1"
+                android:textColor="@color/btnBlack" android:textStyle="bold" android:textSize="16sp"
+                android:background="@drawable/custom_border_circle" android:text="@string/_2" android:gravity="center"
+                android:layout_margin="5dp"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/seat3" android:layout_weight="1"
+                android:textColor="@color/btnBlack" android:textStyle="bold" android:textSize="16sp"
+                android:background="@drawable/custom_border_circle" android:text="@string/_3" android:gravity="center"
+                android:layout_margin="5dp"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/seat4" android:layout_weight="1"
+                android:textColor="@color/btnBlack" android:textStyle="bold" android:textSize="16sp"
+                android:background="@drawable/custom_border_circle" android:text="@string/_4" android:gravity="center"
+                android:layout_margin="5dp"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/seat5" android:layout_weight="1"
+                android:textColor="@color/btnBlack" android:textStyle="bold" android:textSize="16sp"
+                android:background="@drawable/custom_border_circle" android:text="@string/_5" android:gravity="center"
+                android:layout_margin="5dp"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/seat6" android:layout_weight="1"
+                android:textColor="@color/btnBlack" android:textStyle="bold" android:textSize="16sp"
+                android:background="@drawable/custom_border_circle" android:text="@string/_6" android:gravity="center"
+                android:layout_margin="5dp"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/seat7" android:layout_weight="1"
+                android:textColor="@color/btnBlack" android:textStyle="bold" android:textSize="16sp"
+                android:background="@drawable/custom_border_circle" android:text="@string/_7" android:gravity="center"
+                android:layout_margin="5dp"/>
+    </LinearLayout>
+
+</LinearLayout>

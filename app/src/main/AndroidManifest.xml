@@ -1,44 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
           package="me.lamine.goride">
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+<!--  ADD BACKUP-->
     <application
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
-            tools:ignore="GoogleAppIndexingWarning">
+            tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity android:name=".postingActivity.PostingActivity"/>
         <activity android:name=".postingActivity.PostOptionsActivity"/>
         <activity android:name=".searchActivity.SearchTripActivity"/>
 
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyDWbc3KQP6ssBlClf8HSiZWEtMxfwqSYto"/>
-        <activity android:name=".mainActivities.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+        <meta-data
+                android:name="com.google.android.geo.API_KEY"
+                android:value="AIzaSyDWbc3KQP6ssBlClf8HSiZWEtMxfwqSYto"/>
 
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
+        <activity android:name=".mainActivities.MainActivity">
         </activity>
         <activity android:name=".searchActivity.TripsListActivity"/>
-        <activity android:name=".signActivity.LoginActivity"
-                  android:windowSoftInputMode="adjustPan"/>
-        <activity android:name=".signActivity.RegisterActivity"
-                  android:windowSoftInputMode="adjustPan"/>
+        <activity
+                android:name=".signActivity.LoginActivity"
+                android:windowSoftInputMode="adjustPan"/>
+        <activity
+                android:name=".signActivity.RegisterActivity"
+                android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".signActivity.RegisterExtraActivity"/>
         <activity android:name=".tripActivity.TripActivity"/>
         <activity android:name=".notificationActivity.InboxActivity"/>
         <activity android:name=".userActivity.UserActivity"/>
         <activity android:name=".reviewActivity.ReviewActivity"/>
         <activity android:name=".requestActivity.RequestTripActivity"/>
-        <meta-data android:name="preloaded_fonts" android:resource="@array/preloaded_fonts"/>
+        <activity
+                android:name=".introActivities.SplashScreenActivity"
+                android:theme="@style/AppTheme.Launcher">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <meta-data
+                android:name="preloaded_fonts"
+                android:resource="@array/preloaded_fonts"/>
+
+        <activity android:name=".notificationActivity.MessageActivity">
+        </activity>
     </application>
 
 </manifest>

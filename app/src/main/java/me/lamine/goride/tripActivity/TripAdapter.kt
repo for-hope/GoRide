@@ -7,7 +7,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.widget.ImageView
-import android.widget.Toast
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -19,16 +18,13 @@ import com.squareup.picasso.Picasso
 import me.lamine.goride.R
 import me.lamine.goride.dataObjects.Trip
 import me.lamine.goride.dataObjects.User
-import org.jetbrains.anko.onClick
-import android.util.TypedValue
 import java.math.BigDecimal
 import java.math.RoundingMode
-import kotlin.math.round
 
 
 class TripAdapter(private var context: Context, private var tripsList: List<Trip>, private var userLiteList: List<User>): RecyclerView.Adapter<TripAdapter.TripViewHolder>() {
     //val items: MutableList<String> = arrayListOf()
-    private var orginazers = mutableListOf<String>()
+    private var organizers = mutableListOf<String>()
 
     override fun onBindViewHolder(holder: TripViewHolder, position: Int) {
 
@@ -37,14 +33,14 @@ class TripAdapter(private var context: Context, private var tripsList: List<Trip
         Log.i("TRIP-ID", trip.tripID + " TRIPS")
         val userLite = userLiteList[position]
         //val name = "Lamine Fet"
-        val OLD_FORMAT = "dd/MM/yyyy"
-        val NEW_FORMAT = "EEE, MMM dd"
-        val age_format = "dd, MMM yyyy"
+        val mOldFormat = "dd/MM/yyyy"
+        val mNewFormat = "EEE, MMM dd"
+        val mAgeFormat = "dd, MMM yyyy"
 
-        val peopleDriven = userLite.peopleDriven
-        val ratings = userLite.userRating
+        //val peopleDriven = userLite.peopleDriven
+        //val ratings = userLite.userRating
         val userBirthday = userLite.birthday
-        val df = SimpleDateFormat(age_format, Locale.US)
+        val df = SimpleDateFormat(mAgeFormat, Locale.US)
         val uBirthdate = df.parse(userBirthday)
         val cal = Calendar.getInstance()
         cal.time = uBirthdate
@@ -74,9 +70,9 @@ class TripAdapter(private var context: Context, private var tripsList: List<Trip
 
         val newDate: String
 
-        val sdf = SimpleDateFormat(OLD_FORMAT, Locale.US)
+        val sdf = SimpleDateFormat(mOldFormat, Locale.US)
         val d = sdf.parse(trip.date)
-        sdf.applyPattern(NEW_FORMAT)
+        sdf.applyPattern(mNewFormat)
         newDate = sdf.format(d)
 
         val fullDate = "$newDate at ${trip.time}"
@@ -140,13 +136,12 @@ class TripAdapter(private var context: Context, private var tripsList: List<Trip
 
     }
     private fun setupOrg(org:String,holder: TripViewHolder){
-        Log.i("ORG",org +  " O")
-        if (!orginazers.contains(org)){
-            holder.tripOrginazer.visibility = View.VISIBLE
-            holder.tripOrginazer.text = org
-            orginazers.add(org)
+        if (!organizers.contains(org)){
+            holder.tripOrganizer.visibility = View.VISIBLE
+            holder.tripOrganizer.text = org
+            organizers.add(org)
         } else {
-            holder.tripOrginazer.visibility = View.GONE
+            holder.tripOrganizer.visibility = View.GONE
         }
     }
     override fun getItemCount(): Int {
@@ -158,7 +153,7 @@ class TripAdapter(private var context: Context, private var tripsList: List<Trip
         val inflater = LayoutInflater.from(parent.context)
         val view = inflater.inflate(R.layout.trip_card_layout, parent, false)
 
-        return TripViewHolder(view).listen { pos, type ->
+        return TripViewHolder(view).listen { pos, _ ->
             val item = tripsList[pos]
             val userItem = userLiteList[pos]
 
@@ -207,52 +202,31 @@ class TripAdapter(private var context: Context, private var tripsList: List<Trip
 
 
     open class TripViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        var origin: TextView
-        var destination: TextView
+        var origin: TextView = v.findViewById(R.id.trip_origin_card)
+        var destination: TextView = v.findViewById(R.id.trip_destination_card)
         var stops:ArrayList<String> = ArrayList()
         var numberOfStops = 0
-        var date:TextView
-        var vehicleInfo:TextView
-        var luggageSize:TextView
-        var noSmoking:ImageView
-        var petsAllowed:ImageView
-        var numberOfSeats:TextView
-        var pricePerSeat:TextView
-        var bookingPref:ImageView
-        var vName: TextView
-        var uPeopleDriven:TextView
-        var uRatings:TextView
-        var uGenderAndAge:TextView
-        var fullOriginAddress: TextView
-        var fullDestAddress: TextView
-        var profilePic:ImageView
-        var tripOrginazer:TextView
-        var numberOfReviews:TextView
-       //  var vDestination: TextView
+        var date:TextView = v.findViewById(R.id.trip_date_card)
+        var vehicleInfo:TextView = v.findViewById(R.id.trip_vehicleperf_card)
+        var luggageSize:TextView = v.findViewById(R.id.trip_luggage_card)
+        var noSmoking:ImageView = v.findViewById(R.id.trip_ic_smoke_card)
+        var petsAllowed:ImageView = v.findViewById(R.id.trip_ic_pet_card)
+        var numberOfSeats:TextView = v.findViewById(R.id.trip_seats_card)
+        var pricePerSeat:TextView = v.findViewById(R.id.trip_price_card)
+        var bookingPref:ImageView = v.findViewById(R.id.trip_ic_instant_card)
+        var vName: TextView = v.findViewById(R.id.trip_fullname_card)
+        var uPeopleDriven:TextView = v.findViewById(R.id.trip_driven_card4)
+        var uRatings:TextView = v.findViewById(R.id.trip_ratings_card2)
+        var uGenderAndAge:TextView = v.findViewById(R.id.trip_gender_age_card)
+        var fullOriginAddress: TextView = v.findViewById(R.id.trip_desc1_card)
+        var fullDestAddress: TextView = v.findViewById(R.id.trip_desc2_card)
+        var profilePic:ImageView = v.findViewById(R.id.trip_profile_image)
+        var tripOrganizer:TextView = v.findViewById(R.id.trip_orginazer)
+        var numberOfReviews:TextView = v.findViewById(R.id.trip_reviews_card3)
+        //  var vDestination: TextView
          //var vDate: TextView
         // var vOrigin: TextView
 
-        init {
-            tripOrginazer = v.findViewById(R.id.trip_orginazer)
-            profilePic = v.findViewById(R.id.trip_profile_image)
-            uGenderAndAge = v.findViewById(R.id.trip_gender_age_card)
-            uRatings = v.findViewById(R.id.trip_ratings_card2)
-            uPeopleDriven = v.findViewById(R.id.trip_driven_card4)
-            vName = v.findViewById(R.id.trip_fullname_card)
-            date = v.findViewById(R.id.trip_date_card)
-            origin = v.findViewById(R.id.trip_origin_card)
-            destination = v.findViewById(R.id.trip_destination_card)
-            vehicleInfo = v.findViewById(R.id.trip_vehicleperf_card)
-            luggageSize = v.findViewById(R.id.trip_luggage_card)
-            noSmoking = v.findViewById(R.id.trip_ic_smoke_card)
-            petsAllowed = v.findViewById(R.id.trip_ic_pet_card)
-            numberOfSeats = v.findViewById(R.id.trip_seats_card)
-            pricePerSeat = v.findViewById(R.id.trip_price_card)
-            bookingPref = v.findViewById(R.id.trip_ic_instant_card)
-            fullOriginAddress = v.findViewById(R.id.trip_desc1_card)
-            fullDestAddress = v.findViewById(R.id.trip_desc2_card)
-            numberOfReviews = v.findViewById(R.id.trip_reviews_card3)
-        }
     }
 }
 

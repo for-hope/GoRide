@@ -30,6 +30,8 @@ import java.util.*
 import com.google.gson.Gson
 import me.lamine.goride.dataObjects.TripRequest
 import me.lamine.goride.tripActivity.RequestsAdapter
+import me.lamine.goride.utils.Database
+import me.lamine.goride.utils.setPb
 import kotlin.collections.HashMap
 
 /**
@@ -70,24 +72,6 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
         req_trips.layoutManager = llm2
         pass_trips.layoutManager = llm
     }
-
-
-    private fun fetchTripRequests(listener: OnGetDataListener){
-        listener.onStart()
-        val ref = database.child("users").child(currentUser?.uid!!).child("activeTripRequests")
-        val eventListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                listener.onSuccess(dataSnapshot)
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                listener.onFailed(databaseError)
-                throw databaseError.toException() as Throwable // don't ignore errors
-            }
-        }
-        ref.addListenerForSingleValueEvent(eventListener)
-
-    }
     private fun setRequestAdapter(){
         if (listOfCurrentRequest.isNotEmpty()){
             Log.i("PassengerFragement", "FULL LIST")
@@ -99,44 +83,26 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
                    listOfCurrentRequest,listOfUserR
                 )
             }
-        } else {
-            Log.i("PassengerFragement", "EMPTY LIST")
         }
-
     }
-    private fun fetchRequestObjects(key:String,value:String,listener: OnGetDataListener){
-        listener.onStart()
-        val ref = database.child("tripRequests").child(value).child(key)
-        val eventListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                listener.onSuccess(dataSnapshot)
-            }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                listener.onFailed(databaseError)
-                throw databaseError.toException() as Throwable // don't ignore errors
-            }
-        }
-        ref.addListenerForSingleValueEvent(eventListener)
-    }
     private fun getRequestObjects(){
         var hashSize = requestIdHashMap.size
         val user = getCurrentUserObj()
 
       for (id in requestIdHashMap) {
-          fetchRequestObjects(id.key, id.value, object : OnGetDataListener {
+          Database().fetchTripRequest(id.key, id.value, object : OnGetDataListener {
               override fun onStart() {
-                  setPb(1)
+                  setPb(pass_empty_layout,pb_passenger,greyout_pass,1)
               }
 
               override fun onSuccess(data: DataSnapshot) {
-
                   hashSize -= 1
                   val tripRequest = data.getValue(TripRequest::class.java)
                   listOfUserR.add(user!!)
                   listOfCurrentRequest.add(tripRequest!!)
                   if (hashSize == 0){
-                      setPb(0)
+                      setPb(pass_empty_layout,pb_passenger,greyout_pass,0)
                       setRequestAdapter()
                   }
               }
@@ -149,29 +115,24 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
       }
     }
     private fun getTripRequests(){
-        fetchTripRequests(object : OnGetDataListener{
+        Database().fetchFromCurrentUser("activeTripRequests",object : OnGetDataListener{
             override fun onStart() {
-                setPb(1)
+                setPb(pass_empty_layout,pb_passenger,greyout_pass,1)
             }
-
             override fun onSuccess(data: DataSnapshot) {
-
                if (data.exists()){
-                   Log.i("PassengerFragement", "EMPTY LIST2")
                    for (requestData in data.children){
                        val key = requestData.key
                        val value = requestData.value as String
                        requestIdHashMap[key!!] = value
                        if (requestData.key == data.children.last().key){
-                           Log.i("PassengerFragement", "EMPTY LIST4")
                         getRequestObjects()
                        }
 
                    }
 
-
                } else {
-                   setPb(0)
+                   setPb(pass_empty_layout,pb_passenger,greyout_pass,0)
                }
             }
 
@@ -181,25 +142,6 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
 
         })
 
-    }
-
-
-    private fun setPb(visibility: Int){
-
-        if (visibility == 1) {
-            //trip_ac_submit_btn.visibility = View.GONE
-            //trip_ac_submit_btn.visibility = View.GONE
-            pass_empty_layout.visibility = View.GONE
-            pb_passenger.visibility = View.VISIBLE
-            greyout_pass.visibility = View.VISIBLE
-
-        } else {
-            pass_empty_layout.visibility = View.VISIBLE
-            pb_passenger.visibility = View.GONE
-            greyout_pass.visibility = View.GONE
-            // trip_ac_submit_btn.visibility = View.VISIBLE
-
-        }
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -222,45 +164,13 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
 
         }
     }
-    private fun getUserInfo(index: Int,listener: OnGetDataListener){
-        listener.onStart()
-
-        var newRef = database.child("users")
-
-        val trip =listOfCurrentTrips[index]
-         newRef = newRef.child(trip.userID)
-        val eventListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    listUser.add(dataSnapshot.getValue(User::class.java)!!)
-                    listener.onSuccess(dataSnapshot)
-                } else {
-                    Log.i("PassengerFrag","DOESNT EXIST")
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                listener.onFailed(databaseError)
-                throw databaseError.toException() as Throwable // don't ignore errors
-            }
-        }
-            newRef.addListenerForSingleValueEvent(eventListener)
-
-
-    }
     private fun addTripStats(trip: Trip){
         val user = getCurrentUserObj()
         val nbTrips = user?.tripsAsPassenger!! + 1
-        val newRef = database.child("users").child(currentUser?.uid!!)
-        newRef.child("tripsAsPassenger").setValue(nbTrips){ databaseError, _ ->
-            if (databaseError != null) {
-                Log.i("FireBaseEroor",databaseError.message)
-                Toast.makeText(activity?.applicationContext!!, "Error $databaseError", Toast.LENGTH_LONG).show()}
-        }
-        newRef.child("bookedTrips").child(trip.tripID).removeValue()
-        newRef.child("driversGoneWith").child(trip.userID).setValue(1)
-        //newRef.child("bookedTrips").child(trip.tripID).removeValue()
-        database.push()
+        val path = "users/${Database().currentUserId() }"
+        Database().addToPath("$path/tripsAsPassenger",nbTrips)
+        Database().addToPath("$path/driversGoneWith/${trip.userID}",1)
+        Database().removeFromPath("$path/bookedTrips/${trip.tripID}")
     }
     private fun getCurrentUserObj():User?{
         val mPrefs = this.activity?.getSharedPreferences("TripsPref", Context.MODE_PRIVATE)!!
@@ -340,19 +250,27 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
         listOfCurrentTrips.removeAll(listOfTripsToRemove)
     }
     private fun getUser(index:Int){
-        getUserInfo(index,object : OnGetDataListener {
+
+        val trip =listOfCurrentTrips[index]
+       val userId = trip.userID
+
+        Database().fetchUser(userId,object : OnGetDataListener {
             override fun onStart() {
-               setPb(1)
+               setPb(pass_empty_layout,pb_passenger,greyout_pass,1)
             }
             override fun onSuccess(data: DataSnapshot) {
                 //DO SOME THING WHEN GET DATA SUCCESS HERE
-
-                if (index==listOfCurrentTrips.size-1){
-                    checkEndedTrips()
-                    setAdapter()
-                    setPb(0)
-                } else{
-                    getUser(index+1)
+                if (data.exists()) {
+                    listUser.add(data.getValue(User::class.java)!!)
+                    if (index==listOfCurrentTrips.size-1){
+                        checkEndedTrips()
+                        setAdapter()
+                        setPb(pass_empty_layout,pb_passenger,greyout_pass,0)
+                    } else{
+                        getUser(index+1)
+                    }
+                } else {
+                    Log.i("PassengerFrag","DOESNT EXIST")
                 }
 
                // checkEndedTrips()
@@ -406,26 +324,12 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
             }
         })
     }
-    private fun findUserTrips(listener: OnGetDataListener){
-        listener.onStart()
-        val userRef = database.child("users").child(currentUser?.uid!!).child("bookedTrips")
-        val eventListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                listener.onSuccess(dataSnapshot)
-
-            }
-            override fun onCancelled(error: DatabaseError) {
-                listener.onFailed(error)
-            }
-        }
-        userRef.addListenerForSingleValueEvent(eventListener)
-    }
     private fun getUserTrips(){
         listOfCurrentTrips = arrayListOf()
         listUser = arrayListOf()
-        findUserTrips(object : OnGetDataListener {
+       Database().fetchFromCurrentUser("bookedTrips",object : OnGetDataListener {
             override fun onStart() {
-                setPb(1)
+                setPb(pass_empty_layout,pb_passenger,greyout_pass,1)
             }
 
             override fun onSuccess(data: DataSnapshot) {
@@ -438,7 +342,7 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
 
                     fetchTrips(tripIDs)
                 } else {
-                   // setPb(0)
+                   // setPb(pass_empty_layout,pb_passenger,greyout_pass,0)
                 }
 
             }

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+    <TextView
+            android:text="@string/price_per_seat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/cardetails_price_pref"
+            android:textSize="22sp"
+            android:textColor="@android:color/black"
+            android:fontFamily="@font/roboto_black"
+            android:layout_marginBottom="20dp"/>
+    <TextView
+            android:text="@string/we_suggest_prices_based_on_similar_trips_and_note_all_prices_are_in_dza"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tip_p_desc3"
+            android:textSize="16sp"
+            android:layout_marginBottom="20dp"/>
+    <TextView
+            android:text="@string/enter_a_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_other3"
+            android:textSize="16sp"
+            android:textColor="@color/btnBlack" android:textStyle="bold"
+            android:layout_marginBottom="10dp"/>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" android:id="@+id/price_layout">
+        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                android:id="@+id/price_label"
+                android:soundEffectsEnabled="false"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                app:primaryColor="@color/colorSecondary"
+                app:labelText="Price"
+                app:helperTextColor="@color/colorAccent" app:counterTextColor="@color/colorSecondary">
+
+            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                    android:id="@+id/edittext_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    app:suffix="  DZD"/>
+
+
+        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <TextView
+                    android:text="@string/origin_to_destination"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/Origin_to_Destination"
+                    android:layout_weight="1"
+                    android:textColor="@color/btnBlack"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginStart="10dp"/>
+            <TextView
+                    android:text="@string/consider_making_the_price_cheap"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" android:id="@+id/recommended_price"
+                    android:layout_weight="1" android:textColor="#4c4c4c" android:textSize="16sp"
+                    android:layout_marginStart="10dp" android:paddingTop="5dp" android:textStyle="italic"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

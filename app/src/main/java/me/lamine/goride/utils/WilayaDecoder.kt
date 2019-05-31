@@ -1,5 +1,7 @@
 package me.lamine.goride.utils
-public var wilayaArrayEN = arrayOf("Adrar",
+
+var wilayaArrayEN = arrayOf(
+    "Adrar",
     "Chlef",
     "Laghouat",
     "Oumel-Bouaghi",
@@ -45,8 +47,10 @@ public var wilayaArrayEN = arrayOf("Adrar",
     "Naama",
     "AïnTémouchent",
     "Ghardaïa",
-    "Relizane")
-var wilayaArrayFR = arrayOf("Adrar",
+    "Relizane"
+)
+var wilayaArrayFR = arrayOf(
+    "Adrar",
     "Chlef",
     "Laghouat",
     "OumEl-Bouaghi",
@@ -93,20 +97,22 @@ var wilayaArrayFR = arrayOf("Adrar",
     "Naâma",
     "AïnTémouchent",
     "Ghardaïa",
-    "Relizane")
+    "Relizane"
+)
 
-fun decodeWilaya(wilaya:String):Int{
-    for ((index,item) in wilayaArrayEN.withIndex()){
-        if (wilaya.contains(item)){
-            return index+1
+fun decodeWilaya(wilaya: String): Int {
+    for ((index, item) in wilayaArrayEN.withIndex()) {
+        if (wilaya.contains(item)) {
+            return index + 1
         }
     }
     return decodeWilayaFR(wilaya)
 }
-private fun decodeWilayaFR(wilaya: String):Int{
-    for ((index,item) in wilayaArrayFR.withIndex()){
-        if (wilaya.contains(item)){
-            return index+1
+
+private fun decodeWilayaFR(wilaya: String): Int {
+    for ((index, item) in wilayaArrayFR.withIndex()) {
+        if (wilaya.contains(item)) {
+            return index + 1
         }
     }
     return 0

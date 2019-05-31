@@ -4,7 +4,7 @@ import java.io.Serializable
 
 data class User(var userId:String = "", var email: String = "", var fullName:String="", var phoneNumber:String="", var birthday:String="", var gender:String="", var description:String="", var isDriver:Boolean=false):Serializable {
 
-var profilePic:String = ""
+var profilePic:String = "https://firebasestorage.googleapis.com/v0/b/ridego-1555252117345.appspot.com/o/user_images%2Fmale_default.png?alt=media&token=658a01b5-ba18-4491-8aa7-e15c30284200"
 //var activeTrips:MutableList<Trip> = mutableListOf()
     //TODO ADD GAS MAP
 var peopleDriven:Int =0

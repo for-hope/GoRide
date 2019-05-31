@@ -6,8 +6,11 @@
 
     <ImageView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" app:srcCompat="@drawable/ic_directions_car_white_60dp"
-            android:id="@+id/imageView12" android:layout_marginTop="50dp"/>
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_directions_car_white_60dp"
+            android:id="@+id/ic_logo"
+            android:layout_marginTop="50dp"
+            android:contentDescription="@string/logo"/>
     <TextView
             android:text="@string/AppTitle"
             android:layout_width="match_parent"
@@ -80,7 +83,7 @@
 
     </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
     <Button
-            android:text="Next"
+            android:text="@string/next"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:id="@+id/nextRegisterBtn" android:paddingBottom="15dp"
             android:paddingTop="15dp" android:layout_marginLeft="30dp" android:layout_marginRight="30dp"
@@ -88,22 +91,25 @@
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" android:layout_weight="1" android:gravity="bottom|center"
+            android:layout_height="match_parent"
+            android:gravity="bottom|center"
             android:paddingBottom="20dp">
         <TextView
-                android:text="Already have an account?  "
+                android:text="@string/already_have_an_account"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/already_have_acc_desc"
                 android:textColor="#6affffff"
-                android:gravity="center" android:layout_weight="0" android:textSize="16sp"/>
+                android:gravity="center"
+                android:layout_weight="0"
+                android:textSize="16sp"/>
         <TextView
-                android:text="Login here."
+                android:text="@string/login_here"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:id="@+id/login_textbtn"
                 android:textColor="#ff7249"
                 android:gravity="bottom|center" android:layout_weight="0"
-                android:textSize="16sp" android:paddingBottom="10dp"/>
+                android:textSize="16sp"/>
     </LinearLayout>
 
 </LinearLayout>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/vehicle_linearlayout"
+        android:visibility="visible" xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+    <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/car_img_layout"
+            android:background="@drawable/custom_border"
+            android:layout_marginBottom="20dp">
+        <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:clickable="true"
+                app:srcCompat="@drawable/ic_directions_car_150dp"
+                android:id="@+id/carBtn"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="false"
+                android:padding="10dp"
+                android:focusable="true"
+                android:contentDescription="@string/vehicle_image"/>
+        <TextView
+                android:text="@string/add_a_photo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imgTextSelectCar"
+                android:textSize="16sp"
+                android:elevation="1dp"
+                android:layout_gravity="bottom|center"
+                android:layout_marginBottom="8dip"/>
+    </FrameLayout>
+    <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/editText_model"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="#9E9E9E"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+            app:boxBackgroundColor="#E0E0E0"
+            android:hint="@string/model"
+            android:layout_marginBottom="20dp"
+            app:boxBackgroundMode="filled">
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editText_car_model"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.jaredrummler.materialspinner.MaterialSpinner
+            android:id="@+id/spinner_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:ms_hint="@string/type"
+            android:hint="@string/type"
+            app:ms_background_color="#e0e0e0"
+            android:layout_marginBottom="30dp"/>
+    <com.jaredrummler.materialspinner.MaterialSpinner
+            android:id="@+id/spinner_color"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:ms_hint="@string/color"
+            android:hint="@string/color"
+            app:ms_background_color="#e0e0e0"
+            android:layout_marginBottom="30dp"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:textColorHint="#9E9E9E"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+            app:boxBackgroundColor="#E0E0E0"
+            android:hint="@string/year"
+            app:counterEnabled="true"
+            app:helperText="Format YYYY"
+            app:boxBackgroundMode="filled"
+            android:layout_marginBottom="20sp"
+            app:counterMaxLength="4"
+            android:id="@+id/year_TextField">
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:id="@+id/year_EditText"
+                android:inputType="number"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+            android:hint="@string/license_plate"
+            app:helperText="*Optional"
+            app:boxBackgroundMode="filled"
+            android:layout_marginBottom="20sp"
+            app:counterMaxLength="10"
+            android:id="@+id/license_TextField">
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:inputType="number"
+                android:id="@+id/licenseplate_EditText"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+</LinearLayout>

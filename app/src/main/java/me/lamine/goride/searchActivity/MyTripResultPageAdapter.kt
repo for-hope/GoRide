@@ -3,35 +3,36 @@ package me.lamine.goride.searchActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import me.lamine.goride.mainActivities.PassengerFragment
+import androidx.fragment.app.FragmentPagerAdapter
+
 import me.lamine.goride.dataObjects.TripSearchData
 
 
-class MyTripResultPageAdapter(fm: FragmentManager, private var tsd: TripSearchData, toText:String, fromText:String) : androidx.fragment.app.FragmentPagerAdapter(fm) {
-   // private var item = trip!!
-    private var toText = toText
-    private var fromText = fromText
+class MyTripResultPageAdapter(
+    fm: FragmentManager,
+    private var tsd: TripSearchData,
+    private var toText: String,
+    private var fromText: String
+) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+
     override fun getItem(position: Int): Fragment {
         return when (position) {
             0 -> {
                 val bundle = Bundle()
-             //   bundle.putSerializable("PassedTrip",item)
-              //  bundle.putSerializable()
-              //todo  bundle.putStringArrayList("TripsList", item)
-                bundle.putString("toText",toText)
-                bundle.putString("fromText",fromText)
-                bundle.putSerializable("tsd",tsd)
-                val tripResultsFragment:Fragment = TripResultFragment()
+                bundle.putString("toText", toText)
+                bundle.putString("fromText", fromText)
+                bundle.putSerializable("tsd", tsd)
+                val tripResultsFragment: Fragment = TripResultFragment()
                 tripResultsFragment.arguments = bundle
                 tripResultsFragment
 
             }
             else -> {
                 val bundle = Bundle()
-                bundle.putString("toText",toText)
-                bundle.putString("fromText",fromText)
-                bundle.putSerializable("tsd",tsd)
-                val requestsResultsFragment:Fragment = RequestsResultFragment()
+                bundle.putString("toText", toText)
+                bundle.putString("fromText", fromText)
+                bundle.putSerializable("tsd", tsd)
+                val requestsResultsFragment: Fragment = RequestsResultFragment()
                 requestsResultsFragment.arguments = bundle
                 return requestsResultsFragment
             }

@@ -1,40 +1,18 @@
 package me.lamine.goride.userActivity
 
-import android.app.Activity
-import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
 import me.lamine.goride.R
 import me.lamine.goride.dataObjects.Review
-import me.lamine.goride.dataObjects.StandaredNotification
 
 
-class ReviewsAdapter(private var context: Context, private var reviewsList:List<Review>): RecyclerView.Adapter<ReviewsAdapter.ReviewViewHolder>() {
-    private lateinit var database: DatabaseReference
-    private var currentUser: FirebaseUser? = null
-    private var mAuth: FirebaseAuth? = null
+class ReviewsAdapter(private var reviewsList: List<Review>): RecyclerView.Adapter<ReviewsAdapter.ReviewViewHolder>() {
     override fun onBindViewHolder(holder: ReviewViewHolder, position: Int) {
-        Log.i("NotifyMe3","adapter set")
-        mAuth = FirebaseAuth.getInstance()
-        if (mAuth?.currentUser == null) {
-            Toast.makeText(context,"LOGIN FIRST",Toast.LENGTH_LONG).show()
-            val activity = context as Activity
-            activity.finish()
-        }else {
-            currentUser = mAuth?.currentUser
-        }
-        database = FirebaseDatabase.getInstance().reference
-
         holder.reviewDesc.text = reviewsList[position].reviewDesc
         holder.username.text = reviewsList[position].reviewUser?.fullName!!
         holder.reviewOtdAndDate.text = reviewsList[position].reviewDate

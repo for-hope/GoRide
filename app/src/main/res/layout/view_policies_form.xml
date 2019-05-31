@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+    <TextView
+            android:text="@string/policies"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/cardetails_price_pref4"
+            android:textSize="22sp"
+            android:textColor="@android:color/black" android:fontFamily="@font/roboto_black"
+            android:paddingBottom="20dp"/>
+    <TextView
+            android:text="@string/our_policies_ensure_that_both_the_drivers_and_passengers_are_happy_with_the_service"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/tip_booking_desc" android:textSize="16sp"
+            android:paddingBottom="30dp"/>
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" android:paddingBottom="20dp">
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" app:srcCompat="@drawable/ic_credit_card_black_24dp"
+                    android:id="@+id/imageView5" android:layout_weight="1"
+                    android:contentDescription="@string/credit_card"/>
+            <TextView
+                    android:text="@string/passengers_pay_with_cash"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/origin_to_Destination2"
+                    android:layout_weight="1" android:textColor="@color/btnBlack" android:textSize="20sp"
+                    android:textStyle="bold" android:layout_marginStart="10dp"
+            />
+        </LinearLayout>
+        <TextView
+                android:text="@string/all_passengers_must_pay_using_cash_to_protect_you_from_scammed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/tip_booking_desc2" android:textSize="16sp"
+                android:paddingBottom="20dp" android:padding="10dp"/>
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" app:srcCompat="@drawable/ic_monetization_on_black_24dp"
+                    android:id="@+id/imageView6" android:layout_weight="1" android:contentDescription="@string/money_ic"/>
+            <TextView
+                    android:text="@string/you_get_paid_after_the_trip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/title_policy2"
+                    android:layout_weight="1" android:textColor="@color/btnBlack" android:textSize="20sp"
+                    android:textStyle="bold" android:layout_marginStart="10dp"/>
+        </LinearLayout>
+        <TextView
+                android:text="@string/you_ll_recieve_your_payout_after_the_trip_from_passengers_to_ensure_a_successful_trip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/policy_desc2" android:textSize="16sp"
+                android:paddingBottom="20dp" android:padding="10dp"/>
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" app:srcCompat="@drawable/ic_not_interested_black_24dp"
+                    android:id="@+id/imageView7" android:layout_weight="1"
+                    android:contentDescription="@string/ic_interested"/>
+            <TextView
+                    android:text="@string/you_get_paid_after_the_trip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/title_policy3"
+                    android:layout_weight="1" android:textColor="@color/btnBlack" android:textSize="20sp"
+                    android:textStyle="bold" android:layout_marginStart="10dp"/>
+        </LinearLayout>
+        <TextView
+                android:text="@string/you_re_committed_to_driving_when_you_post_a_trip_and_you_could_be_suspended_if_you_cancel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/policy_desc3" android:textSize="16sp"
+                android:layout_marginBottom="20dp" android:padding="10dp"/>
+    </LinearLayout>
+
+</LinearLayout>
