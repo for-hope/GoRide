@@ -43,7 +43,7 @@ class MessagesFragment : Fragment() {
         Log.i("Fragment","CREATED")
         mDatabase.getReference("chatlist/${mDatabase.currentUserId()}",object :OnGetDataListener{
             override fun onStart() {
-
+            setPb(1)
             }
 
             override fun onSuccess(data: DataSnapshot) {
@@ -73,6 +73,7 @@ class MessagesFragment : Fragment() {
                                     Log.i("Added adapter","Trigger")
                                     val userAdapter = ChatListAdapter(this@MessagesFragment.context!!, listOfChats)
                                     user_messages_list_res_view.adapter = userAdapter
+                                    setPb(0)
                                 }
 
                             }
