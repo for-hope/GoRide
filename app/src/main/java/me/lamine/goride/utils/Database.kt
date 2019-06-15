@@ -26,7 +26,9 @@ class Database {
             currentUser = mAuth?.currentUser
         }
     }
-
+    fun getFirebaseUser():FirebaseUser?{
+        return currentUser
+    }
     fun fetchFromTrip(tripId: String, otd: String, child: String, listener: OnGetDataListener) {
         listener.onStart()
         val ref = database.child("trips").child(otd).child(tripId).child(child)
@@ -127,7 +129,21 @@ class Database {
         }
         userRef.addListenerForSingleValueEvent(eventListener)
     }
+    fun fetchFromNotifications(child: String, listener: OnGetDataListener){
+        listener.onStart()
+        val ref = database.child("users").child(currentUser?.uid!!).child("notifications").child(child)
+        val eventListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                listener.onSuccess(dataSnapshot)
+            }
 
+            override fun onCancelled(databaseError: DatabaseError) {
+                listener.onFailed(databaseError)
+                throw databaseError.toException()
+            }
+        }
+        ref.addListenerForSingleValueEvent(eventListener)
+    }
     fun fetchFromCurrentUser(child: String, listener: OnGetDataListener) {
         listener.onStart()
         val ref = database.child("users").child(currentUser?.uid!!).child(child)
@@ -161,15 +177,23 @@ class Database {
     }
 
     fun checkUserSession(activity: Activity?) {
+        Log.i("initPcheck", "STARTEd")
         mAuth = FirebaseAuth.getInstance()
         if (mAuth?.currentUser == null) {
             activity?.finish()
+            val intent = Intent(activity?.applicationContext,LoginActivity::class.java)
+            activity?.startActivity(intent)
+
         } else {
             currentUser = mAuth?.currentUser
         }
     }
 
-    fun addToPath(path: String, value: Any) {
+    fun signUserIn(){
+
+    }
+
+    fun addToPath(path: String, value: Any?) {
         val values = path.split("/")
         var ref = database.child(values[0])
         for ((index, child) in values.withIndex()) {
@@ -177,14 +201,16 @@ class Database {
                 ref = ref.child(child)
             }
                 if (index == values.lastIndex) {
-                    ref.setValue(value)
+                    if (value != null){
+                        ref.setValue(value)
+                    }
+
                 }
 
 
         }
 
     }
-
     fun removeFromPath(path: String) {
         val values = path.split("/")
         var ref = database.child(values[0])
@@ -198,16 +224,15 @@ class Database {
 
         }
     }
-
     fun pushKey(path: String): String {
         val values = path.split("/")
         var ref = database.child(values[0])
         for ((index, child) in values.withIndex()) {
             if (index > 0) {
                 ref = ref.child(child)
-                if (index == values.lastIndex) {
-                    ref = ref.push()
-                }
+            }
+            if (index == values.lastIndex) {
+                ref = ref.push()
             }
 
         }
@@ -262,12 +287,23 @@ class Database {
         val path = "chatlist/${this.currentUserId()}/$userId"
         this.addToPath(path,chat)
     }
-
     fun currentUserId(): String {
-        return currentUser?.uid!!
+        return if (currentUser == null){
+            if (FirebaseAuth.getInstance() == null){
+                Log.i("NullObj", "Auth is null")
+            }
+            if (FirebaseAuth.getInstance().currentUser == null){
+                Log.i("NullObj", "currentUser is null")
+            }
+            return ""
+        } else {
+            currentUser?.uid!!
+        }
+
     }
 
     fun signOut(activity: Activity?) {
+        Log.i("initPermissions", "STARTEd")
         if (activity != null) {
             saveUserIsLogged(activity.applicationContext, false)
             AuthUI.getInstance()
@@ -280,10 +316,16 @@ class Database {
         }
     }
 
-    private fun saveUserIsLogged(context: Context, isLogged: Boolean) {
+     fun saveUserIsLogged(context: Context, isLogged: Boolean) {
         val mPref = context.getSharedPreferences("UserPref", Context.MODE_PRIVATE)!!
         val prefsEditor = mPref.edit()
         prefsEditor.putBoolean("isLogged", isLogged)
+        prefsEditor.apply()
+    }
+    fun savePasswordMeta(context: Context, password: String) {
+        val mPref = context.getSharedPreferences("userPass", Context.MODE_PRIVATE)!!
+        val prefsEditor = mPref.edit()
+        prefsEditor.putString("pass",password)
         prefsEditor.apply()
     }
 

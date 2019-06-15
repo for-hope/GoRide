@@ -1,4 +1,4 @@
-package me.lamine.goride.notificationActivity
+package me.lamine.goride.inboxActivity
 
 
 import android.content.Context
@@ -17,6 +17,7 @@ import me.lamine.goride.R
 import me.lamine.goride.dataObjects.ExtendedBookingNotif
 import me.lamine.goride.utils.Database
 import me.lamine.goride.utils.decodeWilaya
+import me.lamine.goride.utils.wilayaArrayEN
 import java.util.*
 
 
@@ -27,7 +28,9 @@ class NotificationAdapter(private var context: Context, private var notify: List
         mDatabase = Database()
         holder.username.text = notify[position].username
         holder.tripDate.text = notify[position].date
-        val originToDes = "${notify[position].origin} to ${notify[position].dest}"
+        val origin = wilayaArrayEN[decodeWilaya(notify[position].origin)-1]
+        val dest = wilayaArrayEN[decodeWilaya(notify[position].dest)-1]
+        val originToDes = "$origin to $dest"
         holder.tripOriginAndDestination.text = originToDes
         val link = notify[position].profilePic
         Picasso.get().load(link).into(holder.profilePicture)

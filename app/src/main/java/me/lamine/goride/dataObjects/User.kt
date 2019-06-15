@@ -12,7 +12,7 @@ var userRating:Double = 0.0
  var userReviews:HashMap<String,Any> = hashMapOf()
 
 var tripsTraveled = 0
-var accountCreatingDate = "May 2019"
+var accountCreatingDate:Long = 0L
 var phoneVerfication = true
 var emailVerification = true
 var tripsAsPassenger = 0

@@ -78,4 +78,9 @@ dependencies {
     implementation 'com.github.stfalcon:stfalcon-imageviewer:0.1.0'
     implementation 'com.github.StevenDXC:DxLoadingButton:2.2'
     implementation 'com.google.android.material:material:1.0.0'
+
+    implementation 'com.squareup.retrofit2:retrofit:2.6.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.google.firebase:firebase-messaging:18.0.0'
+
 }

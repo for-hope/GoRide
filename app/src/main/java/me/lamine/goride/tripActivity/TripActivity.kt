@@ -8,10 +8,12 @@ import android.graphics.Paint
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -25,6 +27,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.squareup.picasso.Picasso
 import com.stfalcon.imageviewer.StfalconImageViewer
+import com.wajahatkarim3.easyvalidation.core.view_ktx.maxLength
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.activity_trip.*
 import kotlinx.android.synthetic.main.view_luggage_icon.*
@@ -47,6 +50,7 @@ import java.lang.IndexOutOfBoundsException
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.HashMap
 
 
 class TripActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -239,7 +243,15 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback {
         if (!isRequest) {
             trip = intent.getSerializableExtra("ClickedTrip") as Trip
             userLite = intent.getSerializableExtra("ClickedTripUser") as User
-
+            var stopsListText = ""
+            for(stop in trip.stops){
+                stopsListText = "$stopsListText, $stop"
+            }
+            if (stopsListText == ""){
+                stops_layout.visibility = View.GONE
+            } else {
+                trip_ac_stops_desc.text = stopsListText
+            }
 
             if (trip.bookingPref != 1) {
                 pendingUsersListener()
@@ -252,6 +264,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         } else {
             trip_toolbar.title = "Trip Request"
+            stops_layout.visibility = View.GONE
             tripR = intent.getSerializableExtra("ClickedTrip") as TripRequest
             userLite = intent.getSerializableExtra("ClickedTripUser") as User
             setupViewRequest(tripR, userLite)
@@ -354,7 +367,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback {
         val otdPath = "${String.format("%02d", originCode)}_${String.format("%02d", destCode)}"
         var rootPath = "tripRequests/$otdPath/$childName/pendingDrivers/${mDatabase.currentUserId()}"
         mDatabase.addToPath(rootPath, 0)
-        rootPath = "users/${trip.userID}/driveRequests/${trip.tripID}/${mDatabase.currentUserId()}"
+        rootPath = "users/${trip.userID}/notifications/driveRequests/${trip.tripID}/${mDatabase.currentUserId()}"
         var mPath = "$rootPath/otd"
         mDatabase.addToPath(mPath, otdPath)
         mPath = "$rootPath/date"
@@ -403,29 +416,80 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback {
                 cancelTrip()
                 true
             }
+            R.id.report_trip -> {
+                showReportDialog()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
+    private fun sendReport(report:String){
+        val mReportHashMap:HashMap<String,String> = hashMapOf()
+        mReportHashMap["reporterId"] = mDatabase.currentUserId()
+        mReportHashMap["tripId"] = if (isRequest) {
+            tripR.tripID
+        } else {
+            trip.tripID
+        }
+        mReportHashMap["report"]= report
+        val key = mDatabase.pushKey("reports/")
+        mDatabase.addToPath("reports/$key/", mReportHashMap)
+    }
+    private fun showReportDialog() {
+        val input:EditText = EditText(this)
+        input.inputType = InputType.TYPE_CLASS_TEXT
+        input.maxLines = 10
+        input.maxLength(300)
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Report Trip")
+            .setMessage("Write below your report about this trip.")
+            .setView(input)
+            // Specifying a listener allows you to take an action before dismissing the dialog.
+            // The dialog is automatically dismissed when a dialog button is clicked
 
+            .setPositiveButton("Done") { _, _ ->
+                if (input.text.toString() != ""){
+                sendReport(input.text.toString())
+                Toast.makeText(this, "Report Received!", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Cancel"){ _, _ ->
+                Toast.makeText(this,"Canceled.",Toast.LENGTH_SHORT).show()
+            }
+            // A null listener allows the button to dismiss the dialog and take no further action.
+            //.setNegativeButton("Done!", null)
+            .setIcon(R.drawable.ic_info_gray_24dp)
+            .show()
+    }
     private fun cancelOperation(type: Int) {
         //0 -> pending
         //1 -> booked
         //2 -> owner
-
+        Log.i("TYPE", "t = $type")
         //3 pending request trip
         //4 cancel request trip
+        var otdPath = ""
+        val userPath = "users"
+        var tripPath = ""
+        if (type <3){
         val destCode = decodeWilaya(trip.destCity)
         val originCode = decodeWilaya(trip.originCity)
-        val otdPath = "${String.format("%02d", originCode)}_${String.format("%02d", destCode)}"
-        val userPath = "users"
-        val tripPath = "trips/$otdPath/${trip.tripID}"
+        otdPath = "${String.format("%02d", originCode)}_${String.format("%02d", destCode)}"
+        tripPath = "trips/$otdPath/${trip.tripID}"}
+        else {
+        val destCode = decodeWilaya(tripR.destCity)
+        val originCode = decodeWilaya(tripR.originCity)
+        otdPath = "${String.format("%02d", originCode)}_${String.format("%02d", destCode)}"
+        tripPath = "tripRequests/$otdPath/${tripR.tripID}"
+
+        }
 
 
         when (type) {
             0 -> {
                 var mPath = "$tripPath/pendingBookedUsers/${mDatabase.currentUserId()}"
                 mDatabase.removeFromPath(mPath)
-                mPath = "$userPath/${tripR.userID}/tripRequests/${tripR.tripID}"
+                mPath = "$userPath/${trip.userID}/notifications/tripRequests/${trip.tripID}/${mDatabase.currentUserId()}"
                 mDatabase.removeFromPath(mPath)
 
             }
@@ -471,14 +535,24 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback {
             3 -> {
                 var rootPath = "tripRequests/$otdPath/${tripR.tripID}/pendingDrivers/${mDatabase.currentUserId()}"
                 mDatabase.removeFromPath(rootPath)
-                rootPath = "users/${tripR.userID}/driveRequests/${tripR.tripID}/${tripR.userID}"
+                rootPath = "users/${tripR.userID}/notifications/driveRequests/${tripR.tripID}/${tripR.userID}"
                 mDatabase.removeFromPath(rootPath)
             }
             4 -> {
+
                 val rootPath = "tripRequests/$otdPath/${tripR.tripID}"
+                mDatabase.removeFromPath("users/${mDatabase.currentUserId()}/activeTripRequests/${tripR.tripID}")
                 mDatabase.removeFromPath(rootPath)
+
+                Log.i("TYPE", "t2 = $rootPath")
+
             }
         }
+        finish()
+        if (type != 4 && type != 2){
+        overridePendingTransition(0, 0);
+        startActivity(intent)
+        overridePendingTransition(0, 0);}
 
 
     }
@@ -862,6 +936,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback {
 
             savePendingToDB(trip)
         }
+
     }
 
     private fun setPb(visibility: Int) {
@@ -887,6 +962,8 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun bookedUsersDataListener(userId: String) {
+        //todo clear
+        bookedUsersList.clear()
         mDatabase.fetchUser(userId, object : OnGetDataListener {
             override fun onStart() {
             }
@@ -968,7 +1045,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback {
         val otdPath = "${String.format("%02d", originCode)}_${String.format("%02d", destCode)}"
         var rootPath = "trips/$otdPath/$childName/pendingBookedUsers/${mDatabase.currentUserId()}"
         mDatabase.addToPath(rootPath, 0)
-        rootPath = "users/${trip.userID}/tripRequests/${trip.tripID}/${mDatabase.currentUserId()}"
+        rootPath = "users/${trip.userID}/notifications/tripRequests/${trip.tripID}/${mDatabase.currentUserId()}"
         var mPath = "$rootPath/otd"
         mDatabase.addToPath(mPath, otdPath)
         mPath = "$rootPath/timestamp"

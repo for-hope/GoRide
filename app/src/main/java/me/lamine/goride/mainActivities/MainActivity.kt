@@ -18,12 +18,15 @@ import io.armcha.playtablayout.core.TouchableTabLayout
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import android.content.Intent
+import android.media.Image
 import android.util.Log
+import android.view.MotionEvent
+import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
-import com.firebase.ui.auth.AuthUI
 import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
@@ -31,21 +34,25 @@ import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import me.lamine.goride.postingActivity.PostOptionsActivity
 import me.lamine.goride.R
+import me.lamine.goride.dataObjects.User
 import me.lamine.goride.interfaces.OnGetDataListener
 import me.lamine.goride.javaClasses.RevealAnimation
-import me.lamine.goride.notificationActivity.InboxActivity
-import me.lamine.goride.reviewActivity.ReviewActivity
+import me.lamine.goride.inboxActivity.InboxActivity
 import me.lamine.goride.searchActivity.SearchTripActivity
+import me.lamine.goride.settingsActivity.SettingsActivity
 import me.lamine.goride.signActivity.LoginActivity
-import me.lamine.goride.utils.Database
-import me.lamine.goride.utils.checkNotifications
+import me.lamine.goride.userActivity.UserActivity
+import me.lamine.goride.utils.*
+import org.jetbrains.anko.tableLayout
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private var user:FirebaseUser? = null
     private var menu:Menu?=null
+    private val mGALLERY = 1
+    private val mCAMERA = 2
+    private lateinit var mUser: User
     private lateinit var mDatabase:Database
-    private lateinit var database:DatabaseReference
     private lateinit var mRevealAnimation: RevealAnimation
     private lateinit var drawerLayout: androidx.drawerlayout.widget.DrawerLayout
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,9 +60,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setTheme(R.style.AppTheme)
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.my_toolbar))
+        if (!verifyAvailableNetwork(this)){
+          Toast.makeText(this,"No Available Network.", Toast.LENGTH_SHORT).show()
+        }
+        mUser = getSharedUser(this)
+         if (user != null) {
+             getUser()
+         }
+
+
+
         mDatabase = Database()
-        database = FirebaseDatabase.getInstance().reference
+        mDatabase.checkUserSession(this)
         user = FirebaseAuth.getInstance().currentUser
+
         if (user == null) {
             Log.i("FAILED", " FAILED LOG")
             val intent = Intent(this, LoginActivity::class.java)
@@ -65,8 +83,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             //
 
         } else {
-
-            for (profile in user!!.providerData) {
+           for (profile in user!!.providerData) {
+                Log.i("inits", "STARTEd")
                 // Id of the provider (ex: google.com)
                 val providerId = profile.providerId
 
@@ -85,62 +103,96 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             //init
 
-            val navigationTabStrip = findViewById<NavigationTabStrip>(R.id.playTabLayout1)
-            val fragmentAdapter = MyPagerAdapter(supportFragmentManager)
-            drawerLayout = findViewById(R.id.drawer_layout)
-            nav_view.setNavigationItemSelectedListener(this)
 
-            if (user!= null){
-                getUser()
-            }
-            val rootLayout = root_layout
-            mRevealAnimation = RevealAnimation(rootLayout, intent, this)
-            val fab: FloatingActionButton = findViewById(R.id.fab)
-            fab.setOnClickListener {
-                val intent = Intent(this, PostOptionsActivity::class.java)
-                startActivity(intent)
-            }
+            Log.i("init", "STARTEd")
 
-            val fabP: FloatingActionButton = findViewById(R.id.fab_p)
-            fabP.setOnClickListener {
-                val intent = Intent(this, SearchTripActivity::class.java)
-                startActivity(intent)
-            }
-            fabP.hide()
+        initTabLaylout()
+        initPermissions()
 
 
 
 
-            playTabLayout.colors = intArrayOf(
-                R.color.colorAccent,
-                R.color.colorSecondary
-            )
+        }
+
+    }
+
+    override fun onBackPressed() {
+        val a = Intent(Intent.ACTION_MAIN)
+        a.addCategory(Intent.CATEGORY_HOME)
+        a.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(a)
+    }
+    private fun initTabLaylout(){
+        Log.i("initTabLayout", "STARTEd")
+        val navigationTabStrip = findViewById<NavigationTabStrip>(R.id.playTabLayout1)
+        val fragmentAdapter = MyPagerAdapter(supportFragmentManager)
+        drawerLayout = findViewById(R.id.drawer_layout)
+        nav_view.setNavigationItemSelectedListener(this)
+        val rootLayout = root_layout
+        mRevealAnimation = RevealAnimation(rootLayout, intent, this)
+        val fab: FloatingActionButton = findViewById(R.id.fab)
+        fab.setOnClickListener {
+            val intent = Intent(this, PostOptionsActivity::class.java)
+            startActivity(intent)
+        }
+        val fabP: FloatingActionButton = findViewById(R.id.fab_p)
+        fabP.setOnClickListener {
+            val intent = Intent(this, SearchTripActivity::class.java)
+            startActivity(intent)
+        }
+        fabP.hide()
+
+        playTabLayout.colors = intArrayOf(
+            R.color.colorAccent,
+            R.color.colorSecondary
+        )
 
 
-            viewpager_v.adapter = fragmentAdapter
-            val tabLayout = playTabLayout.tabLayout
-            tabLayout.setupWithViewPager(viewpager_v)
-            tabLayout.setTabTextColors(ContextCompat.getColor(this, R.color.colorPrimary),ContextCompat.getColor(this,
-                R.color.whiteColor
-            ))
-            //tabs_main.setupWithViewPager(viewpager_main)
-            val toolbar = findViewById<Toolbar>(R.id.my_toolbar)
-            val actionbar: ActionBar? = supportActionBar
-            actionbar?.apply {
-                setDisplayHomeAsUpEnabled(true)
-                setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp)
-            }
-            toolbar.changeToolbarFont()
-            checkForNotifications()
-            initNavStripe(navigationTabStrip)
+        viewpager_v.adapter = fragmentAdapter
+        val tabLayout = playTabLayout.tabLayout
+        tabLayout.setupWithViewPager(viewpager_v)
+        tabLayout.setTabTextColors(ContextCompat.getColor(this, R.color.colorPrimary),ContextCompat.getColor(this,
+            R.color.whiteColor
+        ))
+        //tabs_main.setupWithViewPager(viewpager_main)
+        val toolbar = findViewById<Toolbar>(R.id.my_toolbar)
+        val actionbar: ActionBar? = supportActionBar
+        actionbar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp)
+        }
+        toolbar.changeToolbarFont()
+        checkForNotifications()
+        if (mUser.isDriver){
+            initNavStripe(navigationTabStrip,0)
+        } else {
+            initNavStripe(navigationTabStrip,1)
+        }
 
+        tabLayout.addOnTabSelectedListener(object :
+            TouchableTabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TouchableTabLayout.Tab) {
+                if (tab.position == 0){
+                    if (!mUser.isDriver){
+                        Snackbar.make(rootLayout, "You're a passenger! But you can drive as well.", Snackbar.LENGTH_INDEFINITE)
+                            .setAction("Proceed") {
+                                toolbar.setTitleTextColor(ContextCompat.getColor(applicationContext,
+                                    R.color.colorAccent
+                                ))
+                                navigationTabStrip.stripColor = ContextCompat.getColor(applicationContext,
+                                    R.color.colorAccent
+                                )
+                                navigationTabStrip.activeColor = ContextCompat.getColor(applicationContext,
+                                    R.color.colorAccent
+                                )
 
+                                fabP.hide()
+                                fab.show()
 
+                            }
+                            .show()
 
-            tabLayout.addOnTabSelectedListener(object :
-                TouchableTabLayout.OnTabSelectedListener {
-                override fun onTabSelected(tab: TouchableTabLayout.Tab) {
-                    if (tab.position == 0){
+                    } else {
                         toolbar.setTitleTextColor(ContextCompat.getColor(applicationContext,
                             R.color.colorAccent
                         ))
@@ -153,75 +205,73 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                         fabP.hide()
                         fab.show()
-
-                    }
-                    if (tab.position == 1) {
-                        toolbar.setTitleTextColor(ContextCompat.getColor(applicationContext,
-                            R.color.colorSecondary
-                        ))
-                        navigationTabStrip.stripColor = ContextCompat.getColor(applicationContext,
-                            R.color.colorSecondary
-                        )
-                        navigationTabStrip.activeColor = ContextCompat.getColor(applicationContext,
-                            R.color.colorSecondary
-                        )
-
-                        fab.hide()
-                        fabP.show()
-                    }
-                }
-                override fun onTabReselected(tab: TouchableTabLayout.Tab) {
-
-                }
-
-                override fun onTabUnselected(tab: TouchableTabLayout.Tab) {
-
-                }
-
-
-            })
-
-            askPermission{
-                //all permissions already granted or just granted
-
-                Toast.makeText(this,"Permissions Granted!",Toast.LENGTH_SHORT).show()
-            }.onDeclined { e ->
-                if (e.hasDenied()) {
-                    Toast.makeText(this,"Permissions Denied!",Toast.LENGTH_SHORT).show()
-                    //the list of denied permissions
-                    e.denied.forEach {
-                        Log.i("DENIED FOR EACH", it)
                     }
 
-                    AlertDialog.Builder(this)
-                        .setMessage("Please accept our permissions")
-                        .setPositiveButton("yes") { _, _ ->
-                            e.askAgain()
-                        } //ask again
-                        .setNegativeButton("no") { dialog, _ ->
-                            dialog.dismiss()
-                        }
-                        .show()
                 }
+                if (tab.position == 1) {
 
-                if(e.hasForeverDenied()) {
-                    Toast.makeText(this,"Permissions Denied Forever!",Toast.LENGTH_SHORT).show()
-                    //the list of forever denied permissions, user has check 'never ask again'
-                    e.foreverDenied.forEach {
-                        Log.i("DENIED FOREVER", it)
-                    }
-                    // you need to open setting manually if you really need it
-                    e.goToSettings()
+                    toolbar.setTitleTextColor(ContextCompat.getColor(applicationContext,
+                        R.color.colorSecondary
+                    ))
+                    navigationTabStrip.stripColor = ContextCompat.getColor(applicationContext,
+                        R.color.colorSecondary
+                    )
+                    navigationTabStrip.activeColor = ContextCompat.getColor(applicationContext,
+                        R.color.colorSecondary
+                    )
+
+                    fab.hide()
+                    fabP.show()
                 }
+            }
+            override fun onTabReselected(tab: TouchableTabLayout.Tab) {
+
+            }
+
+            override fun onTabUnselected(tab: TouchableTabLayout.Tab) {
+
             }
 
 
+        })
 
 
+    }
+    private fun initPermissions(){
+        Log.i("initPermissions", "STARTEd")
+        askPermission{
+            //all permissions already granted or just granted
+
+            Toast.makeText(this,"Permissions Granted!",Toast.LENGTH_SHORT).show()
+        }.onDeclined { e ->
+            if (e.hasDenied()) {
+                Toast.makeText(this,"Permissions Denied!",Toast.LENGTH_SHORT).show()
+                //the list of denied permissions
+                e.denied.forEach {
+                    Log.i("DENIED FOR EACH", it)
+                }
+
+                AlertDialog.Builder(this)
+                    .setMessage("Please accept our permissions")
+                    .setPositiveButton("yes") { _, _ ->
+                        e.askAgain()
+                    } //ask again
+                    .setNegativeButton("no") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+            }
+
+            if(e.hasForeverDenied()) {
+                Toast.makeText(this,"Permissions Denied Forever!",Toast.LENGTH_SHORT).show()
+                //the list of forever denied permissions, user has check 'never ask again'
+                e.foreverDenied.forEach {
+                    Log.i("DENIED FOREVER", it)
+                }
+                // you need to open setting manually if you really need it
+                e.goToSettings()
+            }
         }
-
-
-
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -257,7 +307,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when (item.itemId) {
 
             R.id.nav_profile -> {
-                Toast.makeText(this, "Clicked Profile",Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, UserActivity::class.java)
+                val user = getSharedUser(this)
+                intent.putExtra("UserProfile",user )
+                startActivity(intent)
 
             }//do sometehing
             R.id.nav_logout -> {
@@ -272,7 +325,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             }
             R.id.nav_settings -> {
-                startActivity(Intent(this@MainActivity, ReviewActivity::class.java))
+                startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
             }
         }
         //close navigation drawer
@@ -317,23 +370,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
     }
-    private fun saveSharedUser(user:me.lamine.goride.dataObjects.User){
-        val mPrefs = this.getSharedPreferences("TripsPref", Context.MODE_PRIVATE)!!
-        val prefsEditor = mPrefs.edit()
-        //val nbTrips = mPrefs.getInt("savedTrips",0)
-        val gson = Gson()
-        val json = gson.toJson(user)
-        val currentUserStr = "currentUser"
-        prefsEditor.putString(currentUserStr, json)
-        prefsEditor.apply()
-        saveUserIsLogged(true)
-    }
-    private fun saveUserIsLogged(isLogged:Boolean){
-        val mPref = this.getSharedPreferences("UserPref", Context.MODE_PRIVATE)!!
-        val prefsEditor = mPref.edit()
-        prefsEditor.putBoolean("isLogged",isLogged)
-        prefsEditor.apply()
-    }
+
+
     private fun getUser(){
 
        mDatabase.fetchUser(user?.uid!!,object : OnGetDataListener {
@@ -341,19 +379,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             }
             override fun onSuccess(data: DataSnapshot) {
-                val user  = data.getValue(me.lamine.goride.dataObjects.User::class.java)
+                val user  = data.getValue(User::class.java)
                 if (user == null) {
                     mDatabase.signOut(this@MainActivity)
-                /*    saveUserIsLogged(false)
-                    AuthUI.getInstance()
-                        .signOut(this@MainActivity)
-                        .addOnCompleteListener {
-                            startActivity(Intent(this@MainActivity, LoginActivity::class.java))
-                            finish()
-                        }*/
                 } else {
 
-                    saveSharedUser(user)
+                    saveSharedUser(this@MainActivity,user)
+                    mUser = getSharedUser(this@MainActivity)
                     val profileUrl = user.profilePic
                     val fullName = user.fullName
                     setHeaderImage(profileUrl,fullName)
@@ -368,6 +400,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         })
 
     }
+
     private fun setHeaderImage(link:String,name:String){
         val hView = nav_view.inflateHeaderView(R.layout.nav_header)
         var mLink = link
@@ -380,10 +413,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         Picasso.get().load(mLink).into(mImageView)
     }
-    private fun initNavStripe(navigationTabStrip: NavigationTabStrip) {
+    private fun initNavStripe(navigationTabStrip: NavigationTabStrip,tab:Int) {
         navigationTabStrip.setTitles("Driver", "Passenger")
-        navigationTabStrip.setViewPager(viewpager_v,0)
-        navigationTabStrip.setTabIndex(0, true)
+        navigationTabStrip.setViewPager(viewpager_v,tab)
+        navigationTabStrip.setTabIndex(tab, true)
         navigationTabStrip.setBackgroundColor(Color.WHITE)
         navigationTabStrip.stripColor = Color.RED
         navigationTabStrip.stripType = NavigationTabStrip.StripType.POINT

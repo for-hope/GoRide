@@ -1,36 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/rl"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" android:elevation="1dp">
-    <ProgressBar android:indeterminate="true"
-                 android:layout_centerInParent="true"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:id="@+id/swipeLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout
 
-                 android:id="@+id/pb_searcn" android:visibility="gone"
-                 android:elevation="@dimen/design_touchable_tab_text_size_2line"/>
-    <LinearLayout
-            android:orientation="vertical"
+            android:id="@+id/rl"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" android:background="#0a000000"
-            android:id="@+id/grey_search_layout"
-            android:visibility="visible" android:elevation="1dp">
-    </LinearLayout>
-    <ScrollView
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/scrolling"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" android:background="#eeeeee">
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                      android:orientation="vertical">
-
-            <androidx.recyclerview.widget.RecyclerView
+            android:layout_height="match_parent" android:elevation="1dp">
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" android:gravity="center" android:id="@+id/empty_search_layout"
+                android:visibility="visible">
+            <ImageView
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
+                    android:id="@+id/feedback_ic" android:background="@drawable/ic_feedback_gray_40dp"/>
+            <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" android:id="@+id/trips_list_rec_view"/>
+                    android:layout_height="wrap_content"
+                    android:text="Sorry! No trips found."
+                    android:textSize="18sp" android:gravity="center" android:layout_marginTop="50dp"
+                    android:layout_marginStart="50dp" android:layout_marginEnd="50dp" android:id="@+id/feedback_text"/>
         </LinearLayout>
-    </ScrollView>
-</RelativeLayout>
+        <ProgressBar android:indeterminate="true"
+                     android:layout_centerInParent="true"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+
+                     android:id="@+id/pb_searcn" android:visibility="gone"
+                     android:elevation="@dimen/design_touchable_tab_text_size_2line"/>
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" android:background="#0a000000"
+                android:id="@+id/grey_search_layout"
+                android:visibility="gone" android:elevation="1dp">
+        </LinearLayout>
+        <ScrollView
+                android:id="@+id/scrolling"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" android:background="#eeeeee" android:visibility="gone">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                          android:orientation="vertical">
+
+                <androidx.recyclerview.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" android:id="@+id/trips_list_rec_view"/>
+            </LinearLayout>
+        </ScrollView>
+    </RelativeLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

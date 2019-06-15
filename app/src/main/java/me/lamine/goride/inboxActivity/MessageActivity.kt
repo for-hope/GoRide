@@ -1,26 +1,33 @@
-package me.lamine.goride.notificationActivity
+package me.lamine.goride.inboxActivity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.database.*
 
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_message.*
 import me.lamine.goride.R
 import me.lamine.goride.dataObjects.Chat
 import me.lamine.goride.dataObjects.User
 import me.lamine.goride.interfaces.OnGetDataListener
+import me.lamine.goride.notifications.*
 import me.lamine.goride.utils.Database
+import me.lamine.goride.utils.getSharedUser
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class MessageActivity : AppCompatActivity() {
      private lateinit var mDatabase: Database
     private lateinit var messageAdapter: MessageAdapter
+    lateinit var apiService:APIService
     private var mChat:MutableList<Chat> = mutableListOf()
+    var notify = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_message)
@@ -28,6 +35,7 @@ class MessageActivity : AppCompatActivity() {
         supportActionBar?.title = ""
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+        apiService = Client.getClient("https://fcm.googleapis.com/")?.create(APIService::class.java)!!
         mDatabase = Database()
         val userId:String = intent.getStringExtra("userId")
         var mUser : User?
@@ -62,18 +70,71 @@ class MessageActivity : AppCompatActivity() {
 
         //send msg
         msg_send_btn.setOnClickListener {
+            notify=  true
             val txt = msg_send_text.text.toString()
-            if (txt != ""){
+            if (txt != "" && txt.length < 600){
                 mDatabase.sendMessage(mDatabase.currentUserId(),userId,txt)
+                val msg = txt
+                val mUserObject = getSharedUser(this)
+                if (notify){
+                sendNotification(userId,mUserObject.fullName,msg)
+                }
+                notify = false
                 msg_send_text.text.clear()
             } else {
+                if (txt == ""){
                 Toast.makeText(this,"Type something first.",Toast.LENGTH_SHORT).show()
+                } else {
+                Toast.makeText(this,"Message too long.",Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
 
 
     }
+
+    private fun sendNotification(userId: String, fullName: String, msg: String) {
+        Log.i("NotificationCompact_MA", "SendNotification")
+        val tokens:DatabaseReference = FirebaseDatabase.getInstance().getReference("Tokens")
+        val query:Query = tokens.orderByKey().equalTo(userId)
+        query.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                Log.i("NotificationCompact_MA", "Query")
+                for (data in dataSnapshot.children){
+                    Log.i("NotificationCompact_MA", "token")
+                    val token: Token = data.getValue(Token::class.java)!!
+                    val data: Data = Data(mDatabase.currentUserId(),R.mipmap.ic_launcher, "$fullName : $msg", userId)
+                    val sender: Sender = Sender(data,token.token)
+                    apiService.sendNotification(sender).enqueue(object : Callback<MyResponse> {
+                        override fun onResponse(call: Call<MyResponse>, response: Response<MyResponse>) {
+                            Log.i("NotificationCompact_MA", "API")
+                            if (response.code() == 200){
+                            if (response.body()?.success != 1){
+                                Toast.makeText(this@MessageActivity,"Failed", Toast.LENGTH_SHORT).show()
+
+                            }
+                            }
+
+                        }
+
+                        override fun onFailure(call: Call<MyResponse>, t: Throwable) {
+                            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                        }
+
+                    })
+                }
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                    Log.i("MessageActivity", databaseError.message)
+            }
+
+        })
+
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true

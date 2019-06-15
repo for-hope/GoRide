@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:id="@+id/swipeLayoutMessages"
+        xmlns:android="http://schemas.android.com/apk/res/android">
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
@@ -19,7 +23,7 @@
                 android:layout_height="120dp" android:contentDescription="@string/dummy"/>-->
     <TextView
             android:id="@+id/empty_list_msg"
-            android:drawableTop="@drawable/ic_speaker_notes_off_black_24dp"
+            android:drawableTop="@drawable/ic_no_messages_120dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="18sp"
@@ -28,7 +32,7 @@
             android:layout_marginTop="50dp"
             android:layout_marginStart="50dp"
             android:layout_marginEnd="50dp"
-            android:text="@string/you_have_no_messages" android:visibility="gone"/>
+            android:text="@string/you_have_no_messages" android:visibility="visible"/>
 <!--    </LinearLayout>-->
     <RelativeLayout
             android:id="@+id/relativeLayout"
@@ -62,3 +66,4 @@
         </ScrollView>
     </RelativeLayout>
 </FrameLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -1,6 +1,8 @@
 package me.lamine.goride.signActivity
 
 import android.content.Intent
+import android.graphics.ColorFilter
+import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
@@ -22,6 +24,7 @@ import me.lamine.goride.interfaces.OnGetDataListener
 import me.lamine.goride.javaClasses.RevealAnimation
 import me.lamine.goride.mainActivities.MainActivity
 import me.lamine.goride.utils.Database
+import me.lamine.goride.utils.verifyAvailableNetwork
 
 
 class LoginActivity : AppCompatActivity() {
@@ -29,7 +32,16 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+        setSupportActionBar(login_tb)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        login_tb.navigationIcon?.setColorFilter(ContextCompat.getColor(this,R.color.whiteColor),PorterDuff.Mode.SRC_ATOP)
+        supportActionBar?.title = ""
+
         mAuth = FirebaseAuth.getInstance()
+        if (!verifyAvailableNetwork(this)){
+            Toast.makeText(this,"No Available Network.", Toast.LENGTH_SHORT).show()
+        }
         password_label.setEndIcon(R.drawable.ic_visibility_gray_24dp)
         password_label.endIconImageButton
         password_label.endIconImageButton.setOnClickListener {
@@ -52,10 +64,26 @@ class LoginActivity : AppCompatActivity() {
             val email = email_edittext.text.toString()
             val password = password_edittext.text.toString()
             signUserIn(it, email, password)
+        }
+        forgot_pass.setOnClickListener {
+            val email = email_edittext.text.toString()
+            if (email != ""){
+                FirebaseAuth.getInstance().sendPasswordResetEmail(email).addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        Toast.makeText(this,"Email sent", Toast.LENGTH_SHORT).show()
+                } else if (it.isCanceled){
+                        Toast.makeText(this,"Error ${it.exception?.localizedMessage}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+            }
 
         }
     }
-
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
     private fun startRevealActivity(v: View, user: FirebaseUser?) {
         //calculates the center of the View v you are passing
         val revealX = (v.x + v.width / 2).toInt()
@@ -83,6 +111,7 @@ class LoginActivity : AppCompatActivity() {
             override fun onSuccess(data: DataSnapshot) {
                 loading_btn.loadingSuccessful()
                 if (data.exists()) {
+                    loading_btn.loadingSuccessful()
                     if (v != null) {
                         startRevealActivity(v, user)
                     } else {

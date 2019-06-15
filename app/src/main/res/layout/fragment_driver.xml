@@ -15,7 +15,8 @@
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" android:gravity="center" android:id="@+id/driver_empty_layout">
+            android:layout_height="match_parent" android:gravity="center" android:id="@+id/driver_empty_layout"
+            android:visibility="gone">
         <ImageView
                 android:layout_width="120dp"
                 android:id="@+id/driver_catImg" app:srcCompat="@drawable/cat_orange" android:layout_height="120dp"/>
@@ -30,13 +31,6 @@
             android:id="@+id/relativeLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent" android:elevation="1dp">
-        <ProgressBar android:indeterminate="true"
-                     android:layout_centerInParent="true"
-                     android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
-
-                     android:id="@+id/pb_driver" android:visibility="gone"
-                     android:elevation="@dimen/design_touchable_tab_text_size_2line"/>
         <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
@@ -44,20 +38,16 @@
                 android:id="@+id/greyout_driver"
                 android:visibility="gone" android:elevation="1dp">
         </LinearLayout>
-        <ScrollView
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/scroll_driver_frg"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" android:background="#eeeeee" android:visibility="gone">
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                          android:orientation="vertical" android:id="@+id/scroll_layout">
+        <ProgressBar android:indeterminate="true"
+                     android:layout_centerInParent="true"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
 
-                <androidx.recyclerview.widget.RecyclerView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" android:id="@+id/driver_trips"/>
-            </LinearLayout>
-        </ScrollView>
+                     android:id="@+id/pb_driver" android:visibility="gone"
+                     android:elevation="@dimen/design_touchable_tab_text_size_2line"/>
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" android:id="@+id/driver_trips"/>
     </RelativeLayout>
 
 </FrameLayout>

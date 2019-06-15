@@ -69,6 +69,7 @@ class SearchTripActivity : AppCompatActivity(), OnMapReadyCallback {
     private val apiKey: String = "AIzaSyDWbc3KQP6ssBlClf8HSiZWEtMxfwqSYto"
     private var fromPlace: String = ""
     private var toPlace: String = ""
+    private var tripDate= ""
     private lateinit var mGeocoder: Geocoder
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -139,13 +140,19 @@ class SearchTripActivity : AppCompatActivity(), OnMapReadyCallback {
             startActivityForResult(intent, mAutoRequestCodeDest)
 
         }
-        add_datebtn.setOnClickListener { dateField() }
+
+        add_datebtn.hasClearButton = true
+        add_datebtn.setOnClickListener { Toast.makeText(this,"Click to enter a search date",Toast.LENGTH_SHORT) .show()
+            dateField() }
+        search_date_edittext.setOnClickListener { dateField() }
+        search_date_edittext.setOnClickListener { dateField() }
         search_btn.setOnClickListener {
 
             val intent = Intent(this, TripsListActivity::class.java)
             //  Log.i("toFrom")
             val tsd =
                 TripSearchData(originCode, destinationCode, originSubCity, destSubCity)
+            tsd.tripDate = search_date_edittext.text.toString()
             intent.putExtra("tsd", tsd)
             intent.putExtra("to",destSubCity)
             intent.putExtra("from",originSubCity)
@@ -163,12 +170,10 @@ class SearchTripActivity : AppCompatActivity(), OnMapReadyCallback {
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
             updateLabel(myCalendar)
         }
-        add_datebtn.setOnClickListener {
-            DatePickerDialog(
-                this, date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                myCalendar.get(Calendar.DAY_OF_MONTH)
-            ).show()
-        }
+        DatePickerDialog(
+            this, date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+            myCalendar.get(Calendar.DAY_OF_MONTH)
+        ).show()
     }
 
     private fun updateLabel(myCalendar: Calendar) {
@@ -176,6 +181,7 @@ class SearchTripActivity : AppCompatActivity(), OnMapReadyCallback {
         val sdf = SimpleDateFormat(myFormat, Locale.US)
 
         search_date_edittext.setText(sdf.format(myCalendar.time))
+     //   tripDate = search_date_edittext.text.toString()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -438,6 +444,7 @@ class SearchTripActivity : AppCompatActivity(), OnMapReadyCallback {
                 val stringBuilder: StringBuilder = StringBuilder(result)
                 val json: JsonObject = parser.parse(stringBuilder) as JsonObject
                 // get to the correct element in JsonObject
+                //todo fix
                 val routes = json.array<JsonObject>("routes")
                 @Suppress("UNCHECKED_CAST") val points = routes!!["legs"]["steps"][0] as JsonArray<JsonObject>
                 // For every element in the JsonArray, decode the polyline string and pass all points to a List

@@ -1,5 +1,6 @@
 package me.lamine.goride.userActivity
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,14 +9,21 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import me.lamine.goride.R
+import me.lamine.goride.R.string.date
 import me.lamine.goride.dataObjects.Review
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class ReviewsAdapter(private var reviewsList: List<Review>): RecyclerView.Adapter<ReviewsAdapter.ReviewViewHolder>() {
     override fun onBindViewHolder(holder: ReviewViewHolder, position: Int) {
         holder.reviewDesc.text = reviewsList[position].reviewDesc
+        Log.i("review_Dec",reviewsList[position].reviewDesc )
         holder.username.text = reviewsList[position].reviewUser?.fullName!!
-        holder.reviewOtdAndDate.text = reviewsList[position].reviewDate
+        val date = Date(reviewsList[position].reviewDate.toString().toLong())
+        val sdf = SimpleDateFormat("dd MMMM yyy", Locale.US)
+        val mDate = sdf.format(date)
+        holder.reviewOtdAndDate.text = mDate
         Picasso.get().load(reviewsList[position].reviewUser?.profilePic!!).into(holder.reviewerPfp)
         if (reviewsList[position].reviewUser?.isDriver!!){
             val type = "Driver Review"

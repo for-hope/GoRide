@@ -1,55 +1,33 @@
 package me.lamine.goride.utils
 
+import android.content.Context
 import android.view.View
 import android.widget.ProgressBar
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.gson.Gson
+import me.lamine.goride.dataObjects.User
 import me.lamine.goride.interfaces.OnGetDataListener
-import java.util.ArrayList
 
-private val apiKey: String = "AIzaSyDWbc3KQP6ssBlClf8HSiZWEtMxfwqSYto"
+import android.net.NetworkInfo
+import androidx.core.content.ContextCompat.getSystemService
+import android.net.ConnectivityManager
+import androidx.appcompat.app.AppCompatActivity
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
+
+
+private const val apiKey: String = "AIzaSyDWbc3KQP6ssBlClf8HSiZWEtMxfwqSYto"
 fun checkNotifications(listener: OnGetDataListener) {
     listener.onStart()
     Database().fetchFromCurrentUser("notifications", object : OnGetDataListener {
         override fun onSuccess(data: DataSnapshot) {
-            if (data.childrenCount.toInt() != 0) {
+
                 listener.onSuccess(data)
-            } else {
-                Database().fetchFromCurrentUser("tripRequests", object : OnGetDataListener {
-                    override fun onSuccess(data: DataSnapshot) {
-                        if (data.childrenCount.toInt() != 0) {
-                            listener.onSuccess(data)
-                        } else {
-                            Database().fetchFromCurrentUser("driveRequests", object : OnGetDataListener {
-                                override fun onSuccess(data: DataSnapshot) {
-                                    listener.onSuccess(data)
-                                }
 
-                                override fun onStart() {
-
-                                }
-
-                                override fun onFailed(databaseError: DatabaseError) {
-
-                                }
-
-                            })
-                        }
-                    }
-
-                    override fun onStart() {
-
-                    }
-
-                    override fun onFailed(databaseError: DatabaseError) {
-
-                    }
-
-                })
-            }
         }
-
         override fun onStart() {
 
         }
@@ -126,3 +104,100 @@ fun decodePoly(encoded: String): List<LatLng> {
 
     return poly
 }
+fun getSharedUser(context:Context): User {
+        var isDone :Boolean = false
+        var mUser: User? = null
+        val mPrefs = context.getSharedPreferences("TripsPref", Context.MODE_PRIVATE)!!
+        val gson = Gson()
+        val json = mPrefs.getString("currentUser", "")
+        if (json != "") {
+            val obj = gson.fromJson<User>(json, User::class.java)
+            return obj
+        }else {
+            Database().fetchUser(Database().currentUserId(), object : OnGetDataListener{
+                override fun onStart() {
+
+                }
+
+                override fun onSuccess(data: DataSnapshot) {
+                   isDone = true
+                    mUser = data.getValue(User::class.java) as User
+                }
+
+                override fun onFailed(databaseError: DatabaseError) {
+                    isDone = true
+                }
+
+            })
+        }
+            for (i in 0..1000){
+                if (isDone){
+                    return mUser!!
+                }
+           }
+          return  mUser!!
+    }
+    fun verifyAvailableNetwork(activity: AppCompatActivity):Boolean{
+      val connectivityManager=activity.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+      val networkInfo=connectivityManager.activeNetworkInfo
+      return  networkInfo!=null && networkInfo.isConnected
+    }
+     fun getAge(dobString: String): Int {
+
+    var date: Date? = null
+    val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.US)
+    try {
+        date = sdf.parse(dobString)
+    } catch (e: ParseException) {
+        e.printStackTrace()
+    }
+
+    if (date == null) return 0
+
+    val dob = Calendar.getInstance()
+    val today = Calendar.getInstance()
+
+    dob.time = date
+
+    val year = dob.get(Calendar.YEAR)
+    val month = dob.get(Calendar.MONTH)
+    val day = dob.get(Calendar.DAY_OF_MONTH)
+
+    dob.set(year, month + 1, day)
+
+    var age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR)
+
+    if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) {
+        age--
+    }
+
+
+
+    return age
+}
+
+fun saveSharedUser(context:Context,user: User){
+    val mPrefs = context.getSharedPreferences("TripsPref", Context.MODE_PRIVATE)!!
+    val prefsEditor = mPrefs.edit()
+    //val nbTrips = mPrefs.getInt("savedTrips",0)
+    val gson = Gson()
+    val json = gson.toJson(user)
+    val currentUserStr = "currentUser"
+    prefsEditor.putString(currentUserStr, json)
+    prefsEditor.apply()
+    saveUserIsLogged(context,true)
+}
+fun saveUserIsLogged(context:Context,isLogged:Boolean){
+    //todo
+    val mPref = context.getSharedPreferences("UserPref", Context.MODE_PRIVATE)!!
+    val prefsEditor = mPref.edit()
+    prefsEditor.putBoolean("isLogged",isLogged)
+    prefsEditor.apply()
+}
+//---------//////
+// Request Activity high
+// IntroActivity medium
+// Google Sign-in low
+// Notifications medium
+
+

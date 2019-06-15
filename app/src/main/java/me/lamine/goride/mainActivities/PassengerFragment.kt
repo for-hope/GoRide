@@ -23,15 +23,12 @@ import me.lamine.goride.dataObjects.User
 import me.lamine.goride.interfaces.OnGetDataListener
 import me.lamine.goride.reviewActivity.ReviewActivity
 import me.lamine.goride.tripActivity.TripAdapter
-import me.lamine.goride.utils.decodeWilaya
-import me.lamine.goride.utils.wilayaArrayEN
 import java.text.SimpleDateFormat
 import java.util.*
 import com.google.gson.Gson
 import me.lamine.goride.dataObjects.TripRequest
 import me.lamine.goride.tripActivity.RequestsAdapter
-import me.lamine.goride.utils.Database
-import me.lamine.goride.utils.setPb
+import me.lamine.goride.utils.*
 import kotlin.collections.HashMap
 
 /**
@@ -61,14 +58,16 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
             getUserTrips()
             getTripRequests()
         }
+        pullToRefreshPassengerTrips.setOnRefreshListener {
+            listOfCurrentRequest.clear()
+            getUserTrips()
+            getTripRequests() }
         this.pass_trips.setHasFixedSize(true)
         this.req_trips.setHasFixedSize(true)
         val llm = LinearLayoutManager(this.context)
         val llm2 = LinearLayoutManager(this.context)
         llm.orientation = RecyclerView.VERTICAL
         llm2.orientation = RecyclerView.VERTICAL
-        req_trips.isNestedScrollingEnabled = false
-        pass_trips.isNestedScrollingEnabled = false
         req_trips.layoutManager = llm2
         pass_trips.layoutManager = llm
     }
@@ -76,7 +75,7 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
         if (listOfCurrentRequest.isNotEmpty()){
             Log.i("PassengerFragement", "FULL LIST")
             req_trips.adapter?.notifyDataSetChanged()
-            scroll_pass_frg.visibility = View.VISIBLE
+            pass_empty_layout.visibility = View.GONE
             req_trips.adapter = this.context?.let {
                 RequestsAdapter(
                     it,
@@ -132,6 +131,7 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
                    }
 
                } else {
+                   pullToRefreshPassengerTrips.isRefreshing = false
                    setPb(pass_empty_layout,pb_passenger,greyout_pass,0)
                }
             }
@@ -151,16 +151,23 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
     private fun setAdapter(){
         if (listOfCurrentTrips.isNotEmpty()){
             pass_trips.adapter?.notifyDataSetChanged()
-            scroll_pass_frg.visibility = View.VISIBLE
+            pass_empty_layout.visibility = View.GONE
             pass_trips.adapter = this.context?.let {
                 TripAdapter(
                     it,
                     listOfCurrentTrips,listUser
                 )
             }
+     /*       val swipeHandler = object : SwipeToDeleteCallback(this.context!!) {
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val adapter = pass_trips.adapter as TripAdapter
+                    //  adapter.removeAt(viewHolder.adapterPosition)
+                }
+            }
+            val itemTouchHelper = ItemTouchHelper(swipeHandler)
+            itemTouchHelper.attachToRecyclerView(pass_trips)*/
         } else {
             pass_empty_layout.visibility = View.VISIBLE
-            scroll_pass_frg.visibility = View.GONE
 
         }
     }
@@ -185,14 +192,14 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
 
             // Specifying a listener allows you to take an action before dismissing the dialog.
             // The dialog is automatically dismissed when a dialog button is clicked.
-            .setPositiveButton("Yes") { dialog, which ->
+            .setPositiveButton("Yes") { dialog, _ ->
                 val intent = Intent(this.activity,ReviewActivity::class.java)
                 intent.putExtra("userID",trip.userID)
                 startActivity(intent)
                 dialog.cancel()
 
             }
-            .setNegativeButton("No") { dialog, which ->
+            .setNegativeButton("No") { dialog, _ ->
                 Toast.makeText(activity?.applicationContext!!,"You can still review users on their profiles.", Toast.LENGTH_SHORT).show()
                 dialog.cancel()
             }
@@ -212,14 +219,14 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
 
             // Specifying a listener allows you to take an action before dismissing the dialog.
             // The dialog is automatically dismissed when a dialog button is clicked.
-            .setPositiveButton("Yes") { dialog, which ->
+            .setPositiveButton("Yes") { dialog, _ ->
                 addTripStats(trip)
                 Toast.makeText(activity?.applicationContext!!,"Keep it up!", Toast.LENGTH_SHORT).show()
                 showReviewDialog(trip)
                 dialog.cancel()
 
             }
-            .setNegativeButton("No") { dialog, which ->
+            .setNegativeButton("No") { dialog, _ ->
                 Toast.makeText(activity?.applicationContext!!,"Something wrong? send us a feedback!", Toast.LENGTH_SHORT).show()
                 addTripStats(trip)
                 dialog.cancel()
@@ -265,6 +272,7 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
                     if (index==listOfCurrentTrips.size-1){
                         checkEndedTrips()
                         setAdapter()
+                        pullToRefreshPassengerTrips.isRefreshing = false
                         setPb(pass_empty_layout,pb_passenger,greyout_pass,0)
                     } else{
                         getUser(index+1)
@@ -342,6 +350,7 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
 
                     fetchTrips(tripIDs)
                 } else {
+                    pullToRefreshPassengerTrips.isRefreshing = false
                    // setPb(pass_empty_layout,pb_passenger,greyout_pass,0)
                 }
 

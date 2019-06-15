@@ -49,6 +49,7 @@ import kotlinx.android.synthetic.main.view_seats.*
 import kotlinx.android.synthetic.main.view_vehicle_form.*
 import me.lamine.goride.R
 import me.lamine.goride.dataObjects.Trip
+import me.lamine.goride.dataObjects.TripRequest
 import me.lamine.goride.utils.Database
 import me.lamine.goride.utils.decodeWilaya
 import studio.carbonylgroup.textfieldboxes.ExtendedEditText
@@ -106,7 +107,8 @@ class PostingActivity : AppCompatActivity() {
     private var desLatLng: LatLng? = null
     private lateinit var tripToModify: Trip
     private var isModifyMode = false
-
+     private var isAcceptedTrip = false
+    private lateinit var tripRequest:TripRequest
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -135,6 +137,11 @@ class PostingActivity : AppCompatActivity() {
         if (isModifyMode) {
             modifyTrip(tripToModify)
         }
+        isAcceptedTrip = intent.getBooleanExtra("acceptedTrip", false)
+        if (isAcceptedTrip){
+            tripRequest = intent.getSerializableExtra("requestInfo") as TripRequest
+            setupRequestFields(tripRequest)
+        }
 
 
 
@@ -155,7 +162,15 @@ class PostingActivity : AppCompatActivity() {
 
 
     }
+    private fun setupRequestFields(tRequest: TripRequest){
+        setOrigin(tRequest.originCity)
+        setDestination(tRequest.destCity)
+        search_date_edittext.setText(tripRequest.date)
+        editText_time.setText(tripRequest.time)
 
+
+
+    }
     private fun modifyTrip(trip: Trip) {
         Log.i("modifyTrip", isModifyMode.toString())
         setOrigin(trip.origin)
@@ -1128,11 +1143,20 @@ class PostingActivity : AppCompatActivity() {
             Toast.makeText(this, edit.text.toString() + stopView.id, Toast.LENGTH_SHORT).show()
             stops.add(edit.text.toString())
         }
+
     }
 
     private fun saveToDB(trip: Trip) {
         setPb(1)
         val otdPath = "${String.format("%02d", originCode)}_${String.format("%02d", destinationCode)}"
+        if (isAcceptedTrip){
+            //todo check
+            val path = "trips/$otdPath/${tripRequest.tripID}/"
+            trip.userID = mDatabase.currentUserId()
+            trip.bookedUsers[tripRequest.poster?.userId!!] = 1
+            mDatabase.addToPath(path,trip)
+            mDatabase.addToPath("users/${tripRequest.userID}/bookedTrips/${trip.tripID}",otdPath)
+        }else {
         if (!isModifyMode) {
             var path = "trips/$otdPath"
             val tripID = mDatabase.pushKey(path)
@@ -1151,6 +1175,7 @@ class PostingActivity : AppCompatActivity() {
                 mDatabase.addToPath(userPath, otdPath)
             }
 
+        }
         }
         ///
         //

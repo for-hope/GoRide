@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:id="@+id/pullToRefreshPassengerTrips">
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context="me.eijaz.tabstutorial.FirstFragment" android:layout_gravity="center"
+             android:layout_gravity="center"
 >
 
     <LinearLayout
@@ -61,23 +67,13 @@
                 android:id="@+id/greyout_pass"
                 android:visibility="gone" android:elevation="1dp">
         </LinearLayout>
-        <ScrollView
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/scroll_pass_frg"
+        <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" android:background="#eeeeee" android:visibility="gone">
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                          android:orientation="vertical" android:id="@+id/scroll_layout_pass">
-
-                <androidx.recyclerview.widget.RecyclerView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" android:id="@+id/req_trips"/>
-                <androidx.recyclerview.widget.RecyclerView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" android:id="@+id/pass_trips"/>
-            </LinearLayout>
-        </ScrollView>
+                android:layout_height="match_parent" android:id="@+id/pass_trips"/>
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" android:id="@+id/req_trips"/>
     </RelativeLayout>
 
 </FrameLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

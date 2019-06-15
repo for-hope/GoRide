@@ -10,6 +10,8 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import kotlinx.android.synthetic.main.activity_register.*
 import me.lamine.goride.R
+import me.lamine.goride.mainActivities.MainActivity
+import me.lamine.goride.utils.verifyAvailableNetwork
 
 
 class RegisterActivity : AppCompatActivity() {
@@ -19,7 +21,16 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
         mAuth = FirebaseAuth.getInstance()
+        if (!verifyAvailableNetwork(this)){
+            Toast.makeText(this,"No Available Network.", Toast.LENGTH_SHORT).show()
+        }
         nextRegisterBtn.setOnClickListener {
+            val email = remail_edittext.text.toString()
+            val password = rpassword_edittext.text.toString()
+            val displayName = rname_edittext.text.toString()
+            createNewAccount(email, password, displayName)
+        }
+        loading_btn_register.setOnClickListener {
             val email = remail_edittext.text.toString()
             val password = rpassword_edittext.text.toString()
             val displayName = rname_edittext.text.toString()
@@ -45,6 +56,7 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun updateInterface(user: FirebaseUser?) {
 
+
         val intent = Intent(this, RegisterExtraActivity::class.java)
         intent.putExtra("User", user)
         startActivity(intent)
@@ -67,7 +79,6 @@ class RegisterActivity : AppCompatActivity() {
         }
         return mBool
     }
-
     private fun createNewAccount(email: String, password: String, displayName: String) {
         if (!checkFields(email, password, displayName)) {
             Toast.makeText(
@@ -75,21 +86,22 @@ class RegisterActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             ).show()
         } else {
+            loading_btn_register.startLoading()
             val profileUpdates = UserProfileChangeRequest.Builder()
                 .setDisplayName(displayName)
                 //.setPhotoUri(Uri.parse("https://example.com/jane-q-user/profile.jpg"))
                 .build()
+
             mAuth?.createUserWithEmailAndPassword(email, password)?.addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
-                    Log.d("FragmentActivity.TAG", "createUserWithEmail:success")
                     val user = mAuth?.currentUser
                     user?.updateProfile(profileUpdates)
-                    //  Log.i("User ANME", user?.displayName)
+                    loading_btn_register.loadingSuccessful()
                     updateInterface(user)
                 } else {
                     // If sign in fails, display a message to the user.
-
+                    loading_btn_register.loadingFailed()
                     Log.w("TAG", "createUserWithEmail:failure", task.exception)
                     Toast.makeText(
                         this, "Authentication failed. ${task.exception}",

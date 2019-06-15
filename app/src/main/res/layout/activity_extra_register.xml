@@ -17,388 +17,405 @@
             xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/rl"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" android:elevation="1dp" android:layout_weight="1">
-    <ProgressBar android:indeterminate="true"
-                 android:layout_centerInParent="true"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:elevation="1dp" android:layout_weight="0">
+        <ProgressBar android:indeterminate="true"
+                     android:layout_centerInParent="true"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
 
-                 android:id="@+id/pb_extra_reg" android:visibility="gone"
-                 android:elevation="@dimen/design_touchable_tab_text_size_2line"/>
-    <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" android:background="#dedede"
-            android:id="@+id/grey_extra_layout"
-            android:visibility="gone" android:elevation="1dp">
-    </LinearLayout>
+                     android:id="@+id/pb_extra_reg" android:visibility="gone"
+                     android:elevation="@dimen/design_touchable_tab_text_size_2line"/>
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" android:background="#dedede"
+                android:id="@+id/grey_extra_layout"
+                android:visibility="gone" android:elevation="1dp">
+        </LinearLayout>
     </RelativeLayout>
-<ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" android:layout_weight="0">
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-android:orientation="vertical">
-
-    <TextView android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text="@string/registration_progress"
-              android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
-              android:layout_marginStart="20dp"/>
-    <ProgressBar
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+    <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/progressBar_extra" android:progress="25" android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp" android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp" android:paddingTop="5dp" android:scaleY="5"
-            android:layout_marginBottom="20dp"/>
-    <ViewFlipper
-            android:layout_width="match_parent"
-            android:id="@+id/view_flipper"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content" android:layout_weight="0">
 
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical" android:id="@+id/phone_verf_layout">
-            <TextView android:layout_width="match_parent"
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                      xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:text="@string/phone_number_verfication"
-                      android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="40dp"
-                      android:layout_marginStart="20dp" android:id="@+id/phone_verf_title"
-                      android:textColor="@android:color/black"/>
-            <TextView android:layout_width="match_parent"
+                      android:orientation="vertical">
+
+            <TextView android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
-                      android:text="@string/please_enter_a_valid_phone_number_to_verify_your_identity"
+                      android:text="@string/registration_progress"
                       android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
-                      android:layout_marginStart="20dp" android:id="@+id/phone_verf_desc"/>
-            <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
-                    android:id="@+id/phone_nb_label"
-                    android:soundEffectsEnabled="false"
+                      android:layout_marginStart="20dp"/>
+            <ProgressBar
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:primaryColor="@color/colorSecondary"
-                    app:labelText="Phone Number"
-                    app:helperTextColor="@color/colorAccent" app:counterTextColor="@color/colorSecondary"
-                    android:layout_marginStart="20dp" android:layout_marginRight="20dp"
-                    android:layout_marginLeft="20dp" android:layout_marginTop="20dp" android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="20dp" app:maxCharacters="9">
-
-                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
-                        android:id="@+id/phone_nb_edittext"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:prefix="+213 " android:inputType="number"/>
-
-
-            </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
-
-        </LinearLayout>
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical" android:id="@+id/code_verf_layout">
-            <TextView android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:text="@string/code_verification"
-                      android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="40dp"
-                      android:layout_marginStart="20dp" android:id="@+id/code_verf_title"
-                      android:textColor="@android:color/black"/>
-            <TextView android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:text="@string/please_enter_the_code_sent_to_you_by_an_sms_to_complete_the_registration"
-                      android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
-                      android:layout_marginStart="20dp" android:id="@+id/code_verf_desc"/>
-            <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
-                    android:id="@+id/code_label"
-                    android:soundEffectsEnabled="false"
+                    android:id="@+id/progressBar_extra" android:progress="25" android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp" android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp" android:paddingTop="5dp" android:scaleY="5"
+                    android:layout_marginBottom="20dp"/>
+            <ViewFlipper
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:primaryColor="@color/colorSecondary"
-                    app:labelText="Code"
-                    app:helperTextColor="@color/colorAccent" app:counterTextColor="@color/colorSecondary"
-                    android:layout_marginStart="20dp" android:layout_marginRight="20dp"
-                    android:layout_marginLeft="20dp" android:layout_marginTop="20dp" android:layout_marginEnd="20dp"
-                    app:maxCharacters="6" android:layout_marginBottom="10dp">
+                    android:id="@+id/view_flipper"
+                    android:layout_height="match_parent">
 
-                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
-                        android:id="@+id/code_edittext"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                />
-
-
-            </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
-            <TextView
-                    android:text="@string/didn_t_recieve_it_in_1_minute_click_here_to_try_again"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:id="@+id/send_code_again"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textSize="16sp" android:gravity="center"/>
-
-        </LinearLayout>
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical" android:id="@+id/pref_layout">
-            <TextView android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:text="@string/what_is_your_birthday"
-                      android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="40dp"
-                      android:layout_marginStart="20dp" android:id="@+id/pref_bday_title"
-                      android:textColor="@android:color/black"/>
-            <TextView android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:text="@string/you_must_be_at_least_18_years_old_to_use_ridego_please_enter_your_correct_birthday_below"
-                      android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
-                      android:layout_marginStart="20dp" android:id="@+id/pref_bday_desc"/>
-
-            <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
-                    android:id="@+id/age_label"
-                    android:soundEffectsEnabled="false"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:primaryColor="@color/colorSecondary"
-                    app:labelText="Birthday"
-                    app:helperTextColor="@color/colorAccent" app:counterTextColor="@color/colorSecondary"
-                    android:layout_marginStart="20dp" android:layout_marginRight="20dp"
-                    android:layout_marginLeft="20dp" android:layout_marginTop="20dp" android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="20dp">
-
-                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
-                        android:id="@+id/age_edittext"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                />
-
-
-            </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
-            <TextView android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:text="@string/what_is_your_gender"
-                      android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="40dp"
-                      android:layout_marginStart="20dp" android:id="@+id/pref_bday_title2"
-                      android:textColor="@android:color/black"/>
-            <TextView android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:text="@string/please_enter_your_gender_for_better_safety_and_specification_when_traveling"
-                      android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
-                      android:layout_marginStart="20dp" android:id="@+id/pref_bday_desc2"/>
-            <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:layout_marginStart="20dp"
-                    android:layout_marginTop="10dp">
-                <CheckBox
-                        android:text="@string/male"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:id="@+id/male_checkbox" android:layout_weight="1"
-                        android:textStyle="bold" android:textSize="18sp"/>
-                <CheckBox
-                        android:text="@string/female"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:id="@+id/female_checkbox" android:layout_weight="1"
-                        android:textStyle="bold" android:textSize="18sp"/>
-            </LinearLayout>
-
-        </LinearLayout>
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical" android:id="@+id/desc_layout">
-            <TextView android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:text="@string/are_you_a_driver"
-                      android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="40dp"
-                      android:layout_marginStart="20dp" android:id="@+id/driver_title"
-                      android:textColor="@android:color/black"/>
-            <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                <TextView android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:text="@string/check_this_box_if_you_will_be_driving_this_will_adjust_your_prefrences"
-                          android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
-                          android:layout_marginStart="20dp" android:id="@+id/driver_desc" android:layout_weight="1"
-                          android:layout_marginBottom="20dp"/>
-                <CheckBox
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:id="@+id/driver_checkbox" android:layout_weight="0"
-                        android:gravity="center" android:foregroundGravity="center" android:layout_gravity="center"
-                        android:layout_marginEnd="10dp"/>
-            </LinearLayout>
-            <TextView android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:text="@string/description"
-                      android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="40dp"
-                      android:layout_marginStart="20dp" android:id="@+id/desc_title"
-                      android:textColor="@android:color/black"/>
-            <TextView android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:text="@string/write_some_interesting_things_about_you_to_help_people_understand_what_type_of_person_you_are"
-                      android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
-                      android:layout_marginStart="20dp" android:id="@+id/desc_description"/>
-            <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
-                    android:id="@+id/desc_label"
-                    android:soundEffectsEnabled="false"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    app:primaryColor="@color/colorSecondary"
-                    app:labelText="Description"
-                    app:helperTextColor="@color/colorAccent" app:counterTextColor="@color/colorSecondary"
-                    android:layout_marginStart="20dp" android:layout_marginEnd="20dp"
-                    android:layout_marginTop="20dp" android:layout_marginBottom="20dp">
-
-                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/desc_edittext" android:inputType="textMultiLine|textLongMessage"/>
-
-
-            </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
-
-        </LinearLayout>
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical" android:id="@+id/terms_layout">
-            <TextView android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:text="@string/upload_a_picture_of_yourself"
-                      android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="5dp"
-                      android:layout_marginStart="20dp" android:id="@+id/pfp_title"
-                      android:textColor="@android:color/black"/>
-            <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp" android:layout_marginTop="5dp">
-                <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/reg_pfp"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
-                        android:src="@drawable/default_user_pfp"
-                        app:civ_border_width="2dp"
-                        app:civ_border_color="#262626"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_centerInParent="true"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginTop="10dp"/>
-
-            </RelativeLayout>
-            <View
-                    android:id="@+id/divider13"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="?android:attr/listDivider"
-                    android:layout_marginBottom="5dp" android:layout_marginTop="5dp"/>
-            <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:id="@+id/selfie_btn" android:paddingTop="10dp"
-                    android:paddingBottom="10dp" android:paddingStart="5dp" android:paddingEnd="5dp">
-                <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" app:srcCompat="@drawable/ic_add_a_photo_blue_40dp"
-                        android:id="@+id/imageView9" android:layout_weight="0" android:layout_marginStart="10dp"
-                        android:contentDescription="@string/dummy"/>
-                <TextView android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:text="@string/take_a_selfie"
-                          android:textSize="16sp" android:textStyle="bold"
-                          android:id="@+id/pfp_title2"
-                          android:textColor="@color/colorSecondary" android:layout_weight="0"
-                          android:layout_marginStart="20dp" android:gravity="center" android:layout_gravity="center"/>
-            </LinearLayout>
-            <View
-                    android:id="@+id/divider14"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="?android:attr/listDivider"
-                    android:layout_marginBottom="5dp" android:layout_marginTop="5dp"/>
-            <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:id="@+id/gallery_btn" android:paddingEnd="5dp"
-                    android:paddingTop="10dp" android:paddingStart="5dp" android:paddingBottom="10dp">
-                <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" app:srcCompat="@drawable/ic_photo_library_24dp"
-                        android:id="@+id/photo_imgview" android:layout_weight="0" android:layout_marginStart="10dp"
-                        android:contentDescription="@string/dummy"/>
-                <TextView android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:text="@string/choose_from_photo_library"
-                          android:textSize="16sp" android:textStyle="bold"
-                          android:id="@+id/pfp_upload_text"
-                          android:textColor="@color/colorSecondary" android:layout_weight="0"
-                          android:layout_marginStart="20dp" android:gravity="center" android:layout_gravity="center"/>
-            </LinearLayout>
-            <View
-                    android:id="@+id/divider15"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="?android:attr/listDivider"
-            />
-            <TextView android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:text="@string/terms_of_service"
-                      android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="20dp"
-                      android:layout_marginStart="20dp" android:id="@+id/terms_title"
-                      android:textColor="@android:color/black"/>
-            <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
                 <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical" android:layout_weight="1">
+                        android:layout_height="match_parent"
+                        android:orientation="vertical" android:id="@+id/phone_verf_layout">
+                    <TextView android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:text="@string/phone_number_verfication"
+                              android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="40dp"
+                              android:layout_marginStart="20dp" android:id="@+id/phone_verf_title"
+                              android:textColor="@android:color/black"/>
+                    <TextView android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:text="@string/please_enter_a_valid_phone_number_to_verify_your_identity"
+                              android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
+                              android:layout_marginStart="20dp" android:id="@+id/phone_verf_desc"/>
+                    <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                            android:id="@+id/phone_nb_label"
+                            android:soundEffectsEnabled="false"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:primaryColor="@color/colorSecondary"
+                            app:labelText="Phone Number"
+                            app:helperTextColor="@color/colorAccent" app:counterTextColor="@color/colorSecondary"
+                            android:layout_marginStart="20dp" android:layout_marginRight="20dp"
+                            android:layout_marginLeft="20dp" android:layout_marginTop="20dp"
+                            android:layout_marginEnd="20dp"
+                            android:layout_marginBottom="20dp" app:maxCharacters="9">
 
+                        <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                                android:id="@+id/phone_nb_edittext"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:prefix="+213 " android:inputType="number"/>
+
+
+                    </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+                </LinearLayout>
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical" android:id="@+id/code_verf_layout">
+                    <TextView android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:text="@string/code_verification"
+                              android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="40dp"
+                              android:layout_marginStart="20dp" android:id="@+id/code_verf_title"
+                              android:textColor="@android:color/black"/>
+                    <TextView android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:text="@string/please_enter_the_code_sent_to_you_by_an_sms_to_complete_the_registration"
+                              android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
+                              android:layout_marginStart="20dp" android:id="@+id/code_verf_desc"/>
+                    <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                            android:id="@+id/code_label"
+                            android:soundEffectsEnabled="false"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:primaryColor="@color/colorSecondary"
+                            app:labelText="Code"
+                            app:helperTextColor="@color/colorAccent" app:counterTextColor="@color/colorSecondary"
+                            android:layout_marginStart="20dp" android:layout_marginRight="20dp"
+                            android:layout_marginLeft="20dp" android:layout_marginTop="20dp"
+                            android:layout_marginEnd="20dp"
+                            app:maxCharacters="6" android:layout_marginBottom="10dp">
+
+                        <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                                android:id="@+id/code_edittext"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                        />
+
+
+                    </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+                    <TextView
+                            android:text="@string/didn_t_recieve_it_in_1_minute_click_here_to_try_again"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" android:id="@+id/send_code_again"
+                            android:textColor="@color/colorPrimaryDark"
+                            android:textSize="16sp" android:gravity="center"/>
+
+                </LinearLayout>
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical" android:id="@+id/pref_layout">
+                    <TextView android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:text="@string/what_is_your_birthday"
+                              android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="40dp"
+                              android:layout_marginStart="20dp" android:id="@+id/pref_bday_title"
+                              android:textColor="@android:color/black"/>
+                    <TextView android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:text="@string/you_must_be_at_least_18_years_old_to_use_ridego_please_enter_your_correct_birthday_below"
+                              android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
+                              android:layout_marginStart="20dp" android:id="@+id/pref_bday_desc"/>
+
+                    <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                            android:id="@+id/age_label"
+                            android:soundEffectsEnabled="false"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:primaryColor="@color/colorSecondary"
+                            app:labelText="Birthday"
+                            app:helperTextColor="@color/colorAccent" app:counterTextColor="@color/colorSecondary"
+                            android:layout_marginStart="20dp" android:layout_marginRight="20dp"
+                            android:layout_marginLeft="20dp" android:layout_marginTop="20dp"
+                            android:layout_marginEnd="20dp"
+                            android:layout_marginBottom="20dp">
+
+                        <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                                android:id="@+id/age_edittext"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                        />
+
+
+                    </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+                    <TextView android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:text="@string/what_is_your_gender"
+                              android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="40dp"
+                              android:layout_marginStart="20dp" android:id="@+id/pref_bday_title2"
+                              android:textColor="@android:color/black"/>
+                    <TextView android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:text="@string/please_enter_your_gender_for_better_safety_and_specification_when_traveling"
+                              android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
+                              android:layout_marginStart="20dp" android:id="@+id/pref_bday_desc2"/>
+                    <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" android:layout_marginStart="20dp"
+                            android:layout_marginTop="10dp">
+                        <CheckBox
+                                android:text="@string/male"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" android:id="@+id/male_checkbox"
+                                android:layout_weight="1"
+                                android:textStyle="bold" android:textSize="18sp"/>
+                        <CheckBox
+                                android:text="@string/female"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" android:id="@+id/female_checkbox"
+                                android:layout_weight="1"
+                                android:textStyle="bold" android:textSize="18sp"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical" android:id="@+id/desc_layout">
+                    <TextView android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:text="@string/are_you_a_driver"
+                              android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="40dp"
+                              android:layout_marginStart="20dp" android:id="@+id/driver_title"
+                              android:textColor="@android:color/black"/>
                     <LinearLayout
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
                         <TextView android:layout_width="wrap_content"
                                   android:layout_height="wrap_content"
-                                  android:text="@string/please_agree_to_our"
+                                  android:text="@string/check_this_box_if_you_will_be_driving_this_will_adjust_your_prefrences"
                                   android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
-                                  android:id="@+id/terms_desc1"
-                                  android:layout_weight="0"
-                                  android:layout_marginStart="20dp"/>
+                                  android:layout_marginStart="20dp" android:id="@+id/driver_desc"
+                                  android:layout_weight="1"
+                                  android:layout_marginBottom="20dp"/>
+                        <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" android:id="@+id/driver_checkbox"
+                                android:layout_weight="0"
+                                android:gravity="center" android:foregroundGravity="center"
+                                android:layout_gravity="center"
+                                android:layout_marginEnd="10dp"/>
+                    </LinearLayout>
+                    <TextView android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:text="@string/description"
+                              android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="40dp"
+                              android:layout_marginStart="20dp" android:id="@+id/desc_title"
+                              android:textColor="@android:color/black"/>
+                    <TextView android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:text="@string/write_some_interesting_things_about_you_to_help_people_understand_what_type_of_person_you_are"
+                              android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
+                              android:layout_marginStart="20dp" android:id="@+id/desc_description"/>
+                    <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                            android:id="@+id/desc_label"
+                            android:soundEffectsEnabled="false"
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            app:primaryColor="@color/colorSecondary"
+                            app:labelText="Description"
+                            app:helperTextColor="@color/colorAccent" app:counterTextColor="@color/colorSecondary"
+                            android:layout_marginStart="20dp" android:layout_marginEnd="20dp"
+                            android:layout_marginTop="20dp" android:layout_marginBottom="20dp">
+
+                        <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/desc_edittext" android:inputType="textMultiLine|textLongMessage"/>
+
+
+                    </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+                </LinearLayout>
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical" android:id="@+id/terms_layout">
+                    <TextView android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:text="@string/upload_a_picture_of_yourself"
+                              android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="5dp"
+                              android:layout_marginStart="20dp" android:id="@+id/pfp_title"
+                              android:textColor="@android:color/black"/>
+                    <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp" android:layout_marginTop="5dp">
+                        <de.hdodenhof.circleimageview.CircleImageView
+                                android:id="@+id/reg_pfp"
+                                android:layout_width="150dp"
+                                android:layout_height="150dp"
+                                android:src="@drawable/default_user_pfp"
+                                app:civ_border_width="2dp"
+                                app:civ_border_color="#262626"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginEnd="10dp"
+                                android:layout_centerInParent="true"
+                                android:layout_marginBottom="10dp"
+                                android:layout_marginTop="10dp"/>
+
+                    </RelativeLayout>
+                    <View
+                            android:id="@+id/divider13"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="?android:attr/listDivider"
+                            android:layout_marginBottom="5dp" android:layout_marginTop="5dp"/>
+                    <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:id="@+id/selfie_btn" android:paddingTop="10dp"
+                            android:paddingBottom="10dp" android:paddingStart="5dp" android:paddingEnd="5dp">
+                        <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" app:srcCompat="@drawable/ic_add_a_photo_blue_40dp"
+                                android:id="@+id/imageView9" android:layout_weight="0" android:layout_marginStart="10dp"
+                                android:contentDescription="@string/dummy"/>
                         <TextView android:layout_width="wrap_content"
                                   android:layout_height="wrap_content"
-                                  android:text="@string/terms_of_service"
-                                  android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
-                                  android:id="@+id/terms_desc" android:layout_weight="0"
-                                  android:textColor="@color/colorAccent"/>
+                                  android:text="@string/take_a_selfie"
+                                  android:textSize="16sp" android:textStyle="bold"
+                                  android:id="@+id/pfp_title2"
+                                  android:textColor="@color/colorSecondary" android:layout_weight="0"
+                                  android:layout_marginStart="20dp" android:gravity="center"
+                                  android:layout_gravity="center"/>
                     </LinearLayout>
-                    <TextView android:layout_width="wrap_content"
+                    <View
+                            android:id="@+id/divider14"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="?android:attr/listDivider"
+                            android:layout_marginBottom="5dp" android:layout_marginTop="5dp"/>
+                    <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:id="@+id/gallery_btn" android:paddingEnd="5dp"
+                            android:paddingTop="10dp" android:paddingStart="5dp" android:paddingBottom="10dp">
+                        <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" app:srcCompat="@drawable/ic_photo_library_24dp"
+                                android:id="@+id/photo_imgview" android:layout_weight="0"
+                                android:layout_marginStart="10dp"
+                                android:contentDescription="@string/dummy"/>
+                        <TextView android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:text="@string/choose_from_photo_library"
+                                  android:textSize="16sp" android:textStyle="bold"
+                                  android:id="@+id/pfp_upload_text"
+                                  android:textColor="@color/colorSecondary" android:layout_weight="0"
+                                  android:layout_marginStart="20dp" android:gravity="center"
+                                  android:layout_gravity="center"/>
+                    </LinearLayout>
+                    <View
+                            android:id="@+id/divider15"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="?android:attr/listDivider"
+                    />
+                    <TextView android:layout_width="match_parent"
                               android:layout_height="wrap_content"
-                              android:text="@string/to_complete_your_registration_please_check_the_box_on_the_right"
-                              android:textSize="16sp" android:textStyle="bold"
-                              android:id="@+id/terms_desc2"
-                              android:layout_marginLeft="20dp"
-                              android:layout_marginRight="20dp"/>
+                              android:text="@string/terms_of_service"
+                              android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="20dp"
+                              android:layout_marginStart="20dp" android:id="@+id/terms_title"
+                              android:textColor="@android:color/black"/>
+                    <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical" android:layout_weight="1">
+
+                            <LinearLayout
+                                    android:orientation="horizontal"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+                                <TextView android:layout_width="wrap_content"
+                                          android:layout_height="wrap_content"
+                                          android:text="@string/please_agree_to_our"
+                                          android:textSize="16sp" android:textStyle="bold"
+                                          android:layout_marginTop="20dp"
+                                          android:id="@+id/terms_desc1"
+                                          android:layout_weight="0"
+                                          android:layout_marginStart="20dp"/>
+                                <TextView android:layout_width="wrap_content"
+                                          android:layout_height="wrap_content"
+                                          android:text="@string/terms_of_service"
+                                          android:textSize="16sp" android:textStyle="bold"
+                                          android:layout_marginTop="20dp"
+                                          android:id="@+id/terms_desc" android:layout_weight="0"
+                                          android:textColor="@color/colorAccent"/>
+                            </LinearLayout>
+                            <TextView android:layout_width="wrap_content"
+                                      android:layout_height="wrap_content"
+                                      android:text="@string/to_complete_your_registration_please_check_the_box_on_the_right"
+                                      android:textSize="16sp" android:textStyle="bold"
+                                      android:id="@+id/terms_desc2"
+                                      android:layout_marginLeft="20dp"
+                                      android:layout_marginRight="20dp"/>
+                        </LinearLayout>
+                        <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" android:id="@+id/terms_checkbox"
+                                android:layout_weight="0"
+                                android:layout_gravity="center" android:layout_marginEnd="10dp"/>
+                    </LinearLayout>
+
                 </LinearLayout>
-                <CheckBox
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:id="@+id/terms_checkbox" android:layout_weight="0"
-                        android:layout_gravity="center" android:layout_marginEnd="10dp"/>
-            </LinearLayout>
+
+
+            </ViewFlipper>
 
         </LinearLayout>
-
-
-    </ViewFlipper>
+    </ScrollView>
     <RelativeLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent" android:gravity="bottom" android:paddingBottom="10dp">
         <Button
                 android:text="@string/previous"
                 android:layout_width="wrap_content"
@@ -415,6 +432,4 @@ android:orientation="vertical">
                 android:id="@+id/next_button"
                 android:layout_marginEnd="20dp"/>
     </RelativeLayout>
-</LinearLayout>
-</ScrollView>
 </LinearLayout>

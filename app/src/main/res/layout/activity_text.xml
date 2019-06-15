@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto" android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_text"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/whiteColor"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:title="Settings"/>
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                      android:orientation="vertical" android:id="@+id/scroll_linear">
+            <TextView
+                    android:text="@string/privacy_and_terms"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="fill_vertical"
+                    android:maxEms="15"
+                    android:maxLines="10"
+                    android:layout_height="wrap_content" android:id="@+id/text_title" android:textSize="22sp"
+                    android:paddingStart="20dp" android:textStyle="bold"/>
+            <TextView
+                    android:text="@string/PrivacyPolicy"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/text_content" android:paddingStart="20dp"
+                    android:paddingEnd="20dp" android:textSize="18sp"/>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

@@ -1,11 +1,13 @@
-package me.lamine.goride.notificationActivity
+package me.lamine.goride.inboxActivity
 
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.gigamole.navigationtabstrip.NavigationTabStrip
 import kotlinx.android.synthetic.main.activity_inbox.*
+import kotlinx.android.synthetic.main.fragment_notifications.*
 import me.lamine.goride.R
 
 
@@ -18,13 +20,43 @@ class InboxActivity: AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         val tab = intent.getIntExtra("tab",0)
-        Log.i(tag,tab.toString())
+
         val navigationTabStrip = findViewById<NavigationTabStrip>(R.id.inbox_tablayout)
         val fragmentAdapter =
             MyInboxAdapter(supportFragmentManager)
         viewpager_inbox.adapter = fragmentAdapter
         navigationTabStrip.setViewPager(viewpager_inbox)
+
         initNavStripe(navigationTabStrip,tab)
+        fab_clear_notif.setOnClickListener {
+            if (snotif_list_res_view.adapter != null){
+            val adapter = snotif_list_res_view.adapter as ExtraNotifAdapter
+            Toast.makeText(this,"Notifications cleared.", Toast.LENGTH_SHORT).show()
+            adapter.removeAll()
+            } else {
+                Toast.makeText(this,"No Notifications.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+      navigationTabStrip.onTabStripSelectedIndexListener = object :
+          NavigationTabStrip.OnTabStripSelectedIndexListener{
+          override fun onEndTabSelected(title: String?, index: Int) {
+
+          }
+
+          override fun onStartTabSelected(title: String?, index: Int) {
+            if (index == 0){
+                fab_clear_notif.show()
+            }
+            if (index == 1){
+                fab_clear_notif.hide()
+              }
+          }
+
+      }
+        if (navigationTabStrip.tabIndex == 1){
+            fab_clear_notif.hide()
+        }
     }
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()

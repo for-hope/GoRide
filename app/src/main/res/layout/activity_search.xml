@@ -14,7 +14,7 @@
             android:elevation="4dp"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:title="Search for a trip"/>
+            app:title="Search a trip"/>
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -42,7 +42,7 @@
                 <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
                         android:id="@+id/textbox_from"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="60dp"
                         app:primaryColor="@color/colorAccent"
                         app:labelText="From"
                         app:helperTextColor="@color/colorAccent"
@@ -71,7 +71,7 @@
                 <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
                         android:id="@+id/textbox_to"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="60dp"
                         app:primaryColor="@color/colorSecondary"
                         app:labelText="To"
                         app:helperTextColor="@color/colorAccent"
@@ -86,7 +86,7 @@
                     <studio.carbonylgroup.textfieldboxes.ExtendedEditText
                             android:id="@+id/editText_To"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="60dp"
                             android:inputType="date"
                             android:focusable="false"
                             android:clickable="false"
@@ -99,7 +99,7 @@
         <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
                 android:id="@+id/add_datebtn"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
                 app:primaryColor="@color/colorSecondary"
                 app:labelText="Departure date*"
                 app:helperTextColor="@color/colorAccent"
@@ -125,13 +125,16 @@
                 android:id="@+id/search_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/search" android:layout_marginEnd="20dp" android:layout_marginStart="20dp"
-                android:padding="15dp" android:layout_marginTop="25dp"/>
+                android:layout_gravity="center"
+                android:text="@string/search"
+                android:layout_marginEnd="30dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="25dp"/>
 
     </LinearLayout>
     <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" android:layout_weight="-1" android:layout_marginTop="20dp">
+            android:layout_height="match_parent" android:layout_weight="-1" android:layout_marginTop="15dp">
 
         <fragment
                 android:layout_width="match_parent"

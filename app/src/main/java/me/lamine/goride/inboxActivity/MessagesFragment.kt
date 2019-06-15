@@ -1,4 +1,4 @@
-package me.lamine.goride.notificationActivity
+package me.lamine.goride.inboxActivity
 
 import android.os.Bundle
 import android.util.Log
@@ -10,17 +10,20 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.android.synthetic.main.fragment_messages.*
 import kotlinx.android.synthetic.main.fragment_notifications.*
 import kotlinx.android.synthetic.main.fragment_notifications.scrolling
-import kotlinx.android.synthetic.main.fui_activity_invisible.*
 import me.lamine.goride.*
-import me.lamine.goride.dataObjects.Chat
 import me.lamine.goride.dataObjects.ChatListInfo
 import me.lamine.goride.dataObjects.User
 import me.lamine.goride.interfaces.OnGetDataListener
+import me.lamine.goride.notifications.Token
 import me.lamine.goride.utils.Database
 
 
@@ -38,12 +41,34 @@ class MessagesFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         user_messages_list_res_view.setHasFixedSize(true)
         user_messages_list_res_view.layoutManager = LinearLayoutManager(this.context)
-        listOfUserIds = mutableListOf()
         mDatabase = Database()
+        mDatabase.checkUserSession(this.activity)
         Log.i("Fragment","CREATED")
+        searchMessages()
+
+
+
+
+
+
+        swipeLayoutMessages.setOnRefreshListener {
+            searchMessages()
+        }
+
+
+    }
+    private fun updateToken(token:String){
+        val ref:DatabaseReference = FirebaseDatabase.getInstance().getReference("Tokens")
+        val token1:Token =Token()
+        token1.token = token
+        ref.child(mDatabase.currentUserId()).setValue(token1)
+    }
+    private fun searchMessages(){
+        listOfUserIds = mutableListOf()
         mDatabase.getReference("chatlist/${mDatabase.currentUserId()}",object :OnGetDataListener{
             override fun onStart() {
-            setPb(1)
+                setPb(1)
+
             }
 
             override fun onSuccess(data: DataSnapshot) {
@@ -52,6 +77,9 @@ class MessagesFragment : Fragment() {
                 if (!isDestroyed){
                     listOfUserIds.clear()
                     val mData = data
+                    if (mData.childrenCount.toInt() == 0){
+                        scrolling.visibility = View.GONE
+                    }
                     for(snapshot in mData.children){
                         Log.i("data",mData.childrenCount.toString())
                         mDatabase.fetchUser(snapshot.key!!,object :OnGetDataListener{
@@ -61,6 +89,7 @@ class MessagesFragment : Fragment() {
 
                             override fun onSuccess(data: DataSnapshot) {
                                 val chatListInfo = ChatListInfo(snapshot.key!!)
+                                Log.i("ID_ERROR",data.child("userId").value.toString())
                                 chatListInfo.mUser = data.getValue(User::class.java)!!
                                 chatListInfo.lastMsg = snapshot.child("message").value as String
                                 chatListInfo.timestamp = snapshot.child("timestamp").value as Long
@@ -73,7 +102,9 @@ class MessagesFragment : Fragment() {
                                     Log.i("Added adapter","Trigger")
                                     val userAdapter = ChatListAdapter(this@MessagesFragment.context!!, listOfChats)
                                     user_messages_list_res_view.adapter = userAdapter
+
                                     setPb(0)
+                                    swipeLayoutMessages.isRefreshing = false
                                 }
 
                             }
@@ -92,41 +123,12 @@ class MessagesFragment : Fragment() {
             }
 
         })
+        FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener {
 
-
-    }
-
-/*    private fun readChats(){
-       listOfUser = mutableListOf()
-        Log.i("listOfUsersIds",listOfUserIds.toString())
-        for (userId in listOfUserIds){
-            mDatabase.fetchUser(userId,object :OnGetDataListener{
-                override fun onStart() {
-
-                }
-
-                override fun onSuccess(data: DataSnapshot) {
-                    val mUser = data.getValue(User::class.java)
-                   if (mUser != null){
-                       listOfUser.add(mUser)
-                   }
-                    if (userId == listOfUserIds.last()){
-                        val userAdapter = ChatListAdapter(this@MessagesFragment.context!!,listOfUser)
-                        user_messages_list_res_view.adapter = userAdapter
-                    }
-
-
-                }
-
-                override fun onFailed(databaseError: DatabaseError) {
-
-                }
-
-            })
+            updateToken(it.token)
         }
 
-        //mDatabase.fetchUser()
-    }*/
+    }
     override fun onDestroy() {
         super.onDestroy()
         isDestroyed = true

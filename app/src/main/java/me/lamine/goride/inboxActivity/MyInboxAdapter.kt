@@ -1,4 +1,4 @@
-package me.lamine.goride.notificationActivity
+package me.lamine.goride.inboxActivity
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

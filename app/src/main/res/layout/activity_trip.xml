@@ -116,12 +116,6 @@
                                     android:layout_marginEnd="10dp"/>
 
                         </RelativeLayout>
-
-                        <!--   <LinearLayout
-                                android:orientation="horizontal"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent" android:id="@+id/horz_second2_line">-->
-
                         <RelativeLayout android:layout_width="match_parent"
                                         android:layout_height="match_parent">
                             <View
@@ -147,6 +141,46 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:id="@+id/trip_ac_desc2"
+                                    android:textSize="16sp"
+                                    android:text="@string/address"
+                                    android:layout_marginStart="10dp"
+                                    android:maxLines="2"
+                                    android:paddingTop="5dp"
+                                    android:paddingBottom="5dp"
+                                    android:layout_marginBottom="10dp"
+                                    android:layout_marginEnd="10dp"/>
+                        </RelativeLayout>
+
+                        <!--   <LinearLayout
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent" android:id="@+id/horz_second2_line">-->
+
+                        <RelativeLayout android:layout_width="match_parent"
+                                        android:layout_height="match_parent" android:id="@+id/stops_layout">
+                            <View
+                                    android:id="@+id/divider44"
+                                    android:layout_alignParentStart="true"
+                                    android:layout_width="5dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_alignBottom="@id/trip_ac_stops_desc"
+                                    android:background="@color/colorSecondary"/>
+                            <TextView
+                                    android:text="@string/stops"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/trip_ac_stops"
+                                    android:textColor="@color/colorSecondary"
+                                    android:textSize="18sp" android:textStyle="bold"
+                                    android:layout_marginStart="10dp"
+                                    android:paddingBottom="5dp"
+                                    android:paddingTop="5dp"/>
+                            <TextView
+                                    android:layout_below="@id/trip_ac_stops"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/trip_ac_stops_desc"
                                     android:textSize="16sp"
                                     android:text="@string/address"
                                     android:layout_marginStart="10dp"
@@ -319,12 +353,12 @@
                 </androidx.cardview.widget.CardView>
                 <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@android:color/white"
                         android:paddingStart="10dp"
                         android:paddingEnd="10dp"
                         android:id="@+id/pref_layout"
-                        android:paddingBottom="10dp">
+                        android:paddingBottom="10dp" android:gravity="center">
                     <ImageView
                             android:layout_width="180dp"
                             android:layout_height="200dp"
@@ -336,103 +370,99 @@
                             android:minHeight="150dp"
                             android:minWidth="180dp"
                             android:contentDescription="@string/car_photo"/>
-                 <!--   <LinearLayout
+                    <!--   <LinearLayout
                             android:orientation="vertical"
                             android:layout_toEndOf="@id/trip_ac_car_photo"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center|start">-->
-                        <TextView
-                                android:layout_toEndOf="@id/trip_ac_car_photo"
-                                android:text="@string/car_model"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/trip_ac_car_model"
-                                android:textColor="@android:color/black"
-                                android:textSize="18sp"
-                                android:textStyle="bold"
-                                android:gravity="top|start"
-                                android:paddingBottom="5dp"
-                                android:paddingTop="5dp"/>
-                        <TextView
-                                android:layout_toEndOf="@id/trip_ac_car_photo"
-                                android:layout_below="@id/trip_ac_car_model"
-                                android:text="@string/type_color_year"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/trip_ac_type_color_year"
-                                android:textColor="@color/browser_actions_title_color"
-                                android:textSize="16sp"
-                                android:gravity="top|start"
-                                android:paddingBottom="5dp"
-                                android:paddingTop="5dp"/>
+                    <TextView
+                            android:layout_toEndOf="@id/trip_ac_car_photo"
+                            android:text="@string/car_model"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/trip_ac_car_model"
+                            android:textColor="@android:color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:paddingBottom="5dp"
+                            android:paddingTop="5dp"/>
+                    <TextView
+                            android:layout_toEndOf="@id/trip_ac_car_photo"
+                            android:layout_below="@id/trip_ac_car_model"
+                            android:text="@string/type_color_year"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/trip_ac_type_color_year"
+                            android:textColor="@color/browser_actions_title_color"
+                            android:textSize="16sp"
+                            android:paddingBottom="5dp"
+                            android:paddingTop="5dp"/>
 
+                    <TextView
+                            android:text="@string/_0123456789"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toEndOf="@id/trip_ac_car_photo"
+                            android:layout_below="@id/trip_ac_type_color_year"
+                            android:drawableStart="@drawable/ic_license_plate_black_24dp"
+                            android:drawablePadding="10dp"
+                            android:id="@+id/trip_ac_licence"
+                            android:textColor="@color/browser_actions_title_color"
+                            android:textSize="16sp"
+                            android:textStyle="bold"/>
+                    <LinearLayout
+                            android:layout_toEndOf="@id/trip_ac_car_photo"
+                            android:layout_below="@id/trip_ac_licence"
+                            android:orientation="horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/luggage_layout">
+                        <include layout="@layout/view_luggage_icon"/>
                         <TextView
-                                android:text="@string/_0123456789"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_toEndOf="@id/trip_ac_car_photo"
-                                android:layout_below="@id/trip_ac_type_color_year"
-                                android:drawableStart="@drawable/ic_license_plate_black_24dp"
-                                android:drawablePadding="10dp"
-                                android:id="@+id/trip_ac_licence"
-                                android:textColor="@color/browser_actions_title_color"
-                                android:textSize="16sp"
-                                android:textStyle="bold"/>
-                        <LinearLayout
-                                android:layout_toEndOf="@id/trip_ac_car_photo"
-                                android:layout_below="@id/trip_ac_licence"
-                                android:orientation="horizontal"
+                                android:text="@string/small_luggage"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:id="@+id/luggage_layout">
-                            <include layout="@layout/view_luggage_icon"/>
-                            <TextView
-                                    android:text="@string/small_luggage"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:id="@+id/trip_ac_luggage_text"
-                                    android:textColor="@android:color/black"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold"
-                                    android:layout_marginStart="10dp"
-                                    android:layout_gravity="center"
-                                    android:paddingBottom="5dp"
-                                    android:paddingTop="5dp"/>
-                        </LinearLayout>
-                        <TextView
-                                android:layout_toEndOf="@id/trip_ac_car_photo"
-                                android:layout_below="@id/luggage_layout"
-                                android:drawableStart="@drawable/ic_smoke_free_black_24dp"
-                                android:drawablePadding="10dp"
-                                android:text="@string/no_smoking_inside"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/trip_ac_smoke_pref"
+                                android:id="@+id/trip_ac_luggage_text"
                                 android:textColor="@android:color/black"
                                 android:textSize="16sp"
                                 android:textStyle="bold"
+                                android:layout_marginStart="10dp"
                                 android:layout_gravity="center"
                                 android:paddingBottom="5dp"
                                 android:paddingTop="5dp"/>
+                    </LinearLayout>
+                    <TextView
+                            android:layout_toEndOf="@id/trip_ac_car_photo"
+                            android:layout_below="@id/luggage_layout"
+                            android:drawableStart="@drawable/ic_smoke_free_black_24dp"
+                            android:drawablePadding="10dp"
+                            android:text="@string/no_smoking_inside"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/trip_ac_smoke_pref"
+                            android:textColor="@android:color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:layout_gravity="center"
+                            android:paddingBottom="5dp"
+                            android:paddingTop="5dp"/>
 
-                        <!--android:id="@+id/pets_layout"-->
-                        <TextView
-                                android:layout_toEndOf="@id/trip_ac_car_photo"
-                                android:layout_below="@id/trip_ac_smoke_pref"
-                                android:id="@+id/trip_ac_pets_pref"
-                                android:drawableStart="@drawable/ic_pets_black_24dp"
-                                android:drawablePadding="10dp"
-                                android:gravity="start"
-                                android:text="@string/pets"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@android:color/black"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:paddingBottom="5dp"
-                                android:paddingTop="5dp"/>
-
+                    <!--android:id="@+id/pets_layout"-->
+                    <TextView
+                            android:layout_toEndOf="@id/trip_ac_car_photo"
+                            android:layout_below="@id/trip_ac_smoke_pref"
+                            android:id="@+id/trip_ac_pets_pref"
+                            android:drawableStart="@drawable/ic_pets_black_24dp"
+                            android:drawablePadding="10dp"
+                            android:text="@string/pets"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:paddingBottom="5dp"
+                            android:paddingTop="5dp"/>
 
 
                 </RelativeLayout>

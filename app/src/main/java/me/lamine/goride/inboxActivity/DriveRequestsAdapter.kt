@@ -1,4 +1,4 @@
-package me.lamine.goride.notificationActivity
+package me.lamine.goride.inboxActivity
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -69,12 +69,13 @@ class DriveRequestsAdapter(private var context: Context, private var notify: Lis
             mPath = "users/${item.userId}/notifications/acceptedDriveRequest/${item.tripId}"
             Database().addToPath("$mPath/otd", otdPath)
             Database().addToPath("$mPath/timestamp", Date().toString())
+            //create ride
+            //todo convert request to trip
         }
         val mPath = "users/${Database().currentUserId()}/driveRequests/${item.tripId}/${item.userId}"
         Database().removeFromPath(mPath)
         reloadFragment()
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotificationViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val view = inflater.inflate(R.layout.booking_request_card, parent, false)

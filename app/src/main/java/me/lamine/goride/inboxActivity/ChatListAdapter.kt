@@ -1,4 +1,4 @@
-package me.lamine.goride.notificationActivity
+package me.lamine.goride.inboxActivity
 
 import android.content.Context
 import android.content.Intent
@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import me.lamine.goride.R
 import me.lamine.goride.utils.Database
-import android.app.Activity
 import android.text.format.DateUtils
 import android.util.Log
 import me.lamine.goride.dataObjects.ChatListInfo
@@ -19,7 +18,7 @@ import java.lang.NumberFormatException
 import java.util.*
 
 
-class ChatListAdapter(private var context: Context, private var chatList: List<ChatListInfo>): RecyclerView.Adapter<ChatListAdapter.MessagesViewHolder>() {
+class ChatListAdapter(private var context: Context, private var chatList: MutableList<ChatListInfo>): RecyclerView.Adapter<ChatListAdapter.MessagesViewHolder>() {
     private lateinit var mDatabase:Database
     override fun onBindViewHolder(holder: MessagesViewHolder, position: Int) {
         mDatabase = Database()
@@ -86,7 +85,10 @@ class ChatListAdapter(private var context: Context, private var chatList: List<C
        return chatList.size
     }
 
-
+    fun removeAt(position: Int) {
+        chatList.removeAt(position)
+        notifyItemRemoved(position)
+    }
 
 
     private fun <T : RecyclerView.ViewHolder> T.listen(event: (position: Int, type: Int) -> Unit): T {

@@ -36,7 +36,7 @@
                 android:id="@+id/rname_edittext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white" android:singleLine="true"/>
 
 
     </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
@@ -57,7 +57,8 @@
                 android:id="@+id/remail_edittext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white" android:inputType="textEmailAddress"
+                android:singleLine="true"/>
 
 
     </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
@@ -78,7 +79,7 @@
                 android:id="@+id/rpassword_edittext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/white" android:inputType="textPassword"/>
+                android:textColor="@android:color/white" android:inputType="textPassword" android:singleLine="true"/>
 
 
     </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
@@ -87,7 +88,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:id="@+id/nextRegisterBtn" android:paddingBottom="15dp"
             android:paddingTop="15dp" android:layout_marginLeft="30dp" android:layout_marginRight="30dp"
-            android:backgroundTint="#3248a1" android:textColor="#d1ffffff" app:cornerRadius="5dp"/>
+            android:backgroundTint="#3248a1" android:textColor="#d1ffffff" app:cornerRadius="5dp"
+            android:visibility="gone"/>
+    <com.dx.dxloadingbutton.lib.LoadingButton
+            android:id="@+id/loading_btn_register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:lb_btnColor="#3248a1"
+            app:lb_resetAfterFailed="true"
+            app:lb_btnRippleColor="@color/colorSecondary"
+            app:lb_btnDisabledColor="#cccccc"
+            app:lb_cornerRadius="32"
+            app:lb_rippleEnable="true"
+            app:lb_btnText="Next"
+            android:layout_below="@+id/email_pass_layout" android:layout_centerInParent="true"
+            android:layout_marginStart="30dp" android:layout_marginEnd="30dp"/>
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -104,6 +119,8 @@
                 android:layout_weight="0"
                 android:textSize="16sp"/>
         <TextView
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
                 android:text="@string/login_here"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:id="@+id/login_textbtn"

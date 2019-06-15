@@ -2,6 +2,7 @@ package me.lamine.goride.reviewActivity
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
@@ -93,12 +94,12 @@ class ReviewActivity:AppCompatActivity() {
         var path = "users/$userID/userReviews/${mDatabase.currentUserId()}"
         mDatabase.addToPath(path,userReview)
         path = "$path/timestamp"
-        mDatabase.addToPath(path,Date().toString())
+        mDatabase.addToPath(path,Date().time.toString())
         val rawRating = user.rawRating + userReview.globalRating
         val userRatingCount = user.userRatingCount+1
         val userRating =rawRating / userRatingCount
         //val ratingRef = database.child("users").child(userID)
-        val userPath = "users/${mDatabase.currentUserId()}"
+        val userPath = "users/$userID"
         mDatabase.addToPath("$userPath/userRating",userRating)
      //   ratingRef.child("userRating").setValue(userRating)
         mDatabase.addToPath("$userPath/rawRating",rawRating)
@@ -145,6 +146,7 @@ class ReviewActivity:AppCompatActivity() {
                 val userReview = collectRatings()
                 fetchUser(userReview)
                 Toast.makeText(this,"Review Posted!",Toast.LENGTH_SHORT).show()
+                finish()
             } else {
                 Toast.makeText(this,"Please rate the driver first!",Toast.LENGTH_SHORT).show()
             }
@@ -218,6 +220,7 @@ class ReviewActivity:AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_send -> {
                postUserReview()
+
                 true
             }
             else -> super.onOptionsItemSelected(item)

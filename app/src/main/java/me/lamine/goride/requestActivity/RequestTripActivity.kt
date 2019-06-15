@@ -56,7 +56,7 @@ class RequestTripActivity : AppCompatActivity() {
     private lateinit var tripDate: String
     private lateinit var tripTime: String
     private lateinit var tripDescription: String
-    private lateinit var tripToModify: Trip
+    private lateinit var tripToModify: TripRequest
     private lateinit var mDatabase: Database
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,7 +79,7 @@ class RequestTripActivity : AppCompatActivity() {
 
         isModifyMode = intent.getBooleanExtra("modifyTrip", false)
         if (isModifyMode) {
-            tripToModify = intent.getSerializableExtra("tripToModify") as Trip
+            tripToModify = intent.getSerializableExtra("tripToModify") as TripRequest
         }
         if (isModifyMode) {
             //  modifyTrip(tripToModify)

@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
-import com.google.firebase.database.core.utilities.Utilities
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_driver.*
 import me.lamine.goride.R
@@ -22,10 +21,7 @@ import me.lamine.goride.dataObjects.Trip
 import me.lamine.goride.dataObjects.User
 import me.lamine.goride.interfaces.OnGetDataListener
 import me.lamine.goride.tripActivity.TripAdapter
-import me.lamine.goride.utils.Database
-import me.lamine.goride.utils.decodeWilaya
-import me.lamine.goride.utils.setPb
-import me.lamine.goride.utils.wilayaArrayEN
+import me.lamine.goride.utils.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -53,7 +49,7 @@ class DriverFragment : androidx.fragment.app.Fragment() {
         this.driver_trips.setHasFixedSize(true)
         val llm = LinearLayoutManager(this.context)
         llm.orientation = RecyclerView.VERTICAL
-        driver_trips.isNestedScrollingEnabled = false
+
         driver_trips.layoutManager = llm
        // getSharedTrips()
         pullToRefreshDriverTrips.setOnRefreshListener {
@@ -62,52 +58,26 @@ class DriverFragment : androidx.fragment.app.Fragment() {
        // getUserTrips()
 
     }
-/*    private fun setPb(visibility: Int){
+    private fun showTripEmptyDialog(trip: Trip){
+        val tripDest:String = wilayaArrayEN[decodeWilaya(trip.destCity)-1]
+        AlertDialog.Builder(this.activity!!)
+            .setTitle("Empty Trip")
+            .setMessage("Your trip's deadline to $tripDest has ended, sadly no one joined.")
 
-        if (visibility == 1) {
-            //trip_ac_submit_btn.visibility = View.GONE
-            //trip_ac_submit_btn.visibility = View.GONE
-            driver_empty_layout.visibility = View.GONE
-            pb_driver.visibility = View.VISIBLE
-            greyout_driver.visibility = View.VISIBLE
+            // Specifying a listener allows you to take an action before dismissing the dialog.
+            // The dialog is automatically dismissed when a dialog button is clicked.
+            .setPositiveButton("Okay") { dialog, which ->
+                Toast.makeText(activity?.applicationContext!!,"Good luck.", Toast.LENGTH_SHORT).show()
+                dialog.cancel()
+                val path = "users/${Database().currentUserId()}"
+                Database().removeFromPath("$path/activeTrips/${trip.tripID}")
+               // Database().removeFromPath()
 
-        } else {
-            driver_empty_layout.visibility = View.VISIBLE
-            pb_driver.visibility = View.GONE
-            greyout_driver.visibility = View.GONE
-            // trip_ac_submit_btn.visibility = View.VISIBLE
-
-        }
-    }*/
-    private fun getSharedTrips(){
-        listUser = arrayListOf()
-        listOfCurrentTrips= arrayListOf()
-        val mPrefs = this.activity?.getSharedPreferences("TripsPref", Context.MODE_PRIVATE)!!
-        var nbTrips = mPrefs.getInt("savedTrips",0)
-
-        ///
-        val gson = Gson()
-        while (nbTrips >= 0){
-            val json = mPrefs.getString("TripID$nbTrips", "")
-            if (json != ""){
-                val trip = gson.fromJson<Trip>(json, Trip::class.java)
-                listOfCurrentTrips.add(trip)
             }
-            nbTrips -= 1
-        }
-        for (trip in listOfCurrentTrips) {
-            val json = mPrefs.getString("currentUser", "")
-            if (json != ""){
-                val user = gson.fromJson<User>(json, User::class.java)
-                listUser.add(user)
-            }
-
-        }
-        if (listOfCurrentTrips.isNotEmpty()){
-            setAdapter()
-        }
-
-
+            // A null listener allows the button to dismiss the dialog and take no further action.
+            //.setNegativeButton("Done!", null)
+            .setIcon(R.drawable.ic_info_gray_24dp)
+            .show()
     }
     private fun showTripDoneDialog(trip: Trip){
         val tripDest:String = wilayaArrayEN[decodeWilaya(trip.destCity)-1]
@@ -142,20 +112,30 @@ class DriverFragment : androidx.fragment.app.Fragment() {
         Database().removeFromPath("$path/activeTrips/${trip.tripID}")
 
     }
-    private fun isTripDone(trip:Trip):Boolean{
+    private fun isTripDone(trip:Trip):Int{
         val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.US)
         val dateAndTime = "${trip.date} ${trip.time}"
         val tripDate = sdf.parse(dateAndTime)
 
-        return trip.bookedUsers.size > 0 && tripDate.before(Date())
+        return if (trip.bookedUsers.size > 0 && tripDate.before(Date())){
+            1
+        } else if (trip.bookedUsers.size == 0 && tripDate.before(Date()) ){
+            0
+        } else {
+            -1
+        }
     }
     private fun checkEndedTrips(){
         val listOfTripsToRemove = mutableListOf<Trip>()
         for(trip in listOfCurrentTrips){
-           if (isTripDone(trip)){
+           if (isTripDone(trip) == 1){
                listOfTripsToRemove.add(trip)
                showTripDoneDialog(trip)
+           } else if (isTripDone(trip )== 0){
+               listOfTripsToRemove.add(trip)
+              showTripEmptyDialog(trip)
            }
+
         }
         listOfCurrentTrips.removeAll(listOfTripsToRemove)
     }
@@ -179,7 +159,7 @@ class DriverFragment : androidx.fragment.app.Fragment() {
                 }
                 setAdapter()
                 checkEndedTrips()
-                setPb(driver_empty_layout,pb_driver,greyout_driver,0)
+
                 }
 
             override fun onFailed(databaseError: DatabaseError) {
@@ -192,7 +172,9 @@ class DriverFragment : androidx.fragment.app.Fragment() {
         if (listOfCurrentTrips.isNotEmpty()){
             Log.i(listOfCurrentTrips.size.toString(), listUser.size.toString())
             driver_trips.adapter?.notifyDataSetChanged()
-            scroll_driver_frg.visibility = View.VISIBLE
+            Log.i("adapter_size", "${listOfCurrentTrips.size}")
+            setPb(driver_empty_layout,pb_driver,greyout_driver,0)
+            driver_empty_layout.visibility = View.GONE
             driver_trips.adapter = this.context?.let {
                 TripAdapter(
                     it,
@@ -257,6 +239,7 @@ class DriverFragment : androidx.fragment.app.Fragment() {
                     val tripIDs:MutableList<String> = mutableListOf()
                     for (child in data.children){
                         tripIDs.add(child.key.toString())
+                        Log.i("TripsToAdd:", child.key.toString())
                     }
                     fetchTrips(tripIDs)
                 } else {

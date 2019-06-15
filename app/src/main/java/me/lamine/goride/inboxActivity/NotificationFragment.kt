@@ -1,4 +1,4 @@
-package me.lamine.goride.notificationActivity
+package me.lamine.goride.inboxActivity
 
 import android.os.Bundle
 import android.util.Log
@@ -56,12 +56,16 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
         req_notif_list_res_view.isNestedScrollingEnabled = false
         req_notif_list_res_view.layoutManager = llm3
 
+        //
+
+
+
+        //
+
         getNotificationsData()
-        notifications = mutableListOf()
-        listOfLiteUser = mutableListOf()
-        extendedNotification = mutableListOf()
-        standardNotifications = mutableListOf()
-        driverNotificationsList = mutableListOf()
+        swipeLayout.setOnRefreshListener {
+            getNotificationsData()
+        }
 
     }
 
@@ -86,6 +90,7 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
 
             if (tripID == notifications.last().tripID && user == listOfLiteUser.last()) {
                 if (notif_list_res_view != null) {
+                    swipeLayout.isRefreshing = false
                     notif_list_res_view.adapter = this.context?.let {
                         NotificationAdapter(
                             it,
@@ -136,6 +141,7 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
     private fun setDriverRequestsAdapter() {
         setPb(null, mProgressBar, mLayout, 0)
         if (req_notif_list_res_view != null) {
+            swipeLayout.isRefreshing = false
             req_notif_list_res_view.adapter = this.context?.let {
                 DriveRequestsAdapter(
                     it,
@@ -181,7 +187,7 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun readDrivingNotifications() {
-        mDatabase.fetchFromCurrentUser("driveRequests", object : OnGetDataListener {
+        mDatabase.fetchFromNotifications("driveRequests", object : OnGetDataListener {
             override fun onStart() {
                 setPb(null, mProgressBar, mLayout, 1)
             }
@@ -287,13 +293,15 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun getData(dataSnapshot: DataSnapshot) {
+        for (trip in dataSnapshot.children){
         var otd = ""
         var userId: String
         var timestamp: String
         val listOfUsers: MutableList<Pair<String, String>> = mutableListOf()
-        val tripID = dataSnapshot.key
-        for (data in dataSnapshot.children) {
+        val tripID = trip.key
+        for (data in trip.children) {
             userId = data.key!!
+            Log.i("user_id_notif",userId)
             timestamp = data.child("timestamp").value as String
             otd = data.child("otd").value as String
 
@@ -304,6 +312,7 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
         val bookingNotif = BookingNotification(tripID!!, listOfUsers)
         bookingNotif.otd = otd
         notifications.add(bookingNotif)
+        }
     }
 
     private fun getStandardData(ds: DataSnapshot) {
@@ -389,6 +398,12 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun getNotificationsData() {
+        notifications = mutableListOf()
+        listOfLiteUser = mutableListOf()
+        extendedNotification = mutableListOf()
+        standardNotifications = mutableListOf()
+        driverNotificationsList = mutableListOf()
+
         mDatabase.fetchFromCurrentUser("notifications", object : OnGetDataListener {
             override fun onStart() {
 
@@ -397,31 +412,38 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
 
             override fun onSuccess(data: DataSnapshot) {
                 if (data.childrenCount.toInt() != 0) {
+                    scrolling.visibility =View.VISIBLE
+                    empty_list_notif.visibility = View.GONE
                     for (ds in data.children) {
                         if (ds.exists() && ds.key != null) {
                             if (ds.key == "tripRequests" && ds.hasChildren()) {
                                 for (child in ds.children) {
+                                    Log.i("Notification_Type", "Type 1")
                                     getData(ds)
                                 }
-                            } else if (ds.key != "tripRequests") {
+                            } else if (ds.key == "driveRequests" && ds.hasChildren()){
+                                readDrivingNotifications()
+                            }
+                            else if (ds.key != "tripRequests" && ds.key != "driveRequests") {
+                                Log.i("Notification_Type", "Type 2")
                                 getStandardData(ds)
                             }
 
                         }
 
                     }
-                }
-                if (notifications.isEmpty()) {
-                    setEmptyUI()
+                    if (notifications.isNotEmpty())  {
+                        checkInfoInServer()
+                    }
+                    if (standardNotifications.isNotEmpty()) {
+                        checkAllNotifications()
+                       // readDrivingNotifications()
+                    }
+
                 } else {
-                    checkInfoInServer()
-                }
-                if (standardNotifications.isEmpty()) {
                     setEmptyUI()
-                } else {
-                    checkAllNotifications()
-                    readDrivingNotifications()
                 }
+
             }
 
             override fun onFailed(databaseError: DatabaseError) {
@@ -436,7 +458,7 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
         for (notif in standardNotifications) {
             mDatabase.fetchTrip(notif.tripId, notif.otd, object : OnGetDataListener {
                 override fun onStart() {
-                    //DO SOME THING WHEN START GET DATA HERE
+
                 }
 
                 override fun onSuccess(data: DataSnapshot) {
@@ -449,14 +471,19 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
                     if (notif == standardNotifications.last()) {
                         if (empty_list_notif != null && snotif_list_res_view != null) {
                             empty_list_notif.visibility = View.GONE
+                            swipeLayout.isRefreshing = false
                             snotif_list_res_view.adapter = this@NotificationFragment.context?.let {
                                 ExtraNotifAdapter(
+                                    this@NotificationFragment.context!!,
                                     standardNotifications
                                 )
                             }
                             snotif_list_res_view.layoutManager = llm2
+
+
                         }
                     }
+                    swipeLayout.isRefreshing = false
                 }
 
                 override fun onFailed(databaseError: DatabaseError) {
@@ -472,7 +499,9 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
 
     private fun setEmptyUI() {
         if (empty_list_notif !== null) {
+            swipeLayout.isRefreshing = false
             empty_list_notif.visibility = View.VISIBLE
+            scrolling.visibility = View.GONE
             setPb(null, mProgressBar, mLayout, 0)
         }
 

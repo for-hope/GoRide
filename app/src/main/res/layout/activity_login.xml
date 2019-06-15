@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
-              android:layout_height="match_parent"
+                android:layout_height="match_parent"
 
                 android:background="@color/quantum_googblue800">
 
+    <androidx.appcompat.widget.Toolbar
+            android:id="@+id/login_tb"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:titleTextColor="@android:color/white"/>
     <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -54,7 +62,8 @@
                     android:id="@+id/email_edittext"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/white"/>
+                    android:textColor="@android:color/white" android:inputType="textEmailAddress"
+                    android:singleLine="true"/>
 
 
         </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
@@ -77,7 +86,8 @@
                     android:id="@+id/password_edittext"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/white" android:inputType="textPassword"/>
+                    android:textColor="@android:color/white" android:inputType="textPassword"
+                    android:singleLine="true"/>
 
 
         </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
@@ -97,14 +107,15 @@
     <TextView
             android:text="@string/forgot_your_pasword"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:id="@+id/frogot_pass" android:textColor="#6affffff"
+            android:layout_height="wrap_content" android:id="@+id/forgot_pass" android:textColor="#6affffff"
             android:gravity="top|center" android:padding="10dp" android:textSize="16sp"
             android:layout_below="@+id/loading_btn"/>
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent" android:gravity="bottom|center"
-            android:paddingBottom="20dp" android:id="@+id/bottom_layout">
+            android:paddingBottom="20dp" android:id="@+id/bottom_layout" android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true">
         <TextView
                 android:text="@string/dont_have_an_account"
                 android:layout_width="wrap_content"
@@ -119,7 +130,7 @@
                 android:layout_height="wrap_content" android:id="@+id/create_account"
                 android:textColor="#ff7249"
                 android:gravity="bottom|center"
-                android:textSize="16sp"/>
+                android:textSize="16sp" android:paddingStart="5dp" android:paddingEnd="5dp"/>
     </LinearLayout>
 
 </RelativeLayout>

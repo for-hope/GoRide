@@ -110,7 +110,8 @@ class TripAdapter(private var context: Context, private var tripsList: List<Trip
         } else {
             holder.petsAllowed.visibility = View.GONE
         }
-        val nbSeats = "${trip.numberOfSeats} seats left"
+
+        val nbSeats = "${trip.numberOfSeats - trip.bookedUsers.size} seats left"
         holder.numberOfSeats.text = nbSeats
         val seatPrice = "${trip.pricePerSeat} DZD"
         holder.pricePerSeat.text = seatPrice

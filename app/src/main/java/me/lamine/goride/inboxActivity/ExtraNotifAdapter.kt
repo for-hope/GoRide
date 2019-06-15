@@ -1,20 +1,29 @@
-package me.lamine.goride.notificationActivity
+package me.lamine.goride.inboxActivity
 
 
+import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.squareup.picasso.Picasso
 import me.lamine.goride.R
 import me.lamine.goride.dataObjects.StandaredNotification
+import me.lamine.goride.dataObjects.TripRequest
+import me.lamine.goride.interfaces.OnGetDataListener
+import me.lamine.goride.postingActivity.PostingActivity
+import me.lamine.goride.utils.Database
 import me.lamine.goride.utils.wilayaArrayEN
 
 
-class ExtraNotifAdapter(private var notify: List<StandaredNotification>) :
+class ExtraNotifAdapter(private var context: Context, private var notify: MutableList<StandaredNotification>) :
     RecyclerView.Adapter<ExtraNotifAdapter.NotificationViewHolder>() {
     override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
         if (notify[position].username == "") {
@@ -87,19 +96,60 @@ class ExtraNotifAdapter(private var notify: List<StandaredNotification>) :
 
         }
         holder.timestamp.text = notify[position].timestamp
+
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotificationViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val view = inflater.inflate(R.layout.notif_standered_layout, parent, false)
-        return NotificationViewHolder(view).listen { _, _ ->
+        return NotificationViewHolder(view).listen { position, _ ->
+            if (notify[position].type == "acceptedDriveRequest"){
+                Toast.makeText(context,"open post a trip activity",Toast.LENGTH_SHORT).show()
+                getTripRequest(position)
+            }
         }
     }
+    private fun getTripRequest(pos:Int){
+        Database().fetchTripRequest(notify[pos].tripId,notify[pos].otd,object : OnGetDataListener{
+            override fun onStart() {
 
+            }
+
+            override fun onSuccess(data: DataSnapshot) {
+                val i = Intent(context,PostingActivity::class.java)
+                val tRequest = data.getValue(TripRequest::class.java)
+                i.putExtra("type","acceptedTrip")
+                i.putExtra("requestInfo", tRequest)
+                context.startActivity(i)
+            }
+
+            override fun onFailed(databaseError: DatabaseError) {
+                Toast.makeText(context,"Error $databaseError", Toast.LENGTH_SHORT).show()
+            }
+
+        })
+    }
     override fun getItemCount(): Int {
         return notify.size
     }
+    fun addItem(name: StandaredNotification) {
+        notify.add(name)
+        notifyItemInserted(notify.size)
+    }
 
+    fun removeAt(position: Int) {
+        notify.removeAt(position)
+        notifyItemRemoved(position)
+    }
+    fun removeAll(){
+        val size = notify.size
+        notify.clear()
+        notifyItemRangeChanged(0,size)
+        val db = Database()
+        db.removeFromPath("users/${db.currentUserId()}/notifications")
+
+    }
     private fun <T : RecyclerView.ViewHolder> T.listen(event: (position: Int, type: Int) -> Unit): T {
         itemView.setOnClickListener {
             event.invoke(adapterPosition, itemViewType)

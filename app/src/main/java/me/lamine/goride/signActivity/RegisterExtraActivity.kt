@@ -20,6 +20,7 @@ import android.widget.ViewFlipper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.res.ResourcesCompat
+import com.google.android.gms.auth.api.Auth
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*
@@ -34,11 +35,13 @@ import me.lamine.goride.dataObjects.User
 import me.lamine.goride.interfaces.OnGetDataListener
 import me.lamine.goride.mainActivities.MainActivity
 import me.lamine.goride.utils.Database
+import org.jetbrains.anko.onCheckedChange
 import org.jetbrains.anko.onClick
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -71,6 +74,7 @@ class RegisterExtraActivity : AppCompatActivity() {
         setSupportActionBar(extra_reg_toolbar)
         extra_reg_toolbar.changeToolbarFont()
         mDatabase = Database()
+        mDatabase.checkUserSession(this)
         mStorageRef = FirebaseStorage.getInstance().reference
         mAuth = FirebaseAuth.getInstance()
         if (mAuth?.currentUser == null) {
@@ -80,7 +84,11 @@ class RegisterExtraActivity : AppCompatActivity() {
             initActivity()
         }
         initCallBacks()
-
+        if (!currentUser?.isEmailVerified!!){
+            currentUser?.sendEmailVerification()?.addOnCompleteListener {
+                Toast.makeText(this,"Verification email sent.",Toast.LENGTH_SHORT).show()
+            }
+        }
         progressBar_extra.progress = 20
         if (currentUser?.phoneNumber != null && currentUser?.phoneNumber!!.isNotEmpty()) {
             nextView(view_flipper)
@@ -224,7 +232,6 @@ class RegisterExtraActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu_logout, menu)
         return true
     }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -289,6 +296,11 @@ class RegisterExtraActivity : AppCompatActivity() {
         if (progressBar_extra.progress == 20) {
             previous_btn.visibility = View.INVISIBLE
         }
+        else if (progressBar_extra.progress == 60) {
+
+            previous_btn.visibility = View.INVISIBLE
+            Log.i("mProgress", "${progressBar_extra.progress}")
+        }
 
     }
 
@@ -301,6 +313,7 @@ class RegisterExtraActivity : AppCompatActivity() {
             next_button.text = t
         }
         if (progressBar_extra.progress == 60) {
+
             previous_btn.visibility = View.INVISIBLE
             Log.i("mProgress", "${progressBar_extra.progress}")
         }
@@ -388,10 +401,10 @@ class RegisterExtraActivity : AppCompatActivity() {
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
         setPb(1)
         currentUser?.updatePhoneNumber(credential)?.addOnCompleteListener(this) { task ->
+            setPb(0)
             if (task.isSuccessful) {
                 // Sign in success, update UI with the signed-in user's information
                 Log.d(TAG, "signInWithCredential:success")
-                setPb(0)
                 nextView(view_flipper)
                 // ...
             } else {
@@ -437,15 +450,71 @@ class RegisterExtraActivity : AppCompatActivity() {
 
     private fun checkBirthdayAndGender() {
         birthday = age_edittext.text.toString()
+        val sdf = SimpleDateFormat("dd, MMMM yyyy", Locale.US)
+        try {
+            sdf.parse(age_edittext.text.toString())
+
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            Toast.makeText(this,"Invalid Date",Toast.LENGTH_SHORT).show()
+        }
         gender = "m"
         if (female_checkbox.isChecked) {
             gender = "f"
         }
-        Toast.makeText(this, "Birthday : $birthday Gender: $gender", Toast.LENGTH_SHORT).show()
+       // Toast.makeText(this, "Birthday : $birthday Gender: $gender", Toast.LENGTH_SHORT).show()
+        val ageStr = birthday
+        if (ageStr != ""){
+            driver_checkbox.isChecked = getAge(ageStr) <= 60
+            driver_checkbox.onCheckedChange { compoundButton, b ->
+                if (!driver_checkbox.isChecked){
+                    if (getAge(ageStr) <= 60){
+                        driver_checkbox.isChecked = true
+                        Toast.makeText(this, "Only older people 60+ can be passengers.",Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+
+
         nextView(view_flipper)
     }
 
+    private fun getAge(dobString: String): Int {
+
+        var date: Date? = null
+        val sdf = SimpleDateFormat("dd, MMMM yyyy", Locale.US)
+        try {
+            date = sdf.parse(dobString)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        }
+
+        if (date == null) return 0
+
+        val dob = Calendar.getInstance()
+        val today = Calendar.getInstance()
+
+        dob.time = date
+
+        val year = dob.get(Calendar.YEAR)
+        val month = dob.get(Calendar.MONTH)
+        val day = dob.get(Calendar.DAY_OF_MONTH)
+
+        dob.set(year, month + 1, day)
+
+        var age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR)
+
+        if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) {
+            age--
+        }
+
+
+
+        return age
+    }
     private fun userTypeAndDescription() {
+
         isDriver = driver_checkbox.isChecked
         description = desc_edittext.text.toString()
         nextView(view_flipper)
@@ -474,13 +543,18 @@ class RegisterExtraActivity : AppCompatActivity() {
         user.profilePic = downloadUrl
         val userPath = "users/$userId"
         mDatabase.addToPath(userPath, user)
+        mDatabase.addToPath("$userPath/accountCreatingDate",Date().time)
         Toast.makeText(this, "Done.", Toast.LENGTH_LONG).show()
         setPb(0)
+
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
-        finish()
+       // this.finish()
     }
 
+     override fun onBackPressed() {
+        Log.i("onBack", "You cant do that")
+    }
     private fun acceptTerms() {
         if (terms_checkbox.isChecked) {
             // val uuid = randomUUID()

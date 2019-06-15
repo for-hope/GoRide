@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent" android:layout_height="match_parent"
+              android:orientation="vertical" android:background="@color/quantum_grey100">
+    <androidx.appcompat.widget.Toolbar
+            android:id="@+id/modify_profile_tb"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/whiteColor"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:title="Modify Profile"/>
+
+
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:orientation="vertical">
+            <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:id="@+id/fullname_label"
+                    android:soundEffectsEnabled="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:primaryColor="@color/colorSecondary"
+                    app:labelText="Full name"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="10dp"
+                    app:helperTextColor="@color/colorAccent"
+                    app:counterTextColor="@color/colorSecondary" app:iconSignifier="@drawable/ic_person_gray_24dp">
+
+                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                        android:id="@+id/edittext_fullname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                />
+
+            </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+            <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:id="@+id/age_label"
+                    android:soundEffectsEnabled="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:primaryColor="@color/colorSecondary"
+                    app:labelText="Age"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="30dp"
+                    app:helperTextColor="@color/colorAccent"
+                    app:counterTextColor="@color/colorSecondary" app:iconSignifier="@drawable/ic_date_range_black_24dp">
+
+                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                        android:id="@+id/edittext_age"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                />
+
+            </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+            <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:id="@+id/desc_label"
+                    android:soundEffectsEnabled="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    app:primaryColor="@color/colorSecondary"
+                    app:labelText="Description"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="30dp"
+                    app:helperTextColor="@color/colorAccent"
+                    app:counterTextColor="@color/colorSecondary" app:iconSignifier="@drawable/ic_info_black_24dp">
+
+                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                        android:id="@+id/edittext_desc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                />
+
+            </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+            <View
+                    android:id="@+id/divider18"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider"
+                    android:layout_marginBottom="8dp" android:layout_marginTop="8dp"/>
+            <TextView android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:text="@string/are_you_a_driver"
+                      android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="10dp"
+                      android:layout_marginStart="30dp" android:id="@+id/driver_title2"
+                      android:textColor="@android:color/black" android:layout_marginEnd="30dp"/>
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" android:layout_marginEnd="20dp"
+                    android:layout_marginStart="20dp">
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/check_this_box_if_you_will_be_driving_this_will_adjust_your_prefrences"
+                          android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="20dp"
+                          android:layout_marginStart="20dp" android:id="@+id/driver_desc"
+                          android:layout_weight="1"
+                          android:layout_marginBottom="20dp"/>
+                <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:id="@+id/driver_checkbox"
+                        android:layout_weight="0"
+                        android:gravity="center" android:foregroundGravity="center"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="10dp"/>
+            </LinearLayout>
+            <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:id="@+id/email_label"
+                    android:soundEffectsEnabled="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:primaryColor="@color/colorSecondary"
+                    app:labelText="Email"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="30dp"
+                    app:helperTextColor="@color/colorAccent"
+                    app:counterTextColor="@color/colorSecondary" app:iconSignifier="@drawable/ic_email_gray_24dp">
+
+                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                        android:id="@+id/edittext_email"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                />
+
+            </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+            <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:id="@+id/password_label"
+                    android:soundEffectsEnabled="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:primaryColor="@color/colorSecondary"
+                    app:labelText="Password"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="30dp"
+                    app:helperTextColor="@color/colorAccent"
+                    app:counterTextColor="@color/colorSecondary" app:iconSignifier="@drawable/ic_vpn_key_black_24dp">
+
+                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                        android:id="@+id/edittext_pass"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                />
+
+            </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+            <Button
+                    android:text="Confirm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/confirm_btn" android:layout_gravity="end"
+                    android:layout_marginEnd="30dp"/>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
