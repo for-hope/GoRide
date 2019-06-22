@@ -22,12 +22,12 @@ class Trip( tripOrigin: String="",  tripDestination: String="",  allStops:ArrayL
      var vehicleYear:Int = 0
      var licensePlate:String = ""
      var luggageSize:String = "N"
-     var noSmoking:Boolean = false
-     var petsAllowed = false
+    @field:JvmField  var noSmoking:Boolean = false
+    @field:JvmField  var petsAllowed = false
      var numberOfSeats:Int = 0
      var pricePerSeat:Int = 0
      var bookingPref = 0
-     var hasVehicleInfo = false
+    @field:JvmField  var hasVehicleInfo = false
      var description:String = ""
      var carPhoto:String = ""
      var userID:String = ""

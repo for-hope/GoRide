@@ -1,6 +1,5 @@
 package me.lamine.goride.mainActivities
 
-import android.content.Context
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -18,9 +17,7 @@ import io.armcha.playtablayout.core.TouchableTabLayout
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import android.content.Intent
-import android.media.Image
 import android.util.Log
-import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
@@ -30,27 +27,28 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
-import com.google.gson.Gson
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_inbox.*
+import kotlinx.android.synthetic.main.fragment_passenger.*
 import me.lamine.goride.postingActivity.PostOptionsActivity
 import me.lamine.goride.R
+import me.lamine.goride.adminActivities.AdminActivity
 import me.lamine.goride.dataObjects.User
 import me.lamine.goride.interfaces.OnGetDataListener
 import me.lamine.goride.javaClasses.RevealAnimation
 import me.lamine.goride.inboxActivity.InboxActivity
+import me.lamine.goride.requestActivity.RequestTripActivity
 import me.lamine.goride.searchActivity.SearchTripActivity
 import me.lamine.goride.settingsActivity.SettingsActivity
 import me.lamine.goride.signActivity.LoginActivity
 import me.lamine.goride.userActivity.UserActivity
 import me.lamine.goride.utils.*
-import org.jetbrains.anko.tableLayout
+import java.lang.Exception
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private var user:FirebaseUser? = null
     private var menu:Menu?=null
-    private val mGALLERY = 1
-    private val mCAMERA = 2
     private lateinit var mUser: User
     private lateinit var mDatabase:Database
     private lateinit var mRevealAnimation: RevealAnimation
@@ -60,30 +58,28 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setTheme(R.style.AppTheme)
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.my_toolbar))
+        val rootLayout = root_layout
+        mRevealAnimation = RevealAnimation(rootLayout, intent, this)
+        initPermissions()
         if (!verifyAvailableNetwork(this)){
           Toast.makeText(this,"No Available Network.", Toast.LENGTH_SHORT).show()
         }
-        mUser = getSharedUser(this)
-         if (user != null) {
-             getUser()
-         }
-
-
-
         mDatabase = Database()
         mDatabase.checkUserSession(this)
         user = FirebaseAuth.getInstance().currentUser
 
         if (user == null) {
-            Log.i("FAILED", " FAILED LOG")
+            Toast.makeText(this,"Login First", Toast.LENGTH_LONG).show()
             val intent = Intent(this, LoginActivity::class.java)
-            intent.putExtra("tab",1)
             startActivity(intent)
             finish()
             //
 
         } else {
-           for (profile in user!!.providerData) {
+            getUser()
+
+           // mUser = getSharedUser(this)
+        /*   for (profile in user!!.providerData) {
                 Log.i("inits", "STARTEd")
                 // Id of the provider (ex: google.com)
                 val providerId = profile.providerId
@@ -100,14 +96,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
 
                 // val photoUrl = profile.photoUrl
-            }
+            }*/
             //init
 
 
-            Log.i("init", "STARTEd")
 
-        initTabLaylout()
-        initPermissions()
+
+            initTabLayout()
+
+       // initTabLayout()
+     //   initPermissions()
 
 
 
@@ -122,14 +120,151 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         a.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(a)
     }
-    private fun initTabLaylout(){
-        Log.i("initTabLayout", "STARTEd")
+    private fun initUserInfo(){
+       // val tabLayout = playTabLayout.tabLayout
         val navigationTabStrip = findViewById<NavigationTabStrip>(R.id.playTabLayout1)
-        val fragmentAdapter = MyPagerAdapter(supportFragmentManager)
+        val toolbar = findViewById<Toolbar>(R.id.my_toolbar)
+        val fabP = findViewById<FloatingActionButton>(R.id.fab_p)
+        val rootLayout = root_layout
+        if(mUser.superuser == 1){
+            my_toolbar.inflateMenu(R.menu.menu_admin)
+        }
+        if (getSharedUser(this).isDriver){
+            initNavStripe(navigationTabStrip,0,toolbar)
+            navigationTabStrip.tabIndex = 0
+            Log.i("RECHED", "0")
+        } else {
+            initNavStripe(navigationTabStrip,1,toolbar)
+            navigationTabStrip.tabIndex = 1
+            Log.i("RECHED", "1")
+        }
+
+        var driverSnackbar: Snackbar? = null
+        var passSnackbar: Snackbar? = null
+        Log.i("RECHED", "THIS CODE")
+        //todo
+
+        navigationTabStrip.onTabStripSelectedIndexListener = object :
+            NavigationTabStrip.OnTabStripSelectedIndexListener{
+            override fun onEndTabSelected(title: String?, index: Int) {
+                if (index == 0){
+                    toolbar.setTitleTextColor(ContextCompat.getColor(applicationContext,
+                        R.color.colorAccent
+                    ))
+                    navigationTabStrip.stripColor = ContextCompat.getColor(applicationContext,
+                        R.color.colorAccent
+                    )
+                    navigationTabStrip.activeColor = ContextCompat.getColor(applicationContext,
+                        R.color.colorAccent
+                    )
+                    //
+                    navigationTabStrip.tabIndex = 0
+                    if (!getSharedUser(this@MainActivity).isDriver){
+                        passSnackbar = Snackbar.make(rootLayout, "You're a passenger! But you can drive as well.", Snackbar.LENGTH_INDEFINITE)
+                        passSnackbar!!.setAction("Proceed") {
+                            navigationTabStrip.tabIndex = 0
+
+                            fabP.hide()
+                            fab.show()
+
+                        }
+                        passSnackbar!!.show()
+
+
+                    } else {
+                        driverSnackbar?.dismiss()
+                        fabP.hide()
+                        fab.show()
+                    }
+
+                }
+                if (index == 1){
+                    navigationTabStrip.tabIndex = 1
+                    toolbar.setTitleTextColor(ContextCompat.getColor(applicationContext,
+                        R.color.colorSecondary
+                    ))
+                    navigationTabStrip.stripColor = ContextCompat.getColor(applicationContext,
+                        R.color.colorSecondary
+                    )
+                    navigationTabStrip.activeColor = ContextCompat.getColor(applicationContext,
+                        R.color.colorSecondary
+                    )
+                    if (getSharedUser(this@MainActivity).isDriver){
+                        driverSnackbar =Snackbar.make(rootLayout, "You're a driver only! You can check trips but you can't register in one..", Snackbar.LENGTH_INDEFINITE)
+                        driverSnackbar!!.setAction("Proceed") {
+                            fab.hide()
+                            fabP.show()
+                        }
+                        driverSnackbar!!.show()
+
+
+                    } else {
+                        passSnackbar?.dismiss()
+                        fab.hide()
+                        fabP.show()
+                    }
+                }
+            }
+            override fun onStartTabSelected(title: String?, index: Int) {}
+        }
+
+
+/*
+        tabLayout.addOnTabSelectedListener(object :
+            TouchableTabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TouchableTabLayout.Tab) {
+                if (tab.position == 0){
+
+
+                }
+                if (tab.position == 1) {
+
+
+                }
+            }
+            override fun onTabReselected(tab: TouchableTabLayout.Tab) {
+
+            }
+
+            override fun onTabUnselected(tab: TouchableTabLayout.Tab) {
+
+            }
+
+
+        })*/
+
+    }
+    private fun initNavigationTabLayout(){
+        val navigationTabStrip = findViewById<NavigationTabStrip>(R.id.playTabLayout1)
+        val fragmentAdapter =
+            MyPagerAdapter(supportFragmentManager)
+        viewpager_v.adapter = fragmentAdapter
+        navigationTabStrip.setViewPager(viewpager_v)
+        //initNavStripe(navigationTabStrip,0,my_toolbar)
+        try {
+            val page =  if (getSharedUser(this).isDriver){
+                0
+            } else {
+                1
+            }
+            initNavStripe(navigationTabStrip,page,my_toolbar)
+            navigationTabStrip.tabIndex = page
+        } catch (e:Exception){
+            e.stackTrace
+        }
+    }
+    private fun initTabLayout(){
+
+
+
+       // val fragmentAdapter = MyPagerAdapter(supportFragmentManager)
+        ///
+        //
         drawerLayout = findViewById(R.id.drawer_layout)
         nav_view.setNavigationItemSelectedListener(this)
-        val rootLayout = root_layout
-        mRevealAnimation = RevealAnimation(rootLayout, intent, this)
+        //
+        //
+
         val fab: FloatingActionButton = findViewById(R.id.fab)
         fab.setOnClickListener {
             val intent = Intent(this, PostOptionsActivity::class.java)
@@ -141,7 +276,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             startActivity(intent)
         }
         fabP.hide()
-
+        //
+        //
+        initNavigationTabLayout()
+        /*
         playTabLayout.colors = intArrayOf(
             R.color.colorAccent,
             R.color.colorSecondary
@@ -154,6 +292,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         tabLayout.setTabTextColors(ContextCompat.getColor(this, R.color.colorPrimary),ContextCompat.getColor(this,
             R.color.whiteColor
         ))
+        */
         //tabs_main.setupWithViewPager(viewpager_main)
         val toolbar = findViewById<Toolbar>(R.id.my_toolbar)
         val actionbar: ActionBar? = supportActionBar
@@ -163,77 +302,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         toolbar.changeToolbarFont()
         checkForNotifications()
-        if (mUser.isDriver){
-            initNavStripe(navigationTabStrip,0)
-        } else {
-            initNavStripe(navigationTabStrip,1)
-        }
-
-        tabLayout.addOnTabSelectedListener(object :
-            TouchableTabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TouchableTabLayout.Tab) {
-                if (tab.position == 0){
-                    if (!mUser.isDriver){
-                        Snackbar.make(rootLayout, "You're a passenger! But you can drive as well.", Snackbar.LENGTH_INDEFINITE)
-                            .setAction("Proceed") {
-                                toolbar.setTitleTextColor(ContextCompat.getColor(applicationContext,
-                                    R.color.colorAccent
-                                ))
-                                navigationTabStrip.stripColor = ContextCompat.getColor(applicationContext,
-                                    R.color.colorAccent
-                                )
-                                navigationTabStrip.activeColor = ContextCompat.getColor(applicationContext,
-                                    R.color.colorAccent
-                                )
-
-                                fabP.hide()
-                                fab.show()
-
-                            }
-                            .show()
-
-                    } else {
-                        toolbar.setTitleTextColor(ContextCompat.getColor(applicationContext,
-                            R.color.colorAccent
-                        ))
-                        navigationTabStrip.stripColor = ContextCompat.getColor(applicationContext,
-                            R.color.colorAccent
-                        )
-                        navigationTabStrip.activeColor = ContextCompat.getColor(applicationContext,
-                            R.color.colorAccent
-                        )
-
-                        fabP.hide()
-                        fab.show()
-                    }
-
-                }
-                if (tab.position == 1) {
-
-                    toolbar.setTitleTextColor(ContextCompat.getColor(applicationContext,
-                        R.color.colorSecondary
-                    ))
-                    navigationTabStrip.stripColor = ContextCompat.getColor(applicationContext,
-                        R.color.colorSecondary
-                    )
-                    navigationTabStrip.activeColor = ContextCompat.getColor(applicationContext,
-                        R.color.colorSecondary
-                    )
-
-                    fab.hide()
-                    fabP.show()
-                }
-            }
-            override fun onTabReselected(tab: TouchableTabLayout.Tab) {
-
-            }
-
-            override fun onTabUnselected(tab: TouchableTabLayout.Tab) {
-
-            }
-
-
-        })
+     //todo
+        //val navigationTabStrip = findViewById<NavigationTabStrip>(R.id.playTabLayout1)
+      //  initNavStripe(navigationTabStrip,0,toolbar)
 
 
     }
@@ -278,7 +349,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         this.menu = menu
         menuInflater.inflate(R.menu.menu_notif, menu)
         menuInflater.inflate(R.menu.menu_inbox, menu)
-
         return true
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -295,6 +365,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.action_notifications -> {
                 val intent = Intent(this, InboxActivity::class.java)
                 intent.putExtra("tab",0)
+                startActivity(intent)
+            }
+            R.id.action_admin -> {
+                val intent = Intent(this, AdminActivity::class.java)
                 startActivity(intent)
             }
             android.R.id.home -> drawerLayout.openDrawer(GravityCompat.START)
@@ -360,7 +434,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         })
     }
 
-
     private fun Toolbar.changeToolbarFont(){
         for (i in 0 until childCount) {
             val view = getChildAt(i)
@@ -373,7 +446,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
     private fun getUser(){
-
        mDatabase.fetchUser(user?.uid!!,object : OnGetDataListener {
             override fun onStart() {
 
@@ -383,11 +455,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 if (user == null) {
                     mDatabase.signOut(this@MainActivity)
                 } else {
-
                     saveSharedUser(this@MainActivity,user)
                     mUser = getSharedUser(this@MainActivity)
                     val profileUrl = user.profilePic
                     val fullName = user.fullName
+                    initUserInfo()
+
+
                     setHeaderImage(profileUrl,fullName)
                 }
 
@@ -406,25 +480,44 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         var mLink = link
         val mTextView = hView.findViewById<TextView>(R.id.nav_text)
         mTextView.text =name
+        if (mUser.superuser == 1){
+            val mAdminText = hView.findViewById<TextView>(R.id.nav_admin)
+            mAdminText.visibility = View.VISIBLE
+        }
         val mImageView = hView.findViewById(R.id.nav_header_pfp) as ImageView
         if (link == ""){
               mLink = "https://firebasestorage.googleapis.com/v0/b/ridego-1555252117345.appspot.com/o/user_images%2Fmale_default.png?alt=media&token=658a01b5-ba18-4491-8aa7-e15c30284200"
             }
-
+        Log.i("SETTING IMAGE", "DONE")
         Picasso.get().load(mLink).into(mImageView)
     }
-    private fun initNavStripe(navigationTabStrip: NavigationTabStrip,tab:Int) {
+    private fun initNavStripe(navigationTabStrip: NavigationTabStrip,tab:Int,toolbar: Toolbar) {
         navigationTabStrip.setTitles("Driver", "Passenger")
         navigationTabStrip.setViewPager(viewpager_v,tab)
         navigationTabStrip.setTabIndex(tab, true)
         navigationTabStrip.setBackgroundColor(Color.WHITE)
-        navigationTabStrip.stripColor = Color.RED
+        if (tab == 0) {
+            navigationTabStrip.stripColor = Color.RED
+            navigationTabStrip.activeColor = Color.RED
+        } else {
+            navigationTabStrip.stripColor = ContextCompat.getColor(applicationContext,
+                R.color.colorSecondary
+            )
+            navigationTabStrip.activeColor = ContextCompat.getColor(applicationContext,
+                R.color.colorSecondary
+            )
+            toolbar.setTitleTextColor(ContextCompat.getColor(applicationContext,
+                R.color.colorSecondary
+            ))
+            fab.hide()
+            fab_p.show()
+        }
         navigationTabStrip.stripType = NavigationTabStrip.StripType.POINT
         navigationTabStrip.stripGravity = NavigationTabStrip.StripGravity.BOTTOM
         //todo navigationTabStrip.setTypeface("fonts/typeface.ttf")
         navigationTabStrip.animationDuration = 300
         navigationTabStrip.inactiveColor = Color.GRAY
-        navigationTabStrip.activeColor = Color.RED
+
 
     }
 

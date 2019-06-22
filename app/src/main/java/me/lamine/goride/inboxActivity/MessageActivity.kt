@@ -1,5 +1,6 @@
 package me.lamine.goride.inboxActivity
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -10,11 +11,13 @@ import com.google.firebase.database.*
 
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_message.*
+import kotlinx.android.synthetic.main.chat_item_left.*
 import me.lamine.goride.R
 import me.lamine.goride.dataObjects.Chat
 import me.lamine.goride.dataObjects.User
 import me.lamine.goride.interfaces.OnGetDataListener
 import me.lamine.goride.notifications.*
+import me.lamine.goride.userActivity.UserActivity
 import me.lamine.goride.utils.Database
 import me.lamine.goride.utils.getSharedUser
 import retrofit2.Call
@@ -27,7 +30,8 @@ class MessageActivity : AppCompatActivity() {
     private lateinit var messageAdapter: MessageAdapter
     lateinit var apiService:APIService
     private var mChat:MutableList<Chat> = mutableListOf()
-    var notify = false
+    private var notify = false
+    private var mUser:User? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_message)
@@ -38,7 +42,7 @@ class MessageActivity : AppCompatActivity() {
         apiService = Client.getClient("https://fcm.googleapis.com/")?.create(APIService::class.java)!!
         mDatabase = Database()
         val userId:String = intent.getStringExtra("userId")
-        var mUser : User?
+
         mDatabase.fetchUser(userId,object: OnGetDataListener{
             override fun onStart() {
                // setPb()
@@ -46,6 +50,7 @@ class MessageActivity : AppCompatActivity() {
 
             override fun onSuccess(data: DataSnapshot) {
                 mUser = data.getValue(User::class.java)
+
                 if (mUser != null){
                     msg_username.text = mUser?.fullName!!
                     Picasso.get().load(mUser?.profilePic).into(toolbar_icon)
@@ -162,8 +167,9 @@ class MessageActivity : AppCompatActivity() {
                         }
 
                     }
-                    messageAdapter = MessageAdapter(this@MessageActivity,mChat,imageUrl)
+                    messageAdapter = MessageAdapter(this@MessageActivity,mChat,imageUrl,mUser!!)
                     chat_recycler_view.adapter = messageAdapter
+
                 }
             }
 

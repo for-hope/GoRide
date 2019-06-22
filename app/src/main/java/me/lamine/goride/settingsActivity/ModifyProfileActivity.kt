@@ -16,6 +16,7 @@ import me.lamine.goride.R
 import me.lamine.goride.dataObjects.User
 import me.lamine.goride.interfaces.OnGetDataListener
 import me.lamine.goride.utils.Database
+import me.lamine.goride.utils.saveSharedUser
 import org.jetbrains.anko.onCheckedChange
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -53,6 +54,7 @@ class ModifyProfileActivity:AppCompatActivity() {
                     edittext_age.setText(mUser?.birthday)
                     edittext_desc.setText(mUser?.description)
                     driver_checkbox.isChecked = mUser?.isDriver!!
+                    Log.i("ISDRIVERBOOL", mUser?.isDriver!!.toString())
                     edittext_email.setText(mUser?.email)
                     initViews()
                     confirm_btn.setOnClickListener {
@@ -66,6 +68,23 @@ class ModifyProfileActivity:AppCompatActivity() {
             override fun onFailed(databaseError: DatabaseError) {
                 Log.i("ModifyActivity","onFaield")
                 Toast.makeText(this@ModifyProfileActivity,"Error occurred : ${databaseError.message}",Toast.LENGTH_SHORT).show()
+            }
+
+        })
+    }
+    private fun getNewUser(){
+        database.fetchUser(database.currentUserId(),object : OnGetDataListener{
+            override fun onStart() {
+                Log.i("SettingsActivity", "getNewUser : OnStart ")
+            }
+
+            override fun onSuccess(data: DataSnapshot) {
+             val newUser = data.getValue(User::class.java) as User
+              saveSharedUser(this@ModifyProfileActivity,newUser)
+            }
+
+            override fun onFailed(databaseError: DatabaseError) {
+               Toast.makeText(this@ModifyProfileActivity, "Error : ${databaseError.message}", Toast.LENGTH_SHORT).show()
             }
 
         })
@@ -89,9 +108,13 @@ class ModifyProfileActivity:AppCompatActivity() {
         }
         if (edittext_pass.text.toString().length > 6){
             database.getFirebaseUser()?.updatePassword(edittext_pass.text.toString())
-        } else {
+        }
+        else if(edittext_pass.text.toString().isNotEmpty()) {
             password_label.setError("password must be more than 6 character",true)
         }
+
+
+        getNewUser()
         showDoneDialog()
     }
 
@@ -114,6 +137,7 @@ class ModifyProfileActivity:AppCompatActivity() {
             .show()
     }
     private fun initViews(){
+        driver_checkbox.isChecked = mUser?.isDriver!!
         age_label.setOnClickListener {
             val c = Calendar.getInstance()
             val myYear = c.get(Calendar.YEAR)
@@ -146,6 +170,16 @@ class ModifyProfileActivity:AppCompatActivity() {
                 .minDate(1900, myMonth, myDay)
                 .build()
                 .show()
+        }
+        driver_checkbox.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (getAge(edittext_age.text.toString()) < 60){
+                driver_checkbox.isChecked = true
+                driver_checkbox.onCheckedChange { compoundButton, b ->
+                    if (getAge(edittext_age.text.toString()) < 60){
+                        driver_checkbox.isChecked = true
+                    }
+                }
+            }
         }
 
 

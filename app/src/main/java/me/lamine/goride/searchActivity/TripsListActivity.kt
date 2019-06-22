@@ -1,6 +1,7 @@
 package me.lamine.goride.searchActivity
 
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -12,8 +13,7 @@ import me.lamine.goride.dataObjects.TripSearchData
 import java.util.*
 import com.google.android.gms.maps.model.LatLng
 import android.location.Geocoder
-
-
+import me.lamine.goride.requestActivity.RequestTripActivity
 
 
 class TripsListActivity : AppCompatActivity() {
@@ -37,7 +37,9 @@ class TripsListActivity : AppCompatActivity() {
         bundle.putString("fromText", fromText)
         val str = "${tsd.originSubCity} to ${tsd.destSubCity}"
         origin_to_des.text = str
-
+        post_req_cardview.setOnClickListener {
+            startActivity(Intent(this,RequestTripActivity::class.java))
+        }
         val navigationTabStrip = findViewById<NavigationTabStrip>(R.id.trip_results_tablayout)
         val fragmentAdapter =
             MyTripResultPageAdapter(supportFragmentManager, tsd, toText, fromText)

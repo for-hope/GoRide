@@ -20,10 +20,12 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import kotlinx.android.synthetic.main.activity_login.*
 import me.lamine.goride.R
+import me.lamine.goride.dataObjects.User
 import me.lamine.goride.interfaces.OnGetDataListener
 import me.lamine.goride.javaClasses.RevealAnimation
 import me.lamine.goride.mainActivities.MainActivity
 import me.lamine.goride.utils.Database
+import me.lamine.goride.utils.saveSharedUser
 import me.lamine.goride.utils.verifyAvailableNetwork
 
 
@@ -111,6 +113,7 @@ class LoginActivity : AppCompatActivity() {
             override fun onSuccess(data: DataSnapshot) {
                 loading_btn.loadingSuccessful()
                 if (data.exists()) {
+                    saveSharedUser(this@LoginActivity, data.getValue(User::class.java)!!)
                     loading_btn.loadingSuccessful()
                     if (v != null) {
                         startRevealActivity(v, user)

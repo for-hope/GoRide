@@ -28,6 +28,7 @@ import com.google.firebase.storage.StorageReference
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_user.*
+import kotlinx.android.synthetic.main.view_full_ratings.*
 import me.lamine.goride.R
 import me.lamine.goride.dataObjects.Review
 import me.lamine.goride.dataObjects.User
@@ -128,8 +129,48 @@ class UserActivity : AppCompatActivity() {
         val reviewsCount = "Reviews(${mUser.userReviews.size})"
         user_ac_review_count.text = reviewsCount
 
+        if (!mUser.isDriver){
+            user_ratings_view.visibility = View.GONE
+        } else {
+            user_ratings_view.visibility = View.VISIBLE
+            val s = "Safety (${mUser.sRating})"
+            safety_text.text = s
+            val t = "Timeliness (${mUser.tRating})"
+            time_text.text = t
+            val c = "Communication (${mUser.cRating})"
+            com_text.text = c
+            val g = mUser.userRating.toString()
+            global_rating.text = g
+        }
+            refresh_user.setOnRefreshListener {
+                refreshUserLayout()
+            }
     }
 
+    private fun refreshUserLayout(){
+        mDatabase.fetchUser(mUser.userId,object : OnGetDataListener{
+            override fun onStart() {
+                refresh_user.isRefreshing = true
+            }
+
+            override fun onSuccess(data: DataSnapshot) {
+                refresh_user.isRefreshing = false
+                mUser = data.getValue(User::class.java) as User
+                intent.putExtra("UserProfile",mUser)
+                finish();
+                overridePendingTransition( 0, 0);
+                startActivity(intent);
+                overridePendingTransition( 0, 0);
+        }
+
+            override fun onFailed(databaseError: DatabaseError) {
+                refresh_user.isRefreshing = false
+               Toast.makeText(this@UserActivity, "Error : ${databaseError.message}", Toast.LENGTH_SHORT).show()
+            }
+
+        })
+
+    }
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
@@ -139,6 +180,9 @@ class UserActivity : AppCompatActivity() {
         val inflater = menuInflater
         if (checkForReview()) {
             inflater.inflate(R.menu.menu_review, menu)
+        }
+        if (getSharedUser().superuser == 1){
+            inflater.inflate(R.menu.menu_delete_user, menu)
         }
         if (mUser.userId != Database().currentUserId()){
             inflater.inflate(R.menu.menu_message, menu)
@@ -168,6 +212,26 @@ class UserActivity : AppCompatActivity() {
                 val intent = Intent(this, ModifyProfileActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent)
+                true
+            }
+            R.id.action_delete_user -> {
+                if (getSharedUser().superuser == 1) {
+                    androidx.appcompat.app.AlertDialog.Builder(this)
+                        .setMessage("Are you sure you want to completely delete this user? (ADMIN ACTION)")
+                        .setPositiveButton("yes") { _, _ ->
+                           Toast.makeText(this,"User Deleted",Toast.LENGTH_LONG).show()
+                            if (mUser.superuser == 1){
+                                Toast.makeText(this, "UserId = ${mUser.userId} is an admin",Toast.LENGTH_SHORT).show()
+                            } else{
+                            mDatabase.removeFromPath("users/${mUser.userId}")
+                            }
+
+                        } //ask again
+                        .setNegativeButton("no") { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .show()
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)

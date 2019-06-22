@@ -40,10 +40,7 @@ import me.lamine.goride.interfaces.OnGetDataListener
 import me.lamine.goride.postingActivity.PostingActivity
 import me.lamine.goride.requestActivity.RequestTripActivity
 import me.lamine.goride.userActivity.UserActivity
-import me.lamine.goride.utils.Database
-import me.lamine.goride.utils.decodePoly
-import me.lamine.goride.utils.decodeWilaya
-import me.lamine.goride.utils.getUrl
+import me.lamine.goride.utils.*
 import org.jetbrains.anko.*
 import java.io.IOException
 import java.lang.IndexOutOfBoundsException
@@ -316,7 +313,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback {
         trip_ac_luggage.text = trip.luggageSize
         if (trip.acceptedDriver.size > 0) {
             booked_layout.visibility = View.VISIBLE
-            val txt = "Trip Accepted"
+            val txt = "Trip Accepted and will be posted shorty."
             trip_ac_booked.text = txt
         } else {
             booked_layout.visibility = View.GONE
@@ -418,6 +415,28 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback {
             }
             R.id.report_trip -> {
                 showReportDialog()
+                true
+            }
+            R.id.delete_trip -> {
+                if (getSharedUser(this).superuser == 1){
+                    if (!isRequest){
+                    val destCode = decodeWilaya(trip.destCity)
+                    val originCode = decodeWilaya(trip.originCity)
+                    val otdPath = "${String.format("%02d", originCode)}_${String.format("%02d", destCode)}"
+                    mDatabase.removeFromPath("trips/$otdPath/${trip.tripID}")
+                    Toast.makeText(this,"Trip deleted ", Toast.LENGTH_LONG).show()
+                        finish()
+                    } else {
+                        val destCode = decodeWilaya(tripR.destCity)
+                        val originCode = decodeWilaya(tripR.originCity)
+                        val otdPath = "${String.format("%02d", originCode)}_${String.format("%02d", destCode)}"
+                        mDatabase.removeFromPath("trips/$otdPath/${tripR.tripID}")
+                        Toast.makeText(this,"Trip Request deleted", Toast.LENGTH_LONG).show()
+                        finish()
+                    }
+                } else {
+                    Toast.makeText(this, "You don't have permission.", Toast.LENGTH_LONG).show()
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -661,6 +680,8 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback {
                     item.isVisible = false
                 }
             }
+            val item = menu!!.findItem(R.id.delete_trip)
+            item.isVisible = getSharedUser(this).superuser == 1
         } else {
             Log.i("Menu", "Error")
         }
@@ -779,23 +800,27 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
         trip_ac_submit_btn.setOnClickListener {
-            when (checkTripStatus(trip)) {
-                0 -> submitRequest(trip)
-                1 -> Toast.makeText(
-                    applicationContext,
-                    "You're already booked! Wait for the trip.",
-                    Toast.LENGTH_SHORT
-                ).show()
-                2 -> Toast.makeText(
-                    applicationContext,
-                    "Trip is full and you're booked. have a nice trip!",
-                    Toast.LENGTH_SHORT
-                ).show()
-                3 -> Toast.makeText(
-                    applicationContext,
-                    "Your booking is pending, wait to be accepted.",
-                    Toast.LENGTH_SHORT
-                ).show()
+            if (!getSharedUser(this).isDriver) {
+                when (checkTripStatus(trip)) {
+                    0 -> submitRequest(trip)
+                    1 -> Toast.makeText(
+                        applicationContext,
+                        "You're already booked! Wait for the trip.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    2 -> Toast.makeText(
+                        applicationContext,
+                        "Trip is full and you're booked. have a nice trip!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    3 -> Toast.makeText(
+                        applicationContext,
+                        "Your booking is pending, wait to be accepted.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } else {
+                Toast.makeText(this, "Only passengers age 60+ can book trips.",Toast.LENGTH_LONG).show()
             }
         }
     }

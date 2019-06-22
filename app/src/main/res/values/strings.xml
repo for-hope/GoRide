@@ -403,4 +403,8 @@
     </string>
     <string name="sign_up_using_email">Sign-up using email.</string>
     <string name="editpfp">editpfp</string>
+    <string name="admin">admin</string>
+    <string name="click_here">click here.</string>
+    <string name="delete_superuser">Delete (superuser)</string>
+    <string name="delete_user_as_admin">Delete user as Admin</string>
 </resources>

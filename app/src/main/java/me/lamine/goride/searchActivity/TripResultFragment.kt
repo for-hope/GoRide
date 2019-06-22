@@ -83,9 +83,11 @@ class TripResultFragment : Fragment() {
         ///
         ///
         //
+        empty_search_layout.visibility = View.GONE
         searchForTrips(childName)
 
         swipeLayout.setOnRefreshListener {
+            empty_search_layout.visibility = View.GONE
             searchForTrips(childName) }
 
     }
@@ -94,6 +96,7 @@ class TripResultFragment : Fragment() {
         setPb(empty_search_layout,mProgressBar,mLayout,0)
         swipeLayout.isRefreshing = false
         scrolling.visibility = View.VISIBLE
+        empty_search_layout.visibility = View.GONE
         trips_list_rec_view.adapter = context?.let {
             TripAdapter(
                 it,
@@ -104,7 +107,7 @@ class TripResultFragment : Fragment() {
         }
     }
     private fun mCheckUserInfoInServer(trip: Trip?, noTrip: Boolean, isFinalChild: Boolean) {
-        Log.i("Adapter","Setup;;")
+        Log.i("Adapter","Setup;;R")
         if (noTrip && isFinalChild){
             val sortedList = listOfTrips.sortedWith(compareBy { it.date })
             for (item in sortedList) {
@@ -167,7 +170,7 @@ class TripResultFragment : Fragment() {
                     if (data.childrenCount.toInt() == 0) {
                         if (isSameDestinationCity) {
                             swipeLayout.isRefreshing = false
-                            setPb(empty_search_layout,mProgressBar,mLayout,0)
+                            //setPb(empty_search_layout,mProgressBar,mLayout,0)
                         } else {
                             searchAgain = true
                             searchForTrips(otd)

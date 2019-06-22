@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto" android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorSecondary" android:padding="20dp">
+
+    <LinearLayout
+            android:gravity="start"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/left_layout">
+        <TextView
+                android:text="Ratings summary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/ratings_title"
+                android:textColor="@color/backgroundColor" android:textSize="18sp" android:paddingBottom="5dp"/>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:paddingTop="5dp" android:paddingBottom="5dp">
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" app:srcCompat="@drawable/ic_star_white_20dp"
+                    android:id="@+id/imageView21" android:layout_weight="0"/>
+            <TextView
+                    android:text="Timeliness (0.0)"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/time_text"
+                    android:textColor="@color/backgroundColor" android:textSize="16sp" android:layout_weight="0"
+                    android:layout_marginStart="5dp"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" android:paddingTop="5dp" android:paddingBottom="5dp">
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" app:srcCompat="@drawable/ic_star_white_20dp"
+                    android:id="@+id/starv2" android:layout_weight="0"/>
+            <TextView
+                    android:text="Safety (0.0)"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/safety_text"
+                    android:textColor="@color/backgroundColor" android:textSize="16sp" android:layout_weight="0"
+                    android:layout_marginStart="5dp"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" android:paddingTop="5dp" android:paddingBottom="5dp">
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" app:srcCompat="@drawable/ic_star_white_20dp"
+                    android:id="@+id/starv3" android:layout_weight="0"/>
+            <TextView
+                    android:text="Communication (0.0)"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/com_text"
+                    android:textColor="@color/backgroundColor" android:textSize="16sp" android:layout_weight="0"
+                    android:layout_marginStart="5dp"/>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:gravity="end" android:id="@+id/right_layout"
+            android:layout_toEndOf="@+id/left_layout" android:layout_alignParentEnd="true">
+        <TextView
+                android:text="Average"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/average_rating"
+                android:textColor="@color/backgroundColor" android:textSize="18sp" android:paddingEnd="15dp"/>
+        <TextView
+                android:text="0.0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/global_rating"
+                android:textColor="@color/backgroundColor" android:textSize="40sp" android:paddingEnd="20dp"
+                android:paddingStart="20dp" android:paddingTop="5dp" android:paddingBottom="5dp"/>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" app:srcCompat="@drawable/ic_star_white_20dp"
+                    android:id="@+id/starv8" android:layout_weight="1"/>
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" app:srcCompat="@drawable/ic_star_white_20dp"
+                    android:id="@+id/starv7" android:layout_weight="1"/>
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" app:srcCompat="@drawable/ic_star_white_20dp"
+                    android:id="@+id/starv6" android:layout_weight="1"/>
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" app:srcCompat="@drawable/ic_star_white_20dp"
+                    android:id="@+id/starv5" android:layout_weight="1"/>
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" app:srcCompat="@drawable/ic_star_white_20dp"
+                    android:id="@+id/starv4" android:layout_weight="1"/>
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

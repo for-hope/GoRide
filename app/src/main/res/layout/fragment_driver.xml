@@ -6,28 +6,28 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:id="@+id/pullToRefreshDriverTrips">
-<FrameLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
 >
 
-    <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" android:gravity="center" android:id="@+id/driver_empty_layout"
-            android:visibility="gone">
-        <ImageView
-                android:layout_width="120dp"
-                android:id="@+id/driver_catImg" app:srcCompat="@drawable/cat_orange" android:layout_height="120dp"/>
-        <TextView
+        <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/driver_desc"
-                android:textSize="18sp" android:gravity="center" android:layout_marginTop="50dp"
-                android:layout_marginStart="50dp" android:layout_marginEnd="50dp"/>
-    </LinearLayout>
-    <RelativeLayout
+                android:layout_height="match_parent" android:gravity="center" android:id="@+id/driver_empty_layout"
+                android:visibility="gone">
+            <ImageView
+                    android:layout_width="120dp"
+                    android:id="@+id/driver_catImg" app:srcCompat="@drawable/cat_orange" android:layout_height="120dp"/>
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/driver_desc"
+                    android:textSize="18sp" android:gravity="center" android:layout_marginTop="50dp"
+                    android:layout_marginStart="50dp" android:layout_marginEnd="50dp"/>
+        </LinearLayout>
+        <RelativeLayout
             android:id="@+id/relativeLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent" android:elevation="1dp">

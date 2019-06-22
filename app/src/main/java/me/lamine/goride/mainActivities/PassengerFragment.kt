@@ -1,5 +1,6 @@
 package me.lamine.goride.mainActivities
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -27,6 +28,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import com.google.gson.Gson
 import me.lamine.goride.dataObjects.TripRequest
+import me.lamine.goride.requestActivity.RequestTripActivity
 import me.lamine.goride.tripActivity.RequestsAdapter
 import me.lamine.goride.utils.*
 import kotlin.collections.HashMap
@@ -45,8 +47,8 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
     private var listOfUserR:MutableList<User> = mutableListOf()
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        view?.findViewById<TextView>(R.id.click_here_p_textview_)
-            ?.setOnClickListener { Toast.makeText(this.context,"Post a request",Toast.LENGTH_SHORT).show() }
+        //relativeLayout.visibility = View.GONE
+
 
         database = FirebaseDatabase.getInstance().reference
         mAuth = FirebaseAuth.getInstance()
@@ -58,8 +60,18 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
             getUserTrips()
             getTripRequests()
         }
+
+        if (getSharedUser(this.context!!).isDriver){
+            val t = "Only passengers over the age of 60 can book or request rides."
+            pass_desc.text = t
+            req_text.visibility = View.GONE
+        }
+        pullToRefreshPassengerTrips.isRefreshing = true
         pullToRefreshPassengerTrips.setOnRefreshListener {
             listOfCurrentRequest.clear()
+            listOfCurrentTrips.clear()
+            listUser.clear()
+            listOfUserR.clear()
             getUserTrips()
             getTripRequests() }
         this.pass_trips.setHasFixedSize(true)
@@ -70,17 +82,24 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
         llm2.orientation = RecyclerView.VERTICAL
         req_trips.layoutManager = llm2
         pass_trips.layoutManager = llm
+
     }
     private fun setRequestAdapter(){
         if (listOfCurrentRequest.isNotEmpty()){
-            Log.i("PassengerFragement", "FULL LIST")
             req_trips.adapter?.notifyDataSetChanged()
+            relativeLayout.visibility = View.VISIBLE
             pass_empty_layout.visibility = View.GONE
             req_trips.adapter = this.context?.let {
                 RequestsAdapter(
                     it,
                    listOfCurrentRequest,listOfUserR
                 )
+            }
+        } else {
+            if (listOfCurrentTrips.isEmpty()){
+            relativeLayout.visibility = View.GONE
+                Log.i("VISiBLE","ERRPR!")
+            pass_empty_layout.visibility = View.VISIBLE
             }
         }
     }
@@ -101,6 +120,7 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
                   listOfUserR.add(user!!)
                   listOfCurrentRequest.add(tripRequest!!)
                   if (hashSize == 0){
+                      Log.i("SetPB(0))", "n 3")
                       setPb(pass_empty_layout,pb_passenger,greyout_pass,0)
                       setRequestAdapter()
                   }
@@ -132,7 +152,9 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
 
                } else {
                    pullToRefreshPassengerTrips.isRefreshing = false
+                   Log.i("SetPB(0))", "n 1")
                    setPb(pass_empty_layout,pb_passenger,greyout_pass,0)
+                   relativeLayout.visibility = View.GONE
                }
             }
 
@@ -149,7 +171,11 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
 
     }
     private fun setAdapter(){
+        Log.i("SetPB(0))", "n 2")
         if (listOfCurrentTrips.isNotEmpty()){
+            Log.i("PassengerFrag", "setAdapter")
+            setPb(pass_empty_layout,pb_passenger,greyout_pass,0)
+            relativeLayout.visibility = View.VISIBLE
             pass_trips.adapter?.notifyDataSetChanged()
             pass_empty_layout.visibility = View.GONE
             pass_trips.adapter = this.context?.let {
@@ -158,16 +184,12 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
                     listOfCurrentTrips,listUser
                 )
             }
-     /*       val swipeHandler = object : SwipeToDeleteCallback(this.context!!) {
-                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                    val adapter = pass_trips.adapter as TripAdapter
-                    //  adapter.removeAt(viewHolder.adapterPosition)
-                }
-            }
-            val itemTouchHelper = ItemTouchHelper(swipeHandler)
-            itemTouchHelper.attachToRecyclerView(pass_trips)*/
         } else {
+            if (listOfCurrentRequest.isEmpty()){
+         //   relativeLayout.visibility = View.GONE
+                Log.i("VISiBLE","ERRPR!3")
             pass_empty_layout.visibility = View.VISIBLE
+            }
 
         }
     }
@@ -268,12 +290,13 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
             override fun onSuccess(data: DataSnapshot) {
                 //DO SOME THING WHEN GET DATA SUCCESS HERE
                 if (data.exists()) {
+                    Log.i("PassengerFrag", "getUser_start")
                     listUser.add(data.getValue(User::class.java)!!)
                     if (index==listOfCurrentTrips.size-1){
+                        Log.i("PassengerFrag", "getUser_end")
                         checkEndedTrips()
                         setAdapter()
                         pullToRefreshPassengerTrips.isRefreshing = false
-                        setPb(pass_empty_layout,pb_passenger,greyout_pass,0)
                     } else{
                         getUser(index+1)
                     }
@@ -319,7 +342,7 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
     private fun fetchTrips(tripIDs: List<String>){
         getTripsList(tripIDs,object : OnGetDataListener{
             override fun onStart() {
-                Log.i("fetchTrips","onStart")
+                setPb(pass_empty_layout,pb_passenger,greyout_pass,1)
             }
 
             override fun onSuccess(data: DataSnapshot) {
@@ -333,31 +356,39 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
         })
     }
     private fun getUserTrips(){
+        Log.i("PassengerFrag", "getUserTrips()")
         listOfCurrentTrips = arrayListOf()
         listUser = arrayListOf()
        Database().fetchFromCurrentUser("bookedTrips",object : OnGetDataListener {
             override fun onStart() {
                 setPb(pass_empty_layout,pb_passenger,greyout_pass,1)
+                Log.i("PassengerFrag", "getUserTrips()_onStart")
             }
 
             override fun onSuccess(data: DataSnapshot) {
-
+                Log.i("PassengerFrag", "getUserTrips()_onSuccess")
                 if ( data.childrenCount.toInt() > 0 ){
+                    setPb(pass_empty_layout,pb_passenger,greyout_pass,0)
+
+                    Log.i("PassengerFrag", "getUserTrips()_onStart > 1")
                     val tripIDs:MutableList<String> = mutableListOf()
                     for (child in data.children){
+                        Log.i("PassengerFrag", "getUserTrips()_onStart ${child.key}")
                         tripIDs.add(child.key.toString())
                     }
 
                     fetchTrips(tripIDs)
                 } else {
+                    Log.i("PassengerFrag", "getUserTrips()_onStart < 0")
                     pullToRefreshPassengerTrips.isRefreshing = false
-                   // setPb(pass_empty_layout,pb_passenger,greyout_pass,0)
+                    relativeLayout.visibility = View.GONE
+                    setPb(pass_empty_layout,pb_passenger,greyout_pass,0)
                 }
 
             }
 
             override fun onFailed(databaseError: DatabaseError) {
-                Log.i("getUserTrips","onFailed")
+               Toast.makeText(this@PassengerFragment.context,"Failed to load database.", Toast.LENGTH_SHORT).show()
             }
         })
     }

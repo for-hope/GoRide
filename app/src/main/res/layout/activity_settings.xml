@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@color/quantum_grey300"
-android:orientation="vertical">
+              android:background="@color/places_autocomplete_fullscreen_background"
+              android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
             android:id="@+id/settings_tb"
@@ -32,7 +33,7 @@ android:orientation="vertical">
                 android:id="@+id/profile_layout"
                 android:background="@android:color/white"
                 android:paddingTop="10dp"
-                android:paddingBottom="10dp">
+        >
             <TextView
                     android:text="Modify Profile"
                     android:layout_width="0dp"
@@ -76,7 +77,7 @@ android:orientation="vertical">
                 android:id="@+id/notif_layout"
                 android:background="@android:color/white"
                 android:paddingTop="10dp"
-                android:paddingBottom="10dp">
+        >
             <TextView
                     android:text="All Notifications"
                     android:layout_width="0dp"
@@ -121,7 +122,7 @@ android:orientation="vertical">
                 android:id="@+id/privacy_layout"
                 android:background="@android:color/white"
                 android:paddingTop="10dp"
-                android:paddingBottom="10dp">
+        >
             <TextView
                     android:text="Privacy and Policies"
                     android:layout_width="0dp"
@@ -165,7 +166,7 @@ android:orientation="vertical">
                 android:id="@+id/about_layout"
                 android:background="@android:color/white"
                 android:paddingTop="10dp"
-                android:paddingBottom="10dp">
+        >
             <TextView
                     android:text="About"
                     android:layout_width="0dp"
@@ -240,13 +241,13 @@ android:orientation="vertical">
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="?android:attr/listDivider"
-    />
+            android:layout_marginBottom="30dp" android:layout_marginTop="30dp"/>
     <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/logout_setting"
             android:elevation="4dp"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             style="@style/Widget.MaterialComponents.CardView"
             android:clickable="true"

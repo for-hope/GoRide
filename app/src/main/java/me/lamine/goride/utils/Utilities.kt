@@ -122,6 +122,7 @@ fun getSharedUser(context:Context): User {
                 override fun onSuccess(data: DataSnapshot) {
                    isDone = true
                     mUser = data.getValue(User::class.java) as User
+                    saveSharedUser(context, mUser!!)
                 }
 
                 override fun onFailed(databaseError: DatabaseError) {
@@ -130,12 +131,8 @@ fun getSharedUser(context:Context): User {
 
             })
         }
-            for (i in 0..1000){
-                if (isDone){
-                    return mUser!!
-                }
-           }
-          return  mUser!!
+     return mUser!!
+
     }
     fun verifyAvailableNetwork(activity: AppCompatActivity):Boolean{
       val connectivityManager=activity.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

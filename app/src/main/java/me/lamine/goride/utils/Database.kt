@@ -211,6 +211,21 @@ class Database {
         }
 
     }
+    fun fetchReport(listener: OnGetDataListener){
+        listener.onStart()
+        val ref = database.child("reports")
+        val eventListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                listener.onSuccess(dataSnapshot)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                listener.onFailed(databaseError)
+                throw databaseError.toException() // don't ignore errors
+            }
+        }
+        ref.addListenerForSingleValueEvent(eventListener)
+    }
     fun removeFromPath(path: String) {
         val values = path.split("/")
         var ref = database.child(values[0])
@@ -316,7 +331,7 @@ class Database {
         }
     }
 
-     fun saveUserIsLogged(context: Context, isLogged: Boolean) {
+     private fun saveUserIsLogged(context: Context, isLogged: Boolean) {
         val mPref = context.getSharedPreferences("UserPref", Context.MODE_PRIVATE)!!
         val prefsEditor = mPref.edit()
         prefsEditor.putBoolean("isLogged", isLogged)
@@ -328,6 +343,7 @@ class Database {
         prefsEditor.putString("pass",password)
         prefsEditor.apply()
     }
+
 
 
 }

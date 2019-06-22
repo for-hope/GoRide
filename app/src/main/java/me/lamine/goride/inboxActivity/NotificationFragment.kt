@@ -38,6 +38,7 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
         super.onActivityCreated(savedInstanceState)
         mDatabase = Database()
         mProgressBar = activity!!.findViewById(R.id.pb_notif)
+
         mLayout = activity!!.findViewById(R.id.greyout_notif)
         this.notif_list_res_view.setHasFixedSize(true)
         val llm = LinearLayoutManager(this.context)
@@ -406,7 +407,6 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
 
         mDatabase.fetchFromCurrentUser("notifications", object : OnGetDataListener {
             override fun onStart() {
-
                 setPb(null, mProgressBar, mLayout, 1)
             }
 
@@ -415,6 +415,7 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
                     scrolling.visibility =View.VISIBLE
                     empty_list_notif.visibility = View.GONE
                     for (ds in data.children) {
+                        setPb(null, mProgressBar, mLayout, 0)
                         if (ds.exists() && ds.key != null) {
                             if (ds.key == "tripRequests" && ds.hasChildren()) {
                                 for (child in ds.children) {

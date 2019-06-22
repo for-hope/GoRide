@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content" android:id="@+id/app_desc2"
                 android:textColor="@android:color/white"
                 android:padding="20dp"
-                android:text="You can sign up using email amd password or using Google Signin."
+                android:text="You can sign up using email more signup features will be available soon"
                 android:textSize="18sp" android:gravity="center" android:layout_below="@+id/ic_old_man"/>
         <Button
                 android:text="@string/sign_up_using_email"

@@ -75,7 +75,7 @@ class PostingActivity : AppCompatActivity() {
     private val mCAMERA = 2
     private var originCity: String = ""
     private var originSubCity: String = ""
-    private lateinit var originFullAddress: String
+    private var originFullAddress: String = ""
     private var destCity: String = ""
     private var destSubCity: String = ""
     private var destFullAddress: String = ""
@@ -139,8 +139,12 @@ class PostingActivity : AppCompatActivity() {
         }
         isAcceptedTrip = intent.getBooleanExtra("acceptedTrip", false)
         if (isAcceptedTrip){
+            Log.i("Postingactivity","isAcceptedTrip")
             tripRequest = intent.getSerializableExtra("requestInfo") as TripRequest
+            Log.i("BOI","User : ${tripRequest.userID}")
             setupRequestFields(tripRequest)
+        } else {
+            Log.i("Postingactivity","isAcceptedTrip2")
         }
 
 
@@ -1148,14 +1152,29 @@ class PostingActivity : AppCompatActivity() {
 
     private fun saveToDB(trip: Trip) {
         setPb(1)
-        val otdPath = "${String.format("%02d", originCode)}_${String.format("%02d", destinationCode)}"
+        var otdPath = "${String.format("%02d", originCode)}_${String.format("%02d", destinationCode)}"
         if (isAcceptedTrip){
             //todo check
+            val ocode = decodeWilaya(tripRequest.originCity)
+            val dcode = decodeWilaya(tripRequest.destCity)
+            otdPath = "${String.format("%02d", ocode)}_${String.format("%02d", dcode)}"
             val path = "trips/$otdPath/${tripRequest.tripID}/"
             trip.userID = mDatabase.currentUserId()
-            trip.bookedUsers[tripRequest.poster?.userId!!] = 1
+            trip.bookedUsers[tripRequest.userID] = 1
+            trip.tripID = tripRequest.tripID
+            //
+            trip.originCity = tripRequest.originCity
+            trip.originSubCity = tripRequest.originSubCity
+            trip.originFullAddress = tripRequest.originFullAddress
+            trip.origin = tripRequest.originFullAddress
+            //
+            trip.destSubCity = tripRequest.destSubCity
+            trip.destCity = tripRequest.destCity
+            trip.destFullAddress = tripRequest.destFullAddress
+            trip.destination = tripRequest.destFullAddress
             mDatabase.addToPath(path,trip)
             mDatabase.addToPath("users/${tripRequest.userID}/bookedTrips/${trip.tripID}",otdPath)
+            mDatabase.removeFromPath("users/${tripRequest.userID}/activeTripRequests/${tripRequest.tripID}")
         }else {
         if (!isModifyMode) {
             var path = "trips/$otdPath"

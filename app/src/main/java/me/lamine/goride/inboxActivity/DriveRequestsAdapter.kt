@@ -1,6 +1,7 @@
 package me.lamine.goride.inboxActivity
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import me.lamine.goride.R
 import me.lamine.goride.dataObjects.DriveNotification
 import me.lamine.goride.utils.Database
 import me.lamine.goride.utils.wilayaArrayEN
+import java.lang.ClassCastException
 import java.util.*
 
 
@@ -48,12 +50,19 @@ class DriveRequestsAdapter(private var context: Context, private var notify: Lis
         // Reload current fragment
         val frg: Fragment?
         val fm = (context as AppCompatActivity).supportFragmentManager
-        val notificationFragment = fm.fragments[0] as NotificationFragment
-        frg = notificationFragment
-        val ft = fm.beginTransaction()
-        ft.detach(frg)
-        ft.attach(frg)
-        ft.commit()
+        try {
+            val notificationFragment = fm.fragments[0] as NotificationFragment
+            frg = notificationFragment
+            val ft = fm.beginTransaction()
+            ft.detach(frg)
+            ft.attach(frg)
+            ft.commit()
+        } catch (e:ClassCastException){
+            e.stackTrace
+            Log.i("Error",e.localizedMessage)
+            Toast.makeText(this.context,"Done, Reload to update.", Toast.LENGTH_SHORT).show()
+        }
+
     }
 
     private fun acceptUser(pos: Int, response: Boolean) {
@@ -69,10 +78,9 @@ class DriveRequestsAdapter(private var context: Context, private var notify: Lis
             mPath = "users/${item.userId}/notifications/acceptedDriveRequest/${item.tripId}"
             Database().addToPath("$mPath/otd", otdPath)
             Database().addToPath("$mPath/timestamp", Date().toString())
-            //create ride
-            //todo convert request to trip
+
         }
-        val mPath = "users/${Database().currentUserId()}/driveRequests/${item.tripId}/${item.userId}"
+        val mPath = "users/${Database().currentUserId()}/notifications/driveRequests/${item.tripId}}"
         Database().removeFromPath(mPath)
         reloadFragment()
     }

@@ -33,7 +33,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class RequestTripActivity : AppCompatActivity() {
-    private var currentUser: FirebaseUser? = null
     private var luggageOption: Int = -1
     private var seatOption = -1
     private lateinit var originText: String
@@ -555,7 +554,7 @@ class RequestTripActivity : AppCompatActivity() {
         trip.originCity = originCity
         trip.destCity = destCity
         //trip.tripID = UUID.randomUUID().toString()
-        trip.userID = currentUser?.uid!!
+        trip.userID = mDatabase.currentUserId()
         trip.addTripDestinations(originCity, originSubCity, originFullAddress, destCity, destSubCity, destFullAddress)
 
         saveToDB(trip)
@@ -612,7 +611,7 @@ class RequestTripActivity : AppCompatActivity() {
         androidx.appcompat.app.AlertDialog.Builder(this)
             .setTitle("Trip Saved!")
             .setMessage("You can view and edit your trip in home screen!")
-
+            .setCancelable(false)
             // Specifying a listener allows you to take an action before dismissing the dialog.
             // The dialog is automatically dismissed when a dialog button is clicked.
             .setPositiveButton("Done") { _, _ ->

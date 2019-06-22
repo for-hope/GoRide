@@ -68,12 +68,6 @@
                     app:layout_constraintTop_toBottomOf="@+id/playTabLayout">
             </androidx.viewpager.widget.ViewPager>
         </LinearLayout>
-        <io.armcha.playtablayout.core.PlayTabLayout
-                android:id="@+id/playTabLayout"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                app:tabTextColor="@color/colorAccent"
-                app:layout_constraintTop_toBottomOf="@+id/my_toolbar" android:visibility="invisible"/>
 
     </FrameLayout>
     <com.google.android.material.navigation.NavigationView

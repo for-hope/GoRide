@@ -1,6 +1,8 @@
 package me.lamine.goride.inboxActivity
 
 import android.content.Context
+import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,11 +10,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.chat_item_left.*
 import me.lamine.goride.R
 import me.lamine.goride.dataObjects.Chat
+import me.lamine.goride.dataObjects.User
+import me.lamine.goride.userActivity.UserActivity
 import me.lamine.goride.utils.Database
 
-class MessageAdapter(private var context: Context, private var mChat: List<Chat>, private var imageUrl:String): RecyclerView.Adapter<MessageAdapter.MessagesViewHolder>() {
+class MessageAdapter(private var context: Context, private var mChat: List<Chat>, private var imageUrl:String,private val mUser: User): RecyclerView.Adapter<MessageAdapter.MessagesViewHolder>() {
     private lateinit var mDatabase:Database
     companion object {
         var msgTypeLeft:Int = 0
@@ -26,6 +31,14 @@ class MessageAdapter(private var context: Context, private var mChat: List<Chat>
         if (imageUrl!=""){
             Picasso.get().load(link).into(holder.profileimage)
         }
+        holder.profileimage.setOnClickListener {
+           val i = Intent(context, UserActivity::class.java)
+            i.putExtra("UserProfile",mUser)
+            context.startActivity(i)
+
+
+        }
+
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -67,8 +80,9 @@ class MessageAdapter(private var context: Context, private var mChat: List<Chat>
     }
 
     open class MessagesViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        val profileimage = v.findViewById<ImageView>(R.id.profile_img)
-        val showMessage = v.findViewById<TextView>(R.id.show_msg)
+        val profileimage: ImageView = v.findViewById<ImageView>(R.id.profile_img)
+        val showMessage: TextView = v.findViewById<TextView>(R.id.show_msg)
 
     }
+
 }

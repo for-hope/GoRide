@@ -87,7 +87,7 @@ class ExtraNotifAdapter(private var context: Context, private var notify: Mutabl
             notify[position].type == "acceptedTripRequests" -> {
                 val desStr = notify[position].otd.substring(notify[position].otd.length - 2)
                 val destination = wilayaArrayEN[desStr.toInt() - 1]
-                val ds1 = "Your request to the trip to $destination have been accepted. check your trips feed for more information!"
+                val ds1 = "Your request to the trip to $destination have been accepted. click here to post the trip!"
                 holder.desc1.text = ds1
                 holder.notifIcon.setImageResource(R.drawable.ic_check_circle_gray_50p)
             }
@@ -120,6 +120,7 @@ class ExtraNotifAdapter(private var context: Context, private var notify: Mutabl
                 val i = Intent(context,PostingActivity::class.java)
                 val tRequest = data.getValue(TripRequest::class.java)
                 i.putExtra("type","acceptedTrip")
+                i.putExtra("acceptedTrip",true)
                 i.putExtra("requestInfo", tRequest)
                 context.startActivity(i)
             }

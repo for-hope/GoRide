@@ -53,6 +53,8 @@ class DriverFragment : androidx.fragment.app.Fragment() {
         driver_trips.layoutManager = llm
        // getSharedTrips()
         pullToRefreshDriverTrips.setOnRefreshListener {
+            Log.i("RefreshLayout", "isRefresging")
+            Toast.makeText(this.context,"Refreshed",Toast.LENGTH_SHORT).show()
             getUserTrips()
             pullToRefreshDriverTrips.isRefreshing = false;}
        // getUserTrips()
@@ -175,6 +177,7 @@ class DriverFragment : androidx.fragment.app.Fragment() {
             Log.i("adapter_size", "${listOfCurrentTrips.size}")
             setPb(driver_empty_layout,pb_driver,greyout_driver,0)
             driver_empty_layout.visibility = View.GONE
+            relativeLayout.visibility = View.VISIBLE
             driver_trips.adapter = this.context?.let {
                 TripAdapter(
                     it,
@@ -244,6 +247,7 @@ class DriverFragment : androidx.fragment.app.Fragment() {
                     fetchTrips(tripIDs)
                 } else {
                     setPb(driver_empty_layout,pb_driver,greyout_driver,0)
+                    relativeLayout.visibility = View.GONE
                 }
 
             }
