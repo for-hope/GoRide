@@ -27,6 +27,7 @@ import me.lamine.goride.dataObjects.Trip
 import me.lamine.goride.dataObjects.TripRequest
 import me.lamine.goride.utils.Database
 import me.lamine.goride.utils.decodeWilaya
+import me.lamine.goride.utils.getSharedUser
 import java.io.IOException
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -295,12 +296,12 @@ class RequestTripActivity : AppCompatActivity() {
                     fillOrigin(place)
                 }
                 AutocompleteActivity.RESULT_ERROR -> {
-                    // TODO: Handle the error.
                     val status = Autocomplete.getStatusFromIntent(data!!)
+                    Toast.makeText(applicationContext, "Google server error ${status.statusMessage}", Toast.LENGTH_SHORT).show()
                     Log.i("RequestActivity", status.statusMessage)
                 }
                 Activity.RESULT_CANCELED -> {
-                    // The user canceled the operation.
+                    Toast.makeText(applicationContext, "Canceled.", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -314,12 +315,13 @@ class RequestTripActivity : AppCompatActivity() {
 
                 }
                 AutocompleteActivity.RESULT_ERROR -> {
-                    // TODO: Handle the error.
                     val status = Autocomplete.getStatusFromIntent(data!!)
+                    Toast.makeText(applicationContext, "Google server error ${status.statusMessage}", Toast.LENGTH_SHORT).show()
                     Log.i("SearchActivity", status.statusMessage)
                 }
                 Activity.RESULT_CANCELED -> {
                     // The user canceled the operation.
+                    Toast.makeText(applicationContext, "Canceled", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -527,7 +529,11 @@ class RequestTripActivity : AppCompatActivity() {
             add_timebtn.removeError()
         }
         if (correctForm) {
-            finishUploading()
+            if (getSharedUser(this)?.isDriver!!){
+                Toast.makeText(this,"Only passengers can request trips.", Toast.LENGTH_SHORT).show();
+            } else {
+               finishUploading()
+            }
             //start activity
         } else {
             Toast.makeText(this, "Wrong Information, check and try again.", Toast.LENGTH_SHORT).show()

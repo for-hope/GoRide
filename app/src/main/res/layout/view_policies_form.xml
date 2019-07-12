@@ -19,7 +19,7 @@
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" android:paddingBottom="20dp">
+            android:layout_height="match_parent">
         <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
@@ -82,7 +82,7 @@
                     android:id="@+id/imageView7" android:layout_weight="1"
                     android:contentDescription="@string/ic_interested"/>
             <TextView
-                    android:text="@string/you_get_paid_after_the_trip"
+                    android:text="@string/avoid_canceling_your_trip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" android:id="@+id/title_policy3"
                     android:layout_weight="1" android:textColor="@color/btnBlack" android:textSize="20sp"

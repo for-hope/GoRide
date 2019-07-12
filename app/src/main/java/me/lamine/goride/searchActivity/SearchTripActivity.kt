@@ -42,6 +42,7 @@ import me.lamine.goride.utils.decodeWilaya
 import org.jetbrains.anko.async
 import org.jetbrains.anko.uiThread
 import java.io.IOException
+import java.lang.Exception
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
@@ -147,7 +148,9 @@ class SearchTripActivity : AppCompatActivity(), OnMapReadyCallback {
         search_date_edittext.setOnClickListener { dateField() }
         search_date_edittext.setOnClickListener { dateField() }
         search_btn.setOnClickListener {
-
+            if (originSubCity.isEmpty() || destSubCity.isEmpty() || editText_To.text.toString().isEmpty() || editText_from.text.toString().isEmpty()){
+                Toast.makeText(this,"Invalid Place",Toast.LENGTH_SHORT) .show()
+            }else{
             val intent = Intent(this, TripsListActivity::class.java)
             //  Log.i("toFrom")
             val tsd =
@@ -157,6 +160,7 @@ class SearchTripActivity : AppCompatActivity(), OnMapReadyCallback {
             intent.putExtra("to",destSubCity)
             intent.putExtra("from",originSubCity)
             startActivity(intent)
+            }
 
         }
 
@@ -258,6 +262,8 @@ class SearchTripActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
         destFullAddress = place.name!!
+        destCity = destCity.replace("-".toRegex(), " ")
+        Log.i("DesCity_Search",destCity)
         val decodedDestCity = decodeWilaya(destCity)
         destinationCode = decodedDestCity
 
@@ -348,23 +354,28 @@ class SearchTripActivity : AppCompatActivity(), OnMapReadyCallback {
                 Activity.RESULT_OK -> {
                     val place = getPlaceFromIntent(data!!)
                     fromLatLng = place.latLng
+                    try {
                     setFromP(place.name!!)
-                    fillOrigin(place)
-                    if (editText_To.text.toString() != "") {
-                        if (mMap != null){
-                            addMarkersOnMap()
+                        fillOrigin(place)
+                        if (editText_To.text.toString() != "") {
+                            if (mMap != null) {
+                                addMarkersOnMap()
+                            }
+
                         }
-
+                    } catch (e : Exception) {
+                        Toast.makeText(this@SearchTripActivity.applicationContext, "City not found", Toast.LENGTH_SHORT)
+                            .show()
                     }
-
-                }
+                    }
                 AutocompleteActivity.RESULT_ERROR -> {
-                    // TODO: Handle the error.
                     val status = getStatusFromIntent(data!!)
+                    Toast.makeText(applicationContext, "Google server error ${status.statusMessage}", Toast.LENGTH_SHORT).show()
                     Log.i("SearchActivity", status.statusMessage)
                 }
                 Activity.RESULT_CANCELED -> {
                     // The user canceled the operation.
+                    Toast.makeText(applicationContext, "Canceled", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -374,23 +385,27 @@ class SearchTripActivity : AppCompatActivity(), OnMapReadyCallback {
                     val place = getPlaceFromIntent(data!!)
                     toLatLng = place.latLng
                     Log.i("SearchActivity", "Place: " + place.name + ", " + place.id)
-                    setToP(place.name!!)
-                    fillDest(place)
-                    if (editText_from.text.toString() != "") {
-                        if (mMap != null){
-                            addMarkersOnMap()
-                        }
+                    try {
+                        setToP(place.name!!)
+                        fillDest(place)
+                        if (editText_from.text.toString() != "") {
+                            if (mMap != null) {
+                                addMarkersOnMap()
+                            }
 
+                        }
+                    }catch (e:Exception){
+                        Toast.makeText(this@SearchTripActivity.applicationContext, "City not found", Toast.LENGTH_SHORT)
                     }
 
                 }
                 AutocompleteActivity.RESULT_ERROR -> {
-                    // TODO: Handle the error.
                     val status = getStatusFromIntent(data!!)
+                    Toast.makeText(applicationContext, "Google server error ${status.statusMessage}", Toast.LENGTH_SHORT).show()
                     Log.i("SearchActivity", status.statusMessage)
                 }
                 Activity.RESULT_CANCELED -> {
-                    // The user canceled the operation.
+                    Toast.makeText(applicationContext, "Canceled", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -444,7 +459,8 @@ class SearchTripActivity : AppCompatActivity(), OnMapReadyCallback {
                 val stringBuilder: StringBuilder = StringBuilder(result)
                 val json: JsonObject = parser.parse(stringBuilder) as JsonObject
                 // get to the correct element in JsonObject
-                //todo fix
+                //FixED
+                try {
                 val routes = json.array<JsonObject>("routes")
                 @Suppress("UNCHECKED_CAST") val points = routes!!["legs"]["steps"][0] as JsonArray<JsonObject>
                 // For every element in the JsonArray, decode the polyline string and pass all points to a List
@@ -464,6 +480,10 @@ class SearchTripActivity : AppCompatActivity(), OnMapReadyCallback {
                 mMap?.addPolyline(options)
                 // show map with route centered
                 mMap?.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100))
+                }catch (e:Exception){
+                    e.printStackTrace()
+                    Toast.makeText(this@SearchTripActivity, "Low Internet. Map couldn't be loaded", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -473,10 +493,10 @@ class SearchTripActivity : AppCompatActivity(), OnMapReadyCallback {
         permCheck()
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location: Location? ->
-                latitude = location?.latitude!! //todo ask user to turn location on
+                latitude = location?.latitude!!
                 longitude = location.longitude
             }
-        Log.i("test", "Latitute: $latitude ; Longitute: $longitude")
+
         val sydney = LatLng(latitude, longitude)
         //   mMap.addMarker(MarkerOptions().position(sydney).title("Your Location"))
         mMap?.moveCamera(CameraUpdateFactory.newLatLng(sydney))

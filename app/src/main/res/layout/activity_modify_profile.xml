@@ -141,7 +141,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:primaryColor="@color/colorSecondary"
-                    app:labelText="Password"
+                    app:labelText="Edit Password"
                     android:layout_marginTop="30dp"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"

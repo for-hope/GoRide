@@ -16,7 +16,6 @@ import me.lamine.goride.utils.Database
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 class ReportsAdapter(private var context: Context, private var reports: MutableList<Report>) :
     RecyclerView.Adapter<ReportsAdapter.ReportViewHolder>() {
     private lateinit var mDatabase: Database
@@ -33,20 +32,10 @@ class ReportsAdapter(private var context: Context, private var reports: MutableL
         val dateStamp = "Report Date : ${sdf.format(mDate)}"
         holder.timestamp.text = dateStamp
     }
-
-   /* private fun reloadFragment() {
-        // Reload current fragment
-        val act = context as Activity
-        act.finish()
-        act.startActivity(act.intent)
-    }*/
-
     private fun removeReport(pos: Int) {
         val item = reports[pos]
         reports.remove(item)
         notifyDataSetChanged()
-
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReportViewHolder {

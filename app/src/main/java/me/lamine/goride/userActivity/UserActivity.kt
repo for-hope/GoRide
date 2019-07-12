@@ -21,6 +21,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.storage.FirebaseStorage
@@ -43,6 +45,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -52,6 +55,7 @@ class UserActivity : AppCompatActivity() {
     private var downloadUrl:String = ""
     private lateinit var mDatabase:Database
     private lateinit var mUser: User
+    private lateinit var mAuthUser:FirebaseUser
     private lateinit var mStorageRef: StorageReference
     private var  listOfReviews: MutableList<Review> = mutableListOf()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,6 +65,7 @@ class UserActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         mDatabase = Database()
+        mAuthUser = FirebaseAuth.getInstance().currentUser!!
         mStorageRef = FirebaseStorage.getInstance().reference
         mUser = intent.getSerializableExtra("UserProfile") as User
         if (mUser.userId == mDatabase.currentUserId()){
@@ -106,8 +111,10 @@ class UserActivity : AppCompatActivity() {
         }
         val genderAndAge = "$gender, $age"
         user_ac_genderAge.text = genderAndAge
-        Log.i("UserActivity", mUser.userRating.toString())
-        user_ac_ratings.text = mUser.userRating.toString()
+
+
+        val rating = DecimalFormat("##.#").format(mUser.userRating)
+        user_ac_ratings.text = rating
         val reviewsText = "${mUser.userReviews.size} Reviews"
         user_ac_ratings2.text = reviewsText
         user_ac_nb_people.text = mUser.peopleDriven.toString()
@@ -133,14 +140,15 @@ class UserActivity : AppCompatActivity() {
             user_ratings_view.visibility = View.GONE
         } else {
             user_ratings_view.visibility = View.VISIBLE
-            val s = "Safety (${mUser.sRating})"
+           // Log.e("Test", "raw ${mUser.rawSRating} count ${mUser.sratingCount}")
+            val s = "Safety (${mUser.srating})"
             safety_text.text = s
-            val t = "Timeliness (${mUser.tRating})"
+            val t = "Timeliness (${mUser.trating})"
             time_text.text = t
-            val c = "Communication (${mUser.cRating})"
+            val c = "Communication (${mUser.crating})"
             com_text.text = c
-            val g = mUser.userRating.toString()
-            global_rating.text = g
+
+            global_rating.text = DecimalFormat("##.#").format(mUser.userRating)
         }
             refresh_user.setOnRefreshListener {
                 refreshUserLayout()
@@ -156,11 +164,23 @@ class UserActivity : AppCompatActivity() {
             override fun onSuccess(data: DataSnapshot) {
                 refresh_user.isRefreshing = false
                 mUser = data.getValue(User::class.java) as User
+                if (mUser.userId == mAuthUser.uid){
+                if (mAuthUser.isEmailVerified){
+                    mUser.emailVerification = false
+                    mDatabase.addToPath("users/${mDatabase.currentUserId()}/emailVerification",false)
+
+                }
+                if (mAuthUser.phoneNumber?.isEmpty()!!){
+                    mUser.phoneVerfication = false
+                    mDatabase.addToPath("users/${mDatabase.currentUserId()}/phoneVerfication",false)
+                }
+                saveSharedUser(this@UserActivity,mUser)
+                }
                 intent.putExtra("UserProfile",mUser)
-                finish();
-                overridePendingTransition( 0, 0);
-                startActivity(intent);
-                overridePendingTransition( 0, 0);
+                finish()
+                overridePendingTransition( 0, 0)
+                startActivity(intent)
+                overridePendingTransition( 0, 0)
         }
 
             override fun onFailed(databaseError: DatabaseError) {
@@ -223,7 +243,39 @@ class UserActivity : AppCompatActivity() {
                             if (mUser.superuser == 1){
                                 Toast.makeText(this, "UserId = ${mUser.userId} is an admin",Toast.LENGTH_SHORT).show()
                             } else{
-                            mDatabase.removeFromPath("users/${mUser.userId}")
+                             mDatabase.fetchUser(mUser.userId,object:OnGetDataListener{
+                                 override fun onFailed(databaseError: DatabaseError) {
+                                     Toast.makeText(this@UserActivity, "Action Failed",Toast.LENGTH_SHORT).show()
+                                 }
+
+                                 override fun onSuccess(data: DataSnapshot) {
+                                     val tData =data.child("activeTrips")
+                                     for (trip in tData.children){
+                                         mDatabase.removeFromPath("trips/${trip.value}/${trip.key}")
+                                     }
+                                     val atData = data.child("trips")
+                                     for (trip in atData.children){
+                                         mDatabase.removeFromPath("trips/${trip.value}/${trip.key}")
+                                     }
+                                     val bData = data.child("bookedTrips")
+                                     for (bookedTrip in bData.children){
+                                         mDatabase.removeFromPath("trips/${bookedTrip.value}/${bookedTrip.key}/bookedUsers/${mUser.userId}")
+                                     }
+                                     for (tripRequest in data.child("activeTripRequests").children){
+                                         mDatabase.removeFromPath("tripRequests/${tripRequest.value}/${tripRequest.key}")
+                                     }
+                                     for (tripRequest in data.child("tripsRequested").children){
+                                         mDatabase.removeFromPath("tripRequests/${tripRequest.value}/${tripRequest.key}")
+                                     }
+                                     mDatabase.removeFromPath("users/${mUser.userId}")
+                                 }
+
+                                 override fun onStart() {
+
+                                 }
+
+                             })
+
                             }
 
                         } //ask again
@@ -262,15 +314,19 @@ class UserActivity : AppCompatActivity() {
                 }
 
                 override fun onSuccess(data: DataSnapshot) {
-                    val mUser = data.getValue(User::class.java)
-                    Log.i("Reviwer", "added")
-                    review.reviewUser = mUser
-                    if (review == listOfReviews.last()) {
-                        for (rev in listOfReviews){
-                            Log.i("REVIEW : ", " L =" + rev.reviewUser?.fullName)
+                    if (data.exists() && data.childrenCount > 0 ) {
+                        val mUser = data.getValue(User::class.java)
+                        Log.i("Reviwer", "added")
+                        review.reviewUser = mUser
+                        if (review == listOfReviews.last()) {
+                            for (rev in listOfReviews) {
+                                Log.i("REVIEW : ", " L =" + rev.reviewUser?.fullName)
+                            }
+                            Toast.makeText(this@UserActivity, "DONE", Toast.LENGTH_SHORT).show()
+                            review_list.adapter = ReviewsAdapter(listOfReviews)
                         }
-                        Toast.makeText(this@UserActivity, "DONE", Toast.LENGTH_SHORT).show()
-                        review_list.adapter = ReviewsAdapter(listOfReviews)
+                    } else {
+                        listOfReviews.remove(review)
                     }
                 }
 
@@ -286,7 +342,7 @@ class UserActivity : AppCompatActivity() {
     }
 
     private fun checkForReview(): Boolean {
-        return getSharedUser().driversGoneWith.containsKey(mUser.userId)
+        return getSharedUser().driversGoneWith.containsKey(mUser.userId) || mUser.driversGoneWith.containsKey(getSharedUser().userId)
     }
 
     private fun getAge(year: Int, month: Int, day: Int): String {
@@ -348,7 +404,7 @@ class UserActivity : AppCompatActivity() {
                     //carBtn.setImageBitmap(bitmap)
                     user_imageview.setImageBitmap(bitmap)
                     savePhotoToDatabase(user_imageview)
-                    //todo bool
+
 
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -361,7 +417,7 @@ class UserActivity : AppCompatActivity() {
             val thumbnail = data!!.extras!!.get("data") as Bitmap
             // carBtn.setImageBitmap(thumbnail)
             user_imageview.setImageBitmap(thumbnail)
-            //todo setup database
+
             savePhotoToDatabase(user_imageview)
             saveImage(thumbnail)
             Toast.makeText(this, "Image Saved!", Toast.LENGTH_SHORT).show()

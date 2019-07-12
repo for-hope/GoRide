@@ -32,9 +32,6 @@ class MyFirebaseMessaging: FirebaseMessagingService() {
             } else {
             sendNotifications(remoteMessage)}
 
-        } else {
-            Log.i("NulledNotif","$mUser")
-            Log.i("NulledNotif2","${mUser?.uid} and $sented")
         }
     }
 

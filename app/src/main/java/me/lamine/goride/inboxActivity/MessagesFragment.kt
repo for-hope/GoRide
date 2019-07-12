@@ -25,6 +25,7 @@ import me.lamine.goride.dataObjects.User
 import me.lamine.goride.interfaces.OnGetDataListener
 import me.lamine.goride.notifications.Token
 import me.lamine.goride.utils.Database
+import java.lang.NullPointerException
 
 
 /**
@@ -53,6 +54,7 @@ class MessagesFragment : Fragment() {
 
         swipeLayoutMessages.setOnRefreshListener {
             searchMessages()
+
         }
 
 
@@ -68,45 +70,52 @@ class MessagesFragment : Fragment() {
         mDatabase.getReference("chatlist/${mDatabase.currentUserId()}",object :OnGetDataListener{
             override fun onStart() {
                 setPb(1)
-
             }
 
             override fun onSuccess(data: DataSnapshot) {
+
+                if (data.exists() && data.childrenCount > 0){
+                    setPb(0)
+                if (swipeLayoutMessages != null) {
+                    swipeLayoutMessages.isRefreshing = false
+                }
                 listOfChats = mutableListOf()
-                Log.i("Added adapter","Trigger2")
-                if (!isDestroyed){
+                Log.i("Added adapter", "Trigger2")
+                if (!isDestroyed) {
                     listOfUserIds.clear()
                     val mData = data
-                    if (mData.childrenCount.toInt() == 0){
+                    if (mData.childrenCount.toInt() == 0) {
                         scrolling.visibility = View.GONE
                     }
-                    for(snapshot in mData.children){
-                        Log.i("data",mData.childrenCount.toString())
-                        mDatabase.fetchUser(snapshot.key!!,object :OnGetDataListener{
+                    for (snapshot in mData.children) {
+                        Log.i("data", mData.childrenCount.toString())
+                        mDatabase.fetchUser(snapshot.key!!, object : OnGetDataListener {
                             override fun onStart() {
 
                             }
 
                             override fun onSuccess(data: DataSnapshot) {
                                 val chatListInfo = ChatListInfo(snapshot.key!!)
-                                Log.i("ID_ERROR",data.child("userId").value.toString())
+                                if (data.exists()){
+                                    Log.i("ID_ERROR", data.child("userId").value.toString())
                                 chatListInfo.mUser = data.getValue(User::class.java)!!
                                 chatListInfo.lastMsg = snapshot.child("message").value as String
                                 chatListInfo.timestamp = snapshot.child("timestamp").value as Long
-                                chatListInfo.isSender = snapshot.child("sender").value as String == mDatabase.currentUserId()
-                                if (!listOfChats.contains(chatListInfo)){
+                                chatListInfo.isSender =
+                                    snapshot.child("sender").value as String == mDatabase.currentUserId()
+                                if (!listOfChats.contains(chatListInfo)) {
                                     listOfChats.add(chatListInfo)
                                 }
 
-                                if (snapshot.key == mData.children.last().key && user_messages_list_res_view != null){
-                                    Log.i("Added adapter","Trigger")
+                                if (snapshot.key == mData.children.last().key && user_messages_list_res_view != null) {
+                                    Log.i("Added adapter", "Trigger")
                                     val userAdapter = ChatListAdapter(this@MessagesFragment.context!!, listOfChats)
                                     user_messages_list_res_view.adapter = userAdapter
 
                                     setPb(0)
                                     swipeLayoutMessages.isRefreshing = false
                                 }
-
+                            }
                             }
 
                             override fun onFailed(databaseError: DatabaseError) {
@@ -114,6 +123,13 @@ class MessagesFragment : Fragment() {
                             }
 
                         })
+                    }
+                }
+            } else {
+                    if (swipeLayoutMessages != null) {
+                        swipeLayoutMessages.isRefreshing = false
+                        setPb(0)
+                        scrolling.visibility = View.GONE
                     }
                 }
             }
@@ -146,6 +162,7 @@ class MessagesFragment : Fragment() {
     }
 
     private fun setPb(visibility: Int) {
+        try{
         val mProgressBar = activity!!.findViewById<ProgressBar>(R.id.pb_notif)
         val mLayout = activity!!.findViewById<LinearLayout>(R.id.greyout_notif)
         if (visibility == 1) {
@@ -157,5 +174,8 @@ class MessagesFragment : Fragment() {
             mLayout.visibility = View.GONE
 
         }
+    } catch (e:NullPointerException){
+        e.printStackTrace()}
     }
+
 }

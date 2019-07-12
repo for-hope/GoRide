@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.wajahatkarim3.easyvalidation.core.view_ktx.contains
 import kotlinx.android.synthetic.main.fragment_driver.*
 import kotlinx.android.synthetic.main.fragment_trip_results.*
 import me.lamine.goride.R
@@ -27,6 +28,7 @@ import me.lamine.goride.utils.wilayaArrayEN
 import me.lamine.goride.utils.wilayaArrayFR
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class TripResultFragment : Fragment() {
@@ -40,6 +42,7 @@ class TripResultFragment : Fragment() {
     private lateinit var mLayout:LinearLayout
     private var hasDate:Boolean = false
     private var searchDate = ""
+    private  val TAG = "TripResultFragment"
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_trip_results, container, false)
@@ -73,16 +76,17 @@ class TripResultFragment : Fragment() {
         val childName = "${String.format("%02d", tsd.originCode)}_${String.format("%02d", tsd.destinationCode)}"
         //database.child("trips").child(childName)
         //database.child("trips").child(childName).orderByChild("date").equalTo("lol")
-        if (wilayaArrayEN[tsd.originCode - 1] == tsd.originSubCity || wilayaArrayFR[tsd.originCode - 1] == tsd.originSubCity) {
+        if (tsd.originSubCity.contains(wilayaArrayEN[tsd.originCode - 1]) || tsd.originSubCity.contains(wilayaArrayFR[tsd.originCode - 1] )) {
 
             isSameOriginCity = true
         }
-        if (wilayaArrayEN[tsd.destinationCode - 1] == tsd.destSubCity || wilayaArrayFR[tsd.destinationCode - 1] == tsd.destSubCity) {
+        if ( tsd.destSubCity.contains(wilayaArrayEN[tsd.destinationCode - 1]) || tsd.destSubCity.contains(wilayaArrayFR[tsd.destinationCode - 1])) {
             isSameDestinationCity = true
         }
         ///
         ///
         //
+        Log.i(TAG, "OnCreate : childname : $childName")
         empty_search_layout.visibility = View.GONE
         searchForTrips(childName)
 
@@ -93,6 +97,7 @@ class TripResultFragment : Fragment() {
     }
     private fun setAdapter(sortedList:List<Trip>){
         if (sortedList.isNotEmpty()){
+            Log.e("EMPTY_ERROR", "ERROR_4")
         setPb(empty_search_layout,mProgressBar,mLayout,0)
         swipeLayout.isRefreshing = false
         scrolling.visibility = View.VISIBLE
@@ -104,17 +109,28 @@ class TripResultFragment : Fragment() {
                 listOfUsersLite
             )
         }
+        } else {
+            Log.e("EMPTY_ERROR", "ERROR_1")
+          //  setPb(empty_search_layout,mProgressBar,mLayout,0)
+         //   empty_search_layout.visibility = View.VISIBLE
+
         }
     }
     private fun mCheckUserInfoInServer(trip: Trip?, noTrip: Boolean, isFinalChild: Boolean) {
         Log.i("Adapter","Setup;;R")
         if (noTrip && isFinalChild){
+           if (listOfTrips.isEmpty()){
+               swipeLayout.isRefreshing = false
+               empty_search_layout.visibility = View.VISIBLE
+               setPb(empty_search_layout,mProgressBar,mLayout,0)
+           }
             val sortedList = listOfTrips.sortedWith(compareBy { it.date })
             for (item in sortedList) {
                 listOfUsersLite.add(item.poster!!)
             }
             setAdapter(sortedList)
             } else {
+            Log.i("Adapter","Setup;;R2")
 
 
 
@@ -130,10 +146,16 @@ class TripResultFragment : Fragment() {
 
             override fun onSuccess(data: DataSnapshot) {
                 //DO SOME THING WHEN GET DATA SUCCESS HERE
-                if (!noTrip) {
+                if (!noTrip && data.exists()) {
                     val mUser = data.getValue(User::class.java)
                     trip?.poster = mUser
+                    val checkList:MutableList<String> = mutableListOf()
+                    for (mTrip in listOfTrips){
+                        checkList.add(mTrip.tripID)
+                    }
+                    if (!checkList.contains(trip?.tripID)){
                     listOfTrips.add(trip!!)
+                    }
 
                 }
                 if (isFinalChild) {
@@ -166,35 +188,48 @@ class TripResultFragment : Fragment() {
                 }
 
                 override fun onSuccess(data: DataSnapshot) {
-                    Log.i("S1", data.childrenCount.toInt().toString())
                     if (data.childrenCount.toInt() == 0) {
+                        Log.i(TAG,"OnSuccess : child == 0")
                         if (isSameDestinationCity) {
+                            Log.i(TAG,"OnSuccess : child == 0 if")
                             swipeLayout.isRefreshing = false
-                            //setPb(empty_search_layout,mProgressBar,mLayout,0)
+                            Log.e("EMPTY_ERROR", "ERROR_2")
+                            empty_search_layout.visibility = View.VISIBLE
+                            setPb(empty_search_layout,mProgressBar,mLayout,0)
                         } else {
+                            Log.i(TAG,"OnSuccess : child == 0 else")
                             searchAgain = true
                             searchForTrips(otd)
                         }
 
                     } else {
+                        Log.i(TAG,"OnSuccess : child != 0 (${data.childrenCount})")
                     val lastDs = data.children.last()
                     for (ds in data.children) {
                         val mTrip = ds.getValue(Trip::class.java)
                         val dateAndTime = "${mTrip?.date} ${mTrip?.time}"
                         val tripDate = sdf.parse(dateAndTime)
+                        Log.i(TAG,"OnSuccess : TRIP : ${mTrip?.tripID}")
                         val condition = if (!hasDate){
                             tripDate.after(Date())
                         } else {
                             mTrip?.date == searchDate
                         }
-                        if (ds.value == lastDs.value) {
+                        if (ds.key == lastDs.key) {
                             if (isSameDestinationCity) {
                                 if (condition) {
+
                                     mCheckUserInfoInServer(mTrip, noTrip = false, isFinalChild = true)
                                 } else {
+
                                     mCheckUserInfoInServer(mTrip, noTrip = true, isFinalChild = true)
                                 }
                             } else {
+
+                                if (condition){
+
+                                    mCheckUserInfoInServer(mTrip, noTrip = false, isFinalChild = true)
+                                }
                                 searchAgain = true
                                 searchForTrips(otd)
                             }
@@ -228,10 +263,9 @@ class TripResultFragment : Fragment() {
                     override fun onSuccess(data: DataSnapshot) {
 
                         if (data.childrenCount.toInt() == 0) {
-                            Log.i("ON-c2", "THIS")
                             swipeLayout.isRefreshing = false
-                            setPb(empty_search_layout,mProgressBar,mLayout,0)
-
+                            Log.e("EMPTY_ERROR", "ERROR_3")
+                           setPb(empty_search_layout,mProgressBar,mLayout,0)
                             mCheckUserInfoInServer(null, noTrip = true, isFinalChild = true)
                         } else {
                         val lastDs = data.children.last()

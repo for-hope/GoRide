@@ -93,7 +93,8 @@
                                 android:id="@+id/phone_nb_edittext"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                app:prefix="+213 " android:inputType="number"/>
+                                android:inputType="phone"
+                                app:prefix="+213 "/>
 
 
                     </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
@@ -388,7 +389,8 @@
                                           android:textSize="16sp" android:textStyle="bold"
                                           android:layout_marginTop="20dp"
                                           android:id="@+id/terms_desc" android:layout_weight="0"
-                                          android:textColor="@color/colorAccent"/>
+                                          android:textColor="@color/colorAccent" android:paddingStart="5dp"
+                                          android:paddingEnd="5dp"/>
                             </LinearLayout>
                             <TextView android:layout_width="wrap_content"
                                       android:layout_height="wrap_content"

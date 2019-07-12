@@ -173,7 +173,7 @@ class RegisterExtraActivity : AppCompatActivity() {
         }
         selfie_btn.setOnClickListener { takePhotoFromCamera() }
         gallery_btn.setOnClickListener { choosePhotoFromGallery() }
-        send_code_again.setOnClickListener { verifyPhoneNumberFirebase() }
+        send_code_again.setOnClickListener { verifyPhoneNumberFirebase(true) }
         //val viewFlipper = view_flipper
 //        viewFlipper.addView(phone_verf_layout)
         next_button.setOnClickListener {
@@ -409,7 +409,7 @@ class RegisterExtraActivity : AppCompatActivity() {
                 (phoneNumber.startsWith("5") || phoneNumber.startsWith("6") || phoneNumber.startsWith("7"))
         if (correctNumber) {
             phoneNumber = "+213$phoneNumber"
-            verifyPhoneNumberFirebase()
+            verifyPhoneNumberFirebase(false)
         } else {
             phone_nb_label.setError("Please enter a valid number.", true)
             Toast.makeText(this, "Incorrect Number", Toast.LENGTH_SHORT).show()
@@ -504,8 +504,10 @@ class RegisterExtraActivity : AppCompatActivity() {
         }
     }
 
-    private fun verifyPhoneNumberFirebase() {
+    private fun verifyPhoneNumberFirebase(again:Boolean) {
+        if (!again){
         nextView(view_flipper)
+        }
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
             phoneNumber,      // Phone number to verify
             60,               // Timeout duration
@@ -517,6 +519,7 @@ class RegisterExtraActivity : AppCompatActivity() {
 
     }
 
+
     private fun onVerifyCode() {
 
         val code = code_edittext.text.toString()
@@ -526,6 +529,7 @@ class RegisterExtraActivity : AppCompatActivity() {
     }
 
     private fun checkBirthdayAndGender() {
+        var correctForm = true
         birthday = age_edittext.text.toString()
         val sdf = SimpleDateFormat("dd, MMMM yyyy", Locale.US)
         try {
@@ -533,6 +537,7 @@ class RegisterExtraActivity : AppCompatActivity() {
 
         } catch (e: ParseException) {
             e.printStackTrace()
+            correctForm = false
             Toast.makeText(this,"Invalid Date",Toast.LENGTH_SHORT).show()
         }
         gender = "m"
@@ -553,8 +558,9 @@ class RegisterExtraActivity : AppCompatActivity() {
             }
         }
 
-
+        if (correctForm){
         nextView(view_flipper)
+        }
     }
 
     private fun getAge(dobString: String): Int {

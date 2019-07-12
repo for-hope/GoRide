@@ -13,7 +13,7 @@ class Trip( tripOrigin: String="",  tripDestination: String="",  allStops:ArrayL
      var origin:String = tripOrigin
      var destination:String = tripDestination
      var stops:ArrayList<String> = ArrayList()
-     var bookedUsers:HashMap<String,Int> = hashMapOf()
+     var bookedUsers:HashMap<String,String> = hashMapOf()
      var date:String = date
      var time:String = time
      var vehicleModel:String = ""

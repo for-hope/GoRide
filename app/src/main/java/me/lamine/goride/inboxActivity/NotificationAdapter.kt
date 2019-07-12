@@ -45,6 +45,7 @@ class NotificationAdapter(private var context: Context, private var notify: List
 
     private fun reloadFragment() {
         // Reload current fragment
+        try{
         val frg: Fragment?
         val fm = (context as AppCompatActivity).supportFragmentManager
         val notificationFragment = fm.fragments[0] as NotificationFragment
@@ -53,6 +54,9 @@ class NotificationAdapter(private var context: Context, private var notify: List
         ft.detach(frg)
         ft.attach(frg)
         ft.commit()
+        } catch (e:Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun acceptUser(pos: Int, response: Boolean) {
@@ -64,6 +68,9 @@ class NotificationAdapter(private var context: Context, private var notify: List
         if (response) {
             var mPath = "$path/bookedUsers/${item.userID}"
             mDatabase.addToPath(mPath, otdPath)
+            val rootPath = "users/${item.userID}/bookedTrips/${item.tripID}"
+            mDatabase.addToPath(rootPath, otdPath)
+
             mPath = "users/${item.userID}/notifications/acceptedTripRequests/${item.tripID}"
             mDatabase.addToPath("$mPath/otd",item.otd)
             mDatabase.addToPath("$mPath/timestamp", Date().toString())
@@ -73,7 +80,7 @@ class NotificationAdapter(private var context: Context, private var notify: List
             mDatabase.addToPath("$mPath/timestamp", Date().toString())
 
         }
-        val mPath = "users/${mDatabase.currentUserId()}/tripRequests/${item.tripID}/${item.userID}"
+        val mPath = "users/${mDatabase.currentUserId()}/notifications/tripRequests/${item.tripID}/${item.userID}"
         mDatabase.removeFromPath(mPath)
         path = "$path/pendingBookedUsers/${item.userID}"
         mDatabase.removeFromPath(path)

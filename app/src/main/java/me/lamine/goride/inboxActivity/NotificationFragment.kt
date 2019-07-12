@@ -18,6 +18,7 @@ import me.lamine.goride.R
 import me.lamine.goride.dataObjects.*
 import me.lamine.goride.interfaces.OnGetDataListener
 import me.lamine.goride.utils.Database
+import me.lamine.goride.utils.decodeWilaya
 import me.lamine.goride.utils.setPb
 
 
@@ -86,6 +87,10 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
             eBN.tripID = tripID
             eBN.userID = user.userId
 
+            val ocode = decodeWilaya(origin)
+            val dcode = decodeWilaya(dest)
+            eBN.otd = "${String.format("%02d", ocode)}_${String.format("%02d", dcode)}"
+
             extendedNotification.add(eBN)
 
 
@@ -143,6 +148,7 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
         setPb(null, mProgressBar, mLayout, 0)
         if (req_notif_list_res_view != null) {
             swipeLayout.isRefreshing = false
+
             req_notif_list_res_view.adapter = this.context?.let {
                 DriveRequestsAdapter(
                     it,
@@ -301,13 +307,14 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
         val listOfUsers: MutableList<Pair<String, String>> = mutableListOf()
         val tripID = trip.key
         for (data in trip.children) {
-            userId = data.key!!
-            Log.i("user_id_notif",userId)
-            timestamp = data.child("timestamp").value as String
-            otd = data.child("otd").value as String
+            if (data.exists() && data.childrenCount > 0) {
+                userId = data.key!!
+                Log.i("user_id_notif", userId)
+                timestamp = data.child("timestamp").value as String
+                otd = data.child("otd").value as String
 
-            listOfUsers.add(Pair(userId, timestamp))
-
+                listOfUsers.add(Pair(userId, timestamp))
+            }
 
         }
         val bookingNotif = BookingNotification(tripID!!, listOfUsers)
@@ -356,7 +363,8 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
                 val type = "modifiedTrips"
                 val sn = StandaredNotification(tripId!!)
                 sn.type = type
-                sn.timestamp = child.value as String
+                sn.timestamp = child.child("timestamp").value as String
+                sn.otd = child.child("otd").value as String
                 standardNotifications.add(sn)
             }
             ds.key == "acceptedDriveRequest" -> for (child in ds.children) {
@@ -411,6 +419,7 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
             }
 
             override fun onSuccess(data: DataSnapshot) {
+                swipeLayout.isRefreshing = false;
                 if (data.childrenCount.toInt() != 0) {
                     scrolling.visibility =View.VISIBLE
                     empty_list_notif.visibility = View.GONE
@@ -457,12 +466,18 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
 
     private fun checkAllNotifications() {
         for (notif in standardNotifications) {
+            Log.e("CheckingStand", notif.tripId + " " + notif.otd)
+
             mDatabase.fetchTrip(notif.tripId, notif.otd, object : OnGetDataListener {
                 override fun onStart() {
 
                 }
 
                 override fun onSuccess(data: DataSnapshot) {
+
+                    if (data.exists() && data.childrenCount > 0){
+                        data.children.forEach { ds ->   Log.e(ds.key, "key = ${ds.value}")}
+
                     val mTrip = data.getValue(Trip::class.java)
                     for ((i, n) in standardNotifications.withIndex()) {
                         if (n.tripId == data.key) {
@@ -484,7 +499,22 @@ class NotificationFragment : androidx.fragment.app.Fragment() {
 
                         }
                     }
+                        if (swipeLayout == null){
                     swipeLayout.isRefreshing = false
+                        }
+                    } else {
+                        empty_list_notif.visibility = View.GONE
+                        swipeLayout.isRefreshing = false
+                        snotif_list_res_view.adapter = this@NotificationFragment.context?.let {
+                            ExtraNotifAdapter(
+                                this@NotificationFragment.context!!,
+                                standardNotifications
+                            )
+                        }
+                        snotif_list_res_view.layoutManager = llm2
+
+
+                    }
                 }
 
                 override fun onFailed(databaseError: DatabaseError) {

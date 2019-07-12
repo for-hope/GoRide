@@ -28,8 +28,8 @@
                 android:layout_weight="1"
                 android:textColor="#282828"
                 android:textSize="18sp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginStart="12dp"/>
+                android:layout_marginEnd="3dp"
+                android:layout_marginStart="5dp"/>
     </LinearLayout>
     <LinearLayout
             android:orientation="horizontal"
@@ -52,8 +52,8 @@
                 android:layout_weight="1"
                 android:textColor="#282828"
                 android:textSize="18sp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginStart="12dp"/>
+                android:layout_marginEnd="3dp"
+                android:layout_marginStart="5dp"/>
     </LinearLayout>
     <LinearLayout
             android:orientation="horizontal"
@@ -78,8 +78,8 @@
                 android:layout_weight="1"
                 android:textColor="#282828"
                 android:textSize="18sp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginStart="12dp"/>
+                android:layout_marginEnd="3dp"
+                android:layout_marginStart="5dp"/>
     </LinearLayout>
     <LinearLayout
             android:orientation="horizontal"
@@ -104,7 +104,7 @@
                 android:layout_weight="1"
                 android:textColor="#282828"
                 android:textSize="18sp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginStart="12dp"/>
+                android:layout_marginEnd="3dp"
+                android:layout_marginStart="5dp"/>
     </LinearLayout>
 </LinearLayout>

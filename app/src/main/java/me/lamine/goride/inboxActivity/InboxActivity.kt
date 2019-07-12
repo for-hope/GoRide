@@ -41,16 +41,16 @@ class InboxActivity: AppCompatActivity() {
       navigationTabStrip.onTabStripSelectedIndexListener = object :
           NavigationTabStrip.OnTabStripSelectedIndexListener{
           override fun onEndTabSelected(title: String?, index: Int) {
-
+              if (index == 0){
+                  fab_clear_notif.show()
+              }
+              if (index == 1){
+                  fab_clear_notif.hide()
+              }
           }
 
           override fun onStartTabSelected(title: String?, index: Int) {
-            if (index == 0){
-                fab_clear_notif.show()
-            }
-            if (index == 1){
-                fab_clear_notif.hide()
-              }
+
           }
 
       }

@@ -152,7 +152,7 @@
                 </RelativeLayout>
                 <TextView
                         android:text="@string/you_re_looking_for_a_shared_ride_and_want_to_get_notified_once_it_get_posted"
-                        android:layout_width="368dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content" android:id="@+id/Desc2"
                         android:textSize="20sp" android:paddingTop="10dp"
                         android:layout_marginStart="10dp"/>

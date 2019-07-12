@@ -53,6 +53,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var mDatabase:Database
     private lateinit var mRevealAnimation: RevealAnimation
     private lateinit var drawerLayout: androidx.drawerlayout.widget.DrawerLayout
+    private lateinit var getSharedUser:User
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.AppTheme)
@@ -64,6 +65,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (!verifyAvailableNetwork(this)){
           Toast.makeText(this,"No Available Network.", Toast.LENGTH_SHORT).show()
         }
+
         mDatabase = Database()
         mDatabase.checkUserSession(this)
         user = FirebaseAuth.getInstance().currentUser
@@ -76,36 +78,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             //
 
         } else {
-            getUser()
-
-           // mUser = getSharedUser(this)
-        /*   for (profile in user!!.providerData) {
-                Log.i("inits", "STARTEd")
-                // Id of the provider (ex: google.com)
-                val providerId = profile.providerId
-
-                // UID specific to the provider
-                val uid = profile.uid
-
-                // Name, email address, and profile photo Url
-                val name = profile.displayName
-                val email = profile.email
-                Log.i("LOGIN_TEST", "Welcome $providerId, $name ,$uid, $email")
-                if (providerId == "firebase"){
-                    Toast.makeText(this,"Welcome back $name", Toast.LENGTH_SHORT).show()
-                }
-
-                // val photoUrl = profile.photoUrl
-            }*/
-            //init
-
-
-
+            if (getSharedUser(this) == null){
+                mDatabase.signOut(this)
+            } else {
+                getSharedUser = getSharedUser(this)!!
+                getUser()
+            }
 
             initTabLayout()
 
-       // initTabLayout()
-     //   initPermissions()
 
 
 
@@ -129,20 +110,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if(mUser.superuser == 1){
             my_toolbar.inflateMenu(R.menu.menu_admin)
         }
-        if (getSharedUser(this).isDriver){
+        if (getSharedUser.isDriver){
             initNavStripe(navigationTabStrip,0,toolbar)
             navigationTabStrip.tabIndex = 0
-            Log.i("RECHED", "0")
+
         } else {
             initNavStripe(navigationTabStrip,1,toolbar)
             navigationTabStrip.tabIndex = 1
-            Log.i("RECHED", "1")
+
         }
 
         var driverSnackbar: Snackbar? = null
         var passSnackbar: Snackbar? = null
-        Log.i("RECHED", "THIS CODE")
-        //todo
+
 
         navigationTabStrip.onTabStripSelectedIndexListener = object :
             NavigationTabStrip.OnTabStripSelectedIndexListener{
@@ -159,7 +139,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     )
                     //
                     navigationTabStrip.tabIndex = 0
-                    if (!getSharedUser(this@MainActivity).isDriver){
+                    if (!getSharedUser.isDriver){
                         passSnackbar = Snackbar.make(rootLayout, "You're a passenger! But you can drive as well.", Snackbar.LENGTH_INDEFINITE)
                         passSnackbar!!.setAction("Proceed") {
                             navigationTabStrip.tabIndex = 0
@@ -189,7 +169,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     navigationTabStrip.activeColor = ContextCompat.getColor(applicationContext,
                         R.color.colorSecondary
                     )
-                    if (getSharedUser(this@MainActivity).isDriver){
+                    if (getSharedUser.isDriver){
                         driverSnackbar =Snackbar.make(rootLayout, "You're a driver only! You can check trips but you can't register in one..", Snackbar.LENGTH_INDEFINITE)
                         driverSnackbar!!.setAction("Proceed") {
                             fab.hide()
@@ -242,7 +222,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navigationTabStrip.setViewPager(viewpager_v)
         //initNavStripe(navigationTabStrip,0,my_toolbar)
         try {
-            val page =  if (getSharedUser(this).isDriver){
+            val page =  if (getSharedUser.isDriver){
                 0
             } else {
                 1
@@ -252,6 +232,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } catch (e:Exception){
             e.stackTrace
         }
+    }
+
+    override fun onStart() {
+        checkForNotifications()
+        super.onStart()
+    }
+    override fun onResume() {
+        super.onResume()
+        checkForNotifications()
+        if (getSharedUser(this) != null){
+            getSharedUser = getSharedUser(this)!!
+        }
+
+
     }
     private fun initTabLayout(){
 
@@ -301,15 +295,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp)
         }
         toolbar.changeToolbarFont()
-        checkForNotifications()
-     //todo
+
+
         //val navigationTabStrip = findViewById<NavigationTabStrip>(R.id.playTabLayout1)
       //  initNavStripe(navigationTabStrip,0,toolbar)
 
 
     }
     private fun initPermissions(){
-        Log.i("initPermissions", "STARTEd")
+
         askPermission{
             //all permissions already granted or just granted
 
@@ -382,7 +376,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             R.id.nav_profile -> {
                 val intent = Intent(this, UserActivity::class.java)
-                val user = getSharedUser(this)
+                val user = getSharedUser
                 intent.putExtra("UserProfile",user )
                 startActivity(intent)
 
@@ -411,20 +405,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun checkForNotifications(){
        // mCheckTripInfoInServer()
         checkNotifications(object :OnGetDataListener{
-            override fun onStart() {
-
-            }
+            override fun onStart() {}
 
             override fun onSuccess(data: DataSnapshot) {
+                Log.d("MainActivity", "CheckNotifications : $menu")
+                if (menu!=null){
                if (data.hasChildren()){
-                   if (menu!=null){
+
                        if (data.childrenCount.toInt() >0 ){
+
                            menu?.getItem(0)!!.icon = ContextCompat.getDrawable(this@MainActivity,R.drawable.ic_notifications_active_orange_24dp)
                        } else {
+
                            menu?.getItem(0)!!.icon = ContextCompat.getDrawable(this@MainActivity,R.drawable.ic_notifications_none_black_24dp)
                        }
-                   }
-               }
+               } else {
+                   menu?.getItem(0)!!.icon = ContextCompat.getDrawable(this@MainActivity,R.drawable.ic_notifications_none_black_24dp)
+                 }
+
+             }
             }
 
             override fun onFailed(databaseError: DatabaseError) {
@@ -456,7 +455,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     mDatabase.signOut(this@MainActivity)
                 } else {
                     saveSharedUser(this@MainActivity,user)
-                    mUser = getSharedUser(this@MainActivity)
+                    mUser = getSharedUser(this@MainActivity)!!
                     val profileUrl = user.profilePic
                     val fullName = user.fullName
                     initUserInfo()
@@ -488,7 +487,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (link == ""){
               mLink = "https://firebasestorage.googleapis.com/v0/b/ridego-1555252117345.appspot.com/o/user_images%2Fmale_default.png?alt=media&token=658a01b5-ba18-4491-8aa7-e15c30284200"
             }
-        Log.i("SETTING IMAGE", "DONE")
         Picasso.get().load(mLink).into(mImageView)
     }
     private fun initNavStripe(navigationTabStrip: NavigationTabStrip,tab:Int,toolbar: Toolbar) {
@@ -514,7 +512,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         navigationTabStrip.stripType = NavigationTabStrip.StripType.POINT
         navigationTabStrip.stripGravity = NavigationTabStrip.StripGravity.BOTTOM
-        //todo navigationTabStrip.setTypeface("fonts/typeface.ttf")
+        //navigationTabStrip.setTypeface("fonts/typeface.ttf")
         navigationTabStrip.animationDuration = 300
         navigationTabStrip.inactiveColor = Color.GRAY
 

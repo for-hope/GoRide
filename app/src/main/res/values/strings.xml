@@ -407,4 +407,5 @@
     <string name="click_here">click here.</string>
     <string name="delete_superuser">Delete (superuser)</string>
     <string name="delete_user_as_admin">Delete user as Admin</string>
+    <string name="avoid_canceling_your_trip">Avoid canceling your trip</string>
 </resources>

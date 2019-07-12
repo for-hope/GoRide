@@ -59,7 +59,7 @@
                   android:layout_height="wrap_content"
                   android:id="@+id/msg_send_text"
                   android:hint="@string/type_a_message"
-                  android:inputType="text"
+                  android:inputType="text|textCapSentences"
                   android:layout_toStartOf="@id/msg_send_btn"
                   android:layout_centerVertical="true"
                   android:background="@android:color/transparent"

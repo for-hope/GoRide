@@ -44,6 +44,7 @@ class DriverFragment : androidx.fragment.app.Fragment() {
             this.activity?.finish()
         }else {
             currentUser = mAuth?.currentUser
+          //  getUserTrips()
             getUserTrips()
         }
         this.driver_trips.setHasFixedSize(true)
@@ -52,12 +53,24 @@ class DriverFragment : androidx.fragment.app.Fragment() {
 
         driver_trips.layoutManager = llm
        // getSharedTrips()
+        if (!pullToRefreshDriverTrips.isRefreshing){
         pullToRefreshDriverTrips.setOnRefreshListener {
-            Log.i("RefreshLayout", "isRefresging")
             Toast.makeText(this.context,"Refreshed",Toast.LENGTH_SHORT).show()
-            getUserTrips()
-            pullToRefreshDriverTrips.isRefreshing = false;}
+            getUserTrips() }
+        }
        // getUserTrips()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+   /*     if (mAuth?.currentUser != null) {
+
+                        listOfCurrentTrips = mutableListOf()
+                        listUser = mutableListOf()
+                        getUserTrips()
+        }*/
+
 
     }
     private fun showTripEmptyDialog(trip: Trip){
@@ -150,7 +163,7 @@ class DriverFragment : androidx.fragment.app.Fragment() {
     private fun getUser(){
         Database().fetchUser(Database().currentUserId(),object : OnGetDataListener {
             override fun onStart() {
-               setPb(driver_empty_layout,pb_driver,greyout_driver,1)
+               setPb(null,pb_driver,greyout_driver,1)
             }
             override fun onSuccess(data: DataSnapshot) {
                 //DO SOME THING WHEN GET DATA SUCCESS HERE
@@ -171,11 +184,27 @@ class DriverFragment : androidx.fragment.app.Fragment() {
 
     }
     private fun setAdapter(){
+        val tripIDs = mutableListOf<String>()
+        val tripsToRemove = mutableListOf<Int>()
+        if (listOfCurrentTrips.size > 1){
+        for ((index,trip) in listOfCurrentTrips.withIndex()){
+            if (tripIDs.contains(trip.tripID)){
+                tripsToRemove.add(index)
+            }
+            tripIDs.add(trip.tripID)
+        }
+        for (id in tripsToRemove){
+            if (id<tripsToRemove.size && id > -1){
+            listOfCurrentTrips.removeAt(id)
+            }
+        }
+        }
+
         if (listOfCurrentTrips.isNotEmpty()){
             Log.i(listOfCurrentTrips.size.toString(), listUser.size.toString())
             driver_trips.adapter?.notifyDataSetChanged()
             Log.i("adapter_size", "${listOfCurrentTrips.size}")
-            setPb(driver_empty_layout,pb_driver,greyout_driver,0)
+            setPb(null,pb_driver,greyout_driver,0)
             driver_empty_layout.visibility = View.GONE
             relativeLayout.visibility = View.VISIBLE
             driver_trips.adapter = this.context?.let {
@@ -224,6 +253,7 @@ class DriverFragment : androidx.fragment.app.Fragment() {
 
             override fun onFailed(databaseError: DatabaseError) {
                 Log.i("fetchTrips", "onFailed")
+                Toast.makeText(this@DriverFragment.context,"Database Error.", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -231,17 +261,20 @@ class DriverFragment : androidx.fragment.app.Fragment() {
     private fun getUserTrips(){
         listOfCurrentTrips = arrayListOf()
         listUser = arrayListOf()
-        //todo add 1 to otd
         Database().fetchFromCurrentUser("activeTrips",object : OnGetDataListener{
             override fun onStart() {
-              setPb(driver_empty_layout,pb_driver,greyout_driver,1)
+              setPb(null,pb_driver,greyout_driver,1)
             }
 
             override fun onSuccess(data: DataSnapshot) {
+                pullToRefreshDriverTrips.isRefreshing = false
                 if ( data.childrenCount.toInt() > 0 ){
+                    driver_empty_layout.visibility = View.GONE
                     val tripIDs:MutableList<String> = mutableListOf()
                     for (child in data.children){
+                        if (!tripIDs.contains(child.key.toString())){
                         tripIDs.add(child.key.toString())
+                        }
                         Log.i("TripsToAdd:", child.key.toString())
                     }
                     fetchTrips(tripIDs)

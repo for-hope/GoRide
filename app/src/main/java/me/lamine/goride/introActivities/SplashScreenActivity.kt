@@ -12,7 +12,6 @@ import me.lamine.goride.utils.Database
 
 
 class SplashScreenActivity:AppCompatActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if(FirebaseAuth.getInstance().currentUser != null){
@@ -24,7 +23,5 @@ class SplashScreenActivity:AppCompatActivity() {
             startActivity(intent)
             this@SplashScreenActivity.finish()
         }
-
     }
-
 }

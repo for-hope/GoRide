@@ -196,6 +196,17 @@
                                 android:text="@string/description"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:id="@+id/user_ac_desc2"
+                                android:textColor="@color/browser_actions_title_color"
+                                android:textSize="15sp"
+                                android:layout_marginStart="10dp"
+                                android:paddingBottom="5dp"
+                                android:paddingTop="10dp"
+                                android:fontFamily="serif"/>
+                        <TextView
+                                android:text="@string/description"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
                                 android:id="@+id/user_ac_desc"
                                 android:textColor="@android:color/black"
                                 android:textSize="18sp"

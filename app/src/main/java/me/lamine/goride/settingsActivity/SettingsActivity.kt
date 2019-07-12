@@ -3,6 +3,7 @@ package me.lamine.goride.settingsActivity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_settings.*
 import me.lamine.goride.R
@@ -22,6 +23,7 @@ class SettingsActivity:AppCompatActivity() {
         }
         notif_switch_setting.isChecked = getNotificationSettings()
         notif_switch_setting.setOnCheckedChangeListener { _, isChecked ->
+            Toast.makeText(this,"This feature may not work.", Toast.LENGTH_SHORT).show()
             setNotificationSettings(isChecked)
         }
         privacy_setting.setOnClickListener {

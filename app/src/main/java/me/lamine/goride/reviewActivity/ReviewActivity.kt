@@ -2,7 +2,6 @@ package me.lamine.goride.reviewActivity
 
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
@@ -51,7 +50,7 @@ class ReviewActivity:AppCompatActivity() {
         review_clear_c.setOnClickListener { clearRatingStars(arrayOfCStars) }
 
     }
-    private fun fetchUser(userReview: UserReview){
+    private fun fetchReviewedUser(userReview: UserReview){
        Database().fetchUser(userID,object :OnGetDataListener{
            override fun onStart() {
                //setPB
@@ -71,22 +70,21 @@ class ReviewActivity:AppCompatActivity() {
     private fun saveToDB(userReview: UserReview,user: User){
         if (user.userReviews[mDatabase.currentUserId()] != null){
             val userReviewMap= user.userReviews[mDatabase.currentUserId()] as HashMap<*, *>
-            //todo add review button on userprofile
             user.userRatingCount= user.userRatingCount - 1
             user.rawRating = user.rawRating - (userReviewMap["globalRating"].toString().toInt())
             val tRatingHM = userReviewMap["trating"].toString().toInt()
             val sRatingHM = userReviewMap["srating"].toString().toInt()
             val cRatingHM = userReviewMap["crating"].toString().toInt()
             if (tRatingHM != 0){
-                user.tRatingCount = user.tRatingCount - 1
+                user.tratingCount = user.tratingCount - 1
                 user.rawTRating = user.rawTRating  -  tRatingHM
             }
             if (sRatingHM != 0){
-                user.sRatingCount = user.sRatingCount - 1
+                user.sratingCount = user.sratingCount - 1
                 user.rawSRating = user.rawSRating  -  sRatingHM
             }
             if (cRatingHM != 0){
-                user.cRatingCount = user.cRatingCount - 1
+                user.cratingCount = user.cratingCount - 1
                 user.rawCRating = user.rawCRating  -  cRatingHM
             }
 
@@ -108,44 +106,45 @@ class ReviewActivity:AppCompatActivity() {
      //   ratingRef.child("userRatingCount").setValue(userRatingCount)
         if (userReview.tRating != 0f){
             val rawTRating = user.rawTRating + userReview.tRating
-            val tRatingCount = user.tRatingCount + 1
+            val tRatingCount = user.tratingCount + 1
             val tRating = rawTRating / tRatingCount
-            mDatabase.addToPath("$userPath/tRating",tRating)
-           // ratingRef.child("tRating").setValue(tRating)
+            mDatabase.addToPath("$userPath/trating",tRating)
+           // ratingRef.child("trating").setValue(trating)
             mDatabase.addToPath("$userPath/rawTRating",rawTRating)
             //ratingRef.child("rawTRating").setValue(rawTRating)
-            mDatabase.addToPath("$userPath/tRatingCount",tRatingCount)
-            //ratingRef.child("tRatingCount").setValue(tRatingCount)
+            mDatabase.addToPath("$userPath/tratingCount",tRatingCount)
+            //ratingRef.child("tratingCount").setValue(tratingCount)
         }
         if (userReview.sRating != 0f){
             val rawSRating = user.rawSRating + userReview.sRating
-            val sRatingCount = user.sRatingCount + 1
+            val sRatingCount = user.sratingCount + 1
             val sRating = rawSRating / sRatingCount
-            mDatabase.addToPath("$userPath/sRating",sRating)
-           // ratingRef.child("sRating").setValue(sRating)
+            mDatabase.addToPath("$userPath/srating",sRating)
+           // ratingRef.child("srating").setValue(srating)
             mDatabase.addToPath("$userPath/rawSRating",rawSRating)
           //  ratingRef.child("rawSRating").setValue(rawSRating)
-            mDatabase.addToPath("$userPath/sRatingCount",sRatingCount)
-          // ratingRef.child("sRatingCount").setValue(sRatingCount)
+            mDatabase.addToPath("$userPath/sratingCount",sRatingCount)
+          // ratingRef.child("sratingCount").setValue(sratingCount)
         }
         if (userReview.cRating != 0f){
             val rawCRating = user.rawCRating + userReview.cRating
-            val cRatingCount = user.cRatingCount + 1
+            val cRatingCount = user.cratingCount + 1
             val cRating = rawCRating / cRatingCount
-            mDatabase.addToPath("$userPath/cRating",cRating)
-           // ratingRef.child("cRating").setValue(cRating)
+            mDatabase.addToPath("$userPath/crating",cRating)
+           // ratingRef.child("crating").setValue(crating)
             mDatabase.addToPath("$userPath/rawCRating",rawCRating)
           //  ratingRef.child("rawCRating").setValue(rawCRating)
-            mDatabase.addToPath("$userPath/cRatingCount",cRatingCount)
-           // ratingRef.child("cRatingCount").setValue(cRatingCount)
+            mDatabase.addToPath("$userPath/cratingCount",cRatingCount)
+           // ratingRef.child("cratingCount").setValue(cratingCount)
         }
     }
     private fun postUserReview(){
         if (userID!=""){
             if(arrayOfStars[0].contentDescription.toString().toUpperCase() == "FULL"){
                 val userReview = collectRatings()
-                fetchUser(userReview)
+                fetchReviewedUser(userReview)
                 Toast.makeText(this,"Review Posted!",Toast.LENGTH_SHORT).show()
+                mDatabase.updateUserInApp(this)
                 finish()
             } else {
                 Toast.makeText(this,"Please rate the driver first!",Toast.LENGTH_SHORT).show()

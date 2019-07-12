@@ -54,28 +54,28 @@ class ExtraNotifAdapter(private var context: Context, private var notify: Mutabl
             notify[position].type == "canceledTrips" -> {
                 val desStr = notify[position].otd.substring(notify[position].otd.length - 2)
                 val destination = wilayaArrayEN[desStr.toInt() - 1]
-                val ds1 = "Your trip to $destination have been canceled. Sorry about that. You can report the driver"
+                val ds1 = "Your trip to $destination has been canceled. Sorry about that. You can report the driver"
                 holder.desc1.text = ds1
                 holder.notifIcon.setImageResource(R.drawable.ic_cancel_gray_50dp)
 
             }
             notify[position].type == "bookedUsers" -> {
-                Log.i("NotifHere","TEST")
                 val ds1 = "Someone just booked! Check your trip feed to see more info."
                 holder.desc1.text = ds1
                 holder.notifIcon.setImageResource(R.drawable.ic_person_add_gray_50dp)
             }
             notify[position].type == "acceptedDriveRequest" -> {
-                val ds1 = "Your request to drive a trip got accepted! check your feed for more info."
+                val ds1 = "Your request to drive a trip got accepted! click here to post the trip!!."
                 holder.desc1.text = ds1
                 holder.notifIcon.setImageResource(R.drawable.ic_check_circle_gray_50p)
             }
             notify[position].type == "modifiedTrips" -> {
-                val desStr = notify[position].otd.substring(notify[position].otd.length - 2)
+                   val desStr = notify[position].otd.substring(notify[position].otd.length - 2)
                 val destination = wilayaArrayEN[desStr.toInt() - 1]
-                val ds1 = "Your trip to $destination have been modified. check your trip for more info!"
-                holder.desc1.text = ds1
-                holder.notifIcon.setImageResource(R.drawable.ic_error_outline_gray_50dp)
+                    val ds1 = "Your trip to $destination have been modified. check your trip for more info!"
+                    holder.desc1.text = ds1
+                    holder.notifIcon.setImageResource(R.drawable.ic_error_outline_gray_50dp)
+
             }
             notify[position].type == "declinedTripRequests" -> {
                 val desStr = notify[position].otd.substring(notify[position].otd.length - 2)
@@ -85,11 +85,15 @@ class ExtraNotifAdapter(private var context: Context, private var notify: Mutabl
                 holder.notifIcon.setImageResource(R.drawable.ic_cancel_gray_50dp)
             }
             notify[position].type == "acceptedTripRequests" -> {
+                try{
                 val desStr = notify[position].otd.substring(notify[position].otd.length - 2)
                 val destination = wilayaArrayEN[desStr.toInt() - 1]
-                val ds1 = "Your request to the trip to $destination have been accepted. click here to post the trip!"
+                val ds1 = "Your request to the trip to $destination have been accepted. check your feed to see the trip!"
                 holder.desc1.text = ds1
-                holder.notifIcon.setImageResource(R.drawable.ic_check_circle_gray_50p)
+                holder.notifIcon.setImageResource(R.drawable.ic_check_circle_gray_50p)}catch (e:IndexOutOfBoundsException){
+                    e.localizedMessage
+                    Toast.makeText(this.context,"Error",Toast.LENGTH_LONG).show()
+                }
             }
 
 
@@ -105,8 +109,9 @@ class ExtraNotifAdapter(private var context: Context, private var notify: Mutabl
         val view = inflater.inflate(R.layout.notif_standered_layout, parent, false)
         return NotificationViewHolder(view).listen { position, _ ->
             if (notify[position].type == "acceptedDriveRequest"){
-                Toast.makeText(context,"open post a trip activity",Toast.LENGTH_SHORT).show()
+                Toast.makeText(context,"Fill this form to post the request as a trip.",Toast.LENGTH_SHORT).show()
                 getTripRequest(position)
+
             }
         }
     }
@@ -117,12 +122,17 @@ class ExtraNotifAdapter(private var context: Context, private var notify: Mutabl
             }
 
             override fun onSuccess(data: DataSnapshot) {
+                if (data.exists()){
                 val i = Intent(context,PostingActivity::class.java)
                 val tRequest = data.getValue(TripRequest::class.java)
                 i.putExtra("type","acceptedTrip")
                 i.putExtra("acceptedTrip",true)
                 i.putExtra("requestInfo", tRequest)
                 context.startActivity(i)
+                } else {
+                    Toast.makeText(this@ExtraNotifAdapter.context, "Trip Request Got Canceled", Toast.LENGTH_SHORT).show()
+                    Database().removeFromPath("users/${Database().currentUserId()}/notifications/acceptedDriveRequest")
+                }
             }
 
             override fun onFailed(databaseError: DatabaseError) {

@@ -82,7 +82,12 @@ class MessageActivity : AppCompatActivity() {
                 val msg = txt
                 val mUserObject = getSharedUser(this)
                 if (notify){
-                sendNotification(userId,mUserObject.fullName,msg)
+                    if (mUserObject != null) {
+                        sendNotification(userId,mUserObject.fullName,msg)
+                    } else {
+                        Toast.makeText(this, "Check your internet connection", Toast.LENGTH_SHORT).show()
+                        mDatabase.signOut(this)
+                    }
                 }
                 notify = false
                 msg_send_text.text.clear()
@@ -124,7 +129,7 @@ class MessageActivity : AppCompatActivity() {
                         }
 
                         override fun onFailure(call: Call<MyResponse>, t: Throwable) {
-                            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                          Toast.makeText(this@MessageActivity.applicationContext,"Internet Error ${t.localizedMessage}", Toast.LENGTH_LONG).show()
                         }
 
                     })

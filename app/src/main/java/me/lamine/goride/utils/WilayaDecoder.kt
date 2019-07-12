@@ -1,10 +1,9 @@
 package me.lamine.goride.utils
-
 var wilayaArrayEN = arrayOf(
     "Adrar",
     "Chlef",
     "Laghouat",
-    "Oumel-Bouaghi",
+    "Oum el Bouaghi",
     "Batna",
     "Béjaïa",
     "Biskra",
@@ -15,14 +14,14 @@ var wilayaArrayEN = arrayOf(
     "Tebessa",
     "Tlemcen",
     "Tiaret",
-    "TiziOuzou",
+    "Tizi Ouzou",
     "Algiers",
     "Djelfa",
     "Jijel",
     "Sétif",
     "Saïda",
     "Skikda",
-    "SidiBelAbbes",
+    "Sidi Bel Abbes",
     "Annaba",
     "Guelma",
     "Constantine",
@@ -32,20 +31,20 @@ var wilayaArrayEN = arrayOf(
     "Mascara",
     "Ouargla",
     "Oran",
-    "ElBayadh",
+    "El Bayadh",
     "Illizi",
-    "BordjBouArréridj",
+    "Bordj Bou Arreridj",
     "Boumerdès",
-    "ElTaref",
+    "El Taref",
     "Tindouf",
     "Tissemsilt",
-    "ElOued",
+    "El Oued",
     "Khenchela",
-    "SoukAhras",
+    "Souk Ahras",
     "Mila",
-    "AïnDefla",
+    "Aïn Defla",
     "Naama",
-    "AïnTémouchent",
+    "Aïn Témouchent",
     "Ghardaïa",
     "Relizane"
 )
@@ -59,19 +58,19 @@ var wilayaArrayFR = arrayOf(
     "Biskra",
     "Béchar",
     "Blida",
-    "0Bouira",
+    "Bouira",
     "Tamanrasset",
     "Tébessa",
     "Tlemcen",
     "Tiaret",
-    "TiziOuzou",
+    "Tizi Ouzou",
     "Alger",
     "Djelfa",
     "Jijel",
     "Sétif",
-    "0Saida",
+    "Saida",
     "Skikda",
-    "SidiBelAbbes",
+    "Sidi Bel Abbès",
     "Annaba",
     "Guelma",
     "Constantine",
@@ -79,17 +78,17 @@ var wilayaArrayFR = arrayOf(
     "Mostaganem",
     "M'Sila",
     "Mascara",
-    "0Ouargla",
+    "Ouargla",
     "Oran",
     "El-Bayadh",
     "Illizi",
-    "Bord-Bou-Arréridj",
+    "Bordj-Bou-Arréridj",
     "Boumerdès",
     "El-Taref",
     "Tindouf",
     "Tissemsilt",
     "ElOued",
-    "0Khenchela",
+    "Khenchela",
     "SoukAhras",
     "Tipaza",
     "Mila",
@@ -102,16 +101,15 @@ var wilayaArrayFR = arrayOf(
 
 fun decodeWilaya(wilaya: String): Int {
     for ((index, item) in wilayaArrayEN.withIndex()) {
-        if (wilaya.contains(item)) {
+        if (wilaya.toLowerCase().contains(item.toLowerCase())) {
             return index + 1
         }
     }
     return decodeWilayaFR(wilaya)
 }
-
 private fun decodeWilayaFR(wilaya: String): Int {
     for ((index, item) in wilayaArrayFR.withIndex()) {
-        if (wilaya.contains(item)) {
+        if (wilaya.toLowerCase().contains(item.toLowerCase())) {
             return index + 1
         }
     }

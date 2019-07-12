@@ -3,6 +3,7 @@ package me.lamine.goride.adminActivities
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,8 +25,11 @@ class AdminActivity:AppCompatActivity(){
         setSupportActionBar(admin_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+        //Setup Database
         mDatabase = Database()
-        Log.i("line22","True")
+
+
+        //get reports.
         fetchReports()
         fab_clear_reports.hide()
     }
@@ -34,33 +38,30 @@ class AdminActivity:AppCompatActivity(){
         return true
     }
     private fun fetchReports(){
-        Log.i("line26","True")
+
         listOfReports = mutableListOf()
         mDatabase.fetchReport(object:OnGetDataListener{
             override fun onStart() {
-                Log.i("line30","True")
                admin_pb.visibility = View.VISIBLE
                 admin_pb.isIndeterminate = true
-
             }
 
             override fun onSuccess(data: DataSnapshot) {
-                Log.i("line37","True")
+
                 admin_pb.visibility = View.GONE
-                Log.i("reportsw","True")
                      for (ds in data.children){
-                         Log.i("reports","True")
+
                          val report = ds.getValue(Report::class.java)
                          listOfReports.add(report!!)
                          if (ds.key == data.children.last().key){
-                             Log.i("setAdapter0","True")
+
                              setAdapter()
                          }
                      }
             }
 
             override fun onFailed(databaseError: DatabaseError) {
-
+                    Toast.makeText(this@AdminActivity, "Database Error", Toast.LENGTH_SHORT).show();
             }
 
         })
@@ -76,7 +77,6 @@ class AdminActivity:AppCompatActivity(){
                 listOfReports.clear()
                 val  mAdapter = list_of_reports.adapter as ReportsAdapter
                 mAdapter.notifyDataSetChanged()
-                Log.i("Admin","Clearing Reports")
             }
         }
     }

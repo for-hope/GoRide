@@ -18,10 +18,11 @@ import me.lamine.goride.dataObjects.DriveNotification
 import me.lamine.goride.utils.Database
 import me.lamine.goride.utils.wilayaArrayEN
 import java.lang.ClassCastException
+import java.lang.Exception
 import java.util.*
 
 
-class DriveRequestsAdapter(private var context: Context, private var notify: List<DriveNotification>) :
+class DriveRequestsAdapter(private var context: Context, private var notify: MutableList<DriveNotification>) :
     RecyclerView.Adapter<DriveRequestsAdapter.NotificationViewHolder>() {
     override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
         holder.username.text = notify[position].userObject.fullName
@@ -80,7 +81,16 @@ class DriveRequestsAdapter(private var context: Context, private var notify: Lis
             Database().addToPath("$mPath/timestamp", Date().toString())
 
         }
-        val mPath = "users/${Database().currentUserId()}/notifications/driveRequests/${item.tripId}}"
+
+        try {
+            val size: Int = notify.size
+            notify.clear()
+            notifyItemRangeRemoved(0, size)
+        } catch (e:Exception){
+            e.printStackTrace()
+        }
+
+        val mPath = "users/${Database().currentUserId()}/notifications/driveRequests/${item.tripId}"
         Database().removeFromPath(mPath)
         reloadFragment()
     }

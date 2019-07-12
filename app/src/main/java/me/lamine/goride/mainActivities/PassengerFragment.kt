@@ -56,35 +56,72 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
             Toast.makeText(context,"You're not logged in.", Toast.LENGTH_SHORT).show()
             this.activity?.finish()
         }else {
+            if (getSharedUser(this.context!!) != null){
             currentUser = mAuth?.currentUser
-            getUserTrips()
-            getTripRequests()
+          /*  getUserTrips()
+            getTripRequests()*/
+                getUserTrips()
+                getTripRequests()
+
+
+
+                if (getSharedUser(this.context!!)?.isDriver!!){
+                    val t = "Only passengers over the age of 60 can book or request rides."
+                    pass_desc.text = t
+                    req_text.visibility = View.GONE
+                }
+                if (!pullToRefreshPassengerTrips.isRefreshing){
+                pullToRefreshPassengerTrips.setOnRefreshListener {
+                    listOfCurrentRequest.clear()
+                    listOfCurrentTrips.clear()
+                    listUser.clear()
+                    listOfUserR.clear()
+                    getUserTrips()
+                    getTripRequests() }}
+                this.pass_trips.setHasFixedSize(true)
+                this.req_trips.setHasFixedSize(true)
+                val llm = LinearLayoutManager(this.context)
+                val llm2 = LinearLayoutManager(this.context)
+                llm.orientation = RecyclerView.VERTICAL
+                llm2.orientation = RecyclerView.VERTICAL
+                req_trips.layoutManager = llm2
+                pass_trips.layoutManager = llm
+            } else {
+             Database().signOut(this.activity)
+            }
         }
 
-        if (getSharedUser(this.context!!).isDriver){
-            val t = "Only passengers over the age of 60 can book or request rides."
-            pass_desc.text = t
-            req_text.visibility = View.GONE
-        }
-        pullToRefreshPassengerTrips.isRefreshing = true
-        pullToRefreshPassengerTrips.setOnRefreshListener {
-            listOfCurrentRequest.clear()
-            listOfCurrentTrips.clear()
-            listUser.clear()
-            listOfUserR.clear()
-            getUserTrips()
-            getTripRequests() }
-        this.pass_trips.setHasFixedSize(true)
-        this.req_trips.setHasFixedSize(true)
-        val llm = LinearLayoutManager(this.context)
-        val llm2 = LinearLayoutManager(this.context)
-        llm.orientation = RecyclerView.VERTICAL
-        llm2.orientation = RecyclerView.VERTICAL
-        req_trips.layoutManager = llm2
-        pass_trips.layoutManager = llm
 
     }
+
+    override fun onResume() {
+    /*    if (mAuth?.currentUser != null){
+
+                        listOfCurrentRequest.clear()
+                        listOfCurrentTrips.clear()
+                        listUser.clear()
+                        listOfUserR.clear()
+                        getUserTrips()
+                        getTripRequests()
+
+
+        }*/
+        super.onResume()
+    }
     private fun setRequestAdapter(){
+        val tripIDs = mutableListOf<String>()
+        val tripsToRemove = mutableListOf<Int>()
+        if (listOfCurrentRequest.size > 1){
+            for ((index,trip) in listOfCurrentRequest.withIndex()){
+                if (tripIDs.contains(trip.tripID)){
+                    tripsToRemove.add(index)
+                }
+                tripIDs.add(trip.tripID)
+            }
+            for (id in tripsToRemove){
+                listOfCurrentRequest.removeAt(id)
+            }
+        }
         if (listOfCurrentRequest.isNotEmpty()){
             req_trips.adapter?.notifyDataSetChanged()
             relativeLayout.visibility = View.VISIBLE
@@ -99,7 +136,7 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
             if (listOfCurrentTrips.isEmpty()){
             relativeLayout.visibility = View.GONE
                 Log.i("VISiBLE","ERRPR!")
-            pass_empty_layout.visibility = View.VISIBLE
+              pass_empty_layout.visibility = View.VISIBLE
             }
         }
     }
@@ -111,7 +148,7 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
       for (id in requestIdHashMap) {
           Database().fetchTripRequest(id.key, id.value, object : OnGetDataListener {
               override fun onStart() {
-                  setPb(pass_empty_layout,pb_passenger,greyout_pass,1)
+                  setPb(null,pb_passenger,greyout_pass,1)
               }
 
               override fun onSuccess(data: DataSnapshot) {
@@ -136,10 +173,11 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
     private fun getTripRequests(){
         Database().fetchFromCurrentUser("activeTripRequests",object : OnGetDataListener{
             override fun onStart() {
-                setPb(pass_empty_layout,pb_passenger,greyout_pass,1)
+                setPb(null,pb_passenger,greyout_pass,1)
             }
             override fun onSuccess(data: DataSnapshot) {
                if (data.exists()){
+                   setPb(null,pb_passenger,greyout_pass,0)
                    for (requestData in data.children){
                        val key = requestData.key
                        val value = requestData.value as String
@@ -153,13 +191,13 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
                } else {
                    pullToRefreshPassengerTrips.isRefreshing = false
                    Log.i("SetPB(0))", "n 1")
-                   setPb(pass_empty_layout,pb_passenger,greyout_pass,0)
+                   setPb(null,pb_passenger,greyout_pass,0)
                    relativeLayout.visibility = View.GONE
                }
             }
 
             override fun onFailed(databaseError: DatabaseError) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                Toast.makeText(this@PassengerFragment.context, "DB Error : $databaseError", Toast.LENGTH_LONG).show()
             }
 
         })
@@ -171,10 +209,26 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
 
     }
     private fun setAdapter(){
+        val tripIDs = mutableListOf<String>()
+        val tripsToRemove = mutableListOf<Int>()
+        if (listOfCurrentTrips.size > 1){
+            for ((index,trip) in listOfCurrentTrips.withIndex()){
+                if (tripIDs.contains(trip.tripID)){
+                    tripsToRemove.add(index)
+                }
+                tripIDs.add(trip.tripID)
+            }
+            for (id in tripsToRemove){
+                if (id<listOfCurrentTrips.size && id > -1){
+                listOfCurrentTrips.removeAt(id)
+                listUser.removeAt(id)
+                }
+            }
+        }
         Log.i("SetPB(0))", "n 2")
         if (listOfCurrentTrips.isNotEmpty()){
             Log.i("PassengerFrag", "setAdapter")
-            setPb(pass_empty_layout,pb_passenger,greyout_pass,0)
+            setPb(null,pb_passenger,greyout_pass,0)
             relativeLayout.visibility = View.VISIBLE
             pass_trips.adapter?.notifyDataSetChanged()
             pass_empty_layout.visibility = View.GONE
@@ -188,7 +242,7 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
             if (listOfCurrentRequest.isEmpty()){
          //   relativeLayout.visibility = View.GONE
                 Log.i("VISiBLE","ERRPR!3")
-            pass_empty_layout.visibility = View.VISIBLE
+          //  pass_empty_layout.visibility = View.VISIBLE
             }
 
         }
@@ -279,40 +333,40 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
         listOfCurrentTrips.removeAll(listOfTripsToRemove)
     }
     private fun getUser(index:Int){
+        if (index < listOfCurrentTrips.size) {
+            val trip = listOfCurrentTrips[index]
+            val userId = trip.userID
 
-        val trip =listOfCurrentTrips[index]
-       val userId = trip.userID
-
-        Database().fetchUser(userId,object : OnGetDataListener {
-            override fun onStart() {
-               setPb(pass_empty_layout,pb_passenger,greyout_pass,1)
-            }
-            override fun onSuccess(data: DataSnapshot) {
-                //DO SOME THING WHEN GET DATA SUCCESS HERE
-                if (data.exists()) {
-                    Log.i("PassengerFrag", "getUser_start")
-                    listUser.add(data.getValue(User::class.java)!!)
-                    if (index==listOfCurrentTrips.size-1){
-                        Log.i("PassengerFrag", "getUser_end")
-                        checkEndedTrips()
-                        setAdapter()
-                        pullToRefreshPassengerTrips.isRefreshing = false
-                    } else{
-                        getUser(index+1)
-                    }
-                } else {
-                    Log.i("PassengerFrag","DOESNT EXIST")
+            Database().fetchUser(userId, object : OnGetDataListener {
+                override fun onStart() {
+                    setPb(pass_empty_layout, pb_passenger, greyout_pass, 1)
                 }
 
-               // checkEndedTrips()
+                override fun onSuccess(data: DataSnapshot) {
+                    //DO SOME THING WHEN GET DATA SUCCESS HERE
+                    if (data.exists()) {
 
-            }
+                        listUser.add(data.getValue(User::class.java)!!)
+                        if (index == listOfCurrentTrips.size - 1) {
+                            checkEndedTrips()
+                            setAdapter()
+                            pullToRefreshPassengerTrips.isRefreshing = false
+                        } else {
+                            getUser(index + 1)
+                        }
+                    } else {
+                        Log.i("PassengerFrag", "DOESNT EXIST")
+                    }
 
-            override fun onFailed(databaseError: DatabaseError) {
+                    // checkEndedTrips()
 
-            }
-        })
+                }
 
+                override fun onFailed(databaseError: DatabaseError) {
+
+                }
+            })
+        }
     }
     private  fun getTripsList(tripIDs:List<String>,listener: OnGetDataListener){
         listener.onStart()
@@ -361,13 +415,14 @@ class PassengerFragment : androidx.fragment.app.Fragment() {
         listUser = arrayListOf()
        Database().fetchFromCurrentUser("bookedTrips",object : OnGetDataListener {
             override fun onStart() {
-                setPb(pass_empty_layout,pb_passenger,greyout_pass,1)
+                setPb(null,pb_passenger,greyout_pass,1)
                 Log.i("PassengerFrag", "getUserTrips()_onStart")
             }
 
             override fun onSuccess(data: DataSnapshot) {
                 Log.i("PassengerFrag", "getUserTrips()_onSuccess")
                 if ( data.childrenCount.toInt() > 0 ){
+                    pass_empty_layout.visibility = View.GONE
                     setPb(pass_empty_layout,pb_passenger,greyout_pass,0)
 
                     Log.i("PassengerFrag", "getUserTrips()_onStart > 1")

@@ -65,6 +65,7 @@
         <activity android:name=".settingsActivity.ModifyProfileActivity"/>
         <activity android:name=".settingsActivity.TextActivity"/>
         <activity android:name=".adminActivities.AdminActivity"/>
+        <activity android:name=".introActivities.StartActivity"/>
         <service android:name=".notifications.MyFirebaseMessaging"
                  android:enabled="true"
                  android:exported="true">

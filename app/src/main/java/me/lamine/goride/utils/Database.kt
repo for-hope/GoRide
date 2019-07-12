@@ -4,11 +4,13 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import android.widget.Toast
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import me.lamine.goride.dataObjects.Chat
+import me.lamine.goride.dataObjects.User
 import me.lamine.goride.interfaces.OnGetDataListener
 import me.lamine.goride.signActivity.LoginActivity
 import kotlin.collections.HashMap
@@ -111,6 +113,7 @@ class Database {
             }
         }
         userRef.addListenerForSingleValueEvent(eventListener)
+       // userRef.addValueEventListener(eventListener)
     }
 
     fun fetchTripRequestsList(otd: String, orderByChild: String, orderByValue: String, listener: OnGetDataListener) {
@@ -337,12 +340,32 @@ class Database {
         prefsEditor.putBoolean("isLogged", isLogged)
         prefsEditor.apply()
     }
-    fun savePasswordMeta(context: Context, password: String) {
+     fun updateUserInApp(context: Context){
+        fetchUser(currentUserId(),object:OnGetDataListener{
+            override fun onStart() {
+
+            }
+
+            override fun onSuccess(data: DataSnapshot) {
+                val user = data.getValue(User::class.java)
+                if (user != null){
+                saveSharedUser(context,user)
+                }
+
+            }
+
+            override fun onFailed(databaseError: DatabaseError) {
+                Toast.makeText(context, "Error ${databaseError.message}", Toast.LENGTH_LONG).show()
+            }
+
+        })
+    }
+ /*   fun savePasswordMeta(context: Context, password: String) {
         val mPref = context.getSharedPreferences("userPass", Context.MODE_PRIVATE)!!
         val prefsEditor = mPref.edit()
         prefsEditor.putString("pass",password)
         prefsEditor.apply()
-    }
+    }*/
 
 
 

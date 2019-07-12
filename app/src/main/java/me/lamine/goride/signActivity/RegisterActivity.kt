@@ -1,13 +1,17 @@
 package me.lamine.goride.signActivity
 
 import android.content.Intent
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
+import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_register.*
 import me.lamine.goride.R
 import me.lamine.goride.mainActivities.MainActivity
@@ -20,6 +24,11 @@ class RegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
+        setSupportActionBar(register_tb)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        register_tb.navigationIcon?.setColorFilter(ContextCompat.getColor(this,R.color.whiteColor), PorterDuff.Mode.SRC_ATOP)
+        supportActionBar?.title = ""
         mAuth = FirebaseAuth.getInstance()
         if (!verifyAvailableNetwork(this)){
             Toast.makeText(this,"No Available Network.", Toast.LENGTH_SHORT).show()
@@ -34,6 +43,8 @@ class RegisterActivity : AppCompatActivity() {
             val email = remail_edittext.text.toString()
             val password = rpassword_edittext.text.toString()
             val displayName = rname_edittext.text.toString()
+            remail_label.removeError()
+            rpassword_label.removeError()
             createNewAccount(email, password, displayName)
         }
         login_textbtn.setOnClickListener {
@@ -43,7 +54,10 @@ class RegisterActivity : AppCompatActivity() {
 
 
     }
-
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
     public override fun onStart() {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
@@ -55,8 +69,6 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun updateInterface(user: FirebaseUser?) {
-
-
         val intent = Intent(this, RegisterExtraActivity::class.java)
         intent.putExtra("User", user)
         startActivity(intent)
@@ -94,6 +106,7 @@ class RegisterActivity : AppCompatActivity() {
 
             mAuth?.createUserWithEmailAndPassword(email, password)?.addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
+
                     // Sign in success, update UI with the signed-in user's information
                     val user = mAuth?.currentUser
                     user?.updateProfile(profileUpdates)
@@ -102,11 +115,16 @@ class RegisterActivity : AppCompatActivity() {
                 } else {
                     // If sign in fails, display a message to the user.
                     loading_btn_register.loadingFailed()
-                    Log.w("TAG", "createUserWithEmail:failure", task.exception)
+                    Log.w("RegisterActivity", "createUserWithEmail:failure", task.exception)
                     Toast.makeText(
                         this, "Authentication failed. ${task.exception}",
                         Toast.LENGTH_SHORT
                     ).show()
+                    when {
+                        task.exception?.localizedMessage!!.toLowerCase().contains("email") -> remail_label.setError("Invalid Email",false)
+                        task.exception?.localizedMessage!!.toLowerCase().contains("password") -> rpassword_label.setError("Invalid Password",false)
+                        else -> rpassword_edittext.error = "Error, Verify your email and password."
+                    }
                     //  updateUI(null)
                 }
 

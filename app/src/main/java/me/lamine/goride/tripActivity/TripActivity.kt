@@ -302,7 +302,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback {
 
         trip_ac_car_model.visibility = View.GONE
         trip_ac_type_color_year.visibility = View.GONE
-        //todo check
+
         trip_ac_licence.visibility = View.GONE
         trip_ac_type_color_year.visibility = View.GONE
 
@@ -319,7 +319,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback {
             booked_layout.visibility = View.GONE
         }
 
-        //todo change icon
+
         when {
             trip.luggageSize == "N" -> trip_ac_luggage_text.text = getString(R.string.no_luggage)
             trip.luggageSize == "S" -> trip_ac_luggage_text.text = getString(R.string.small_luggage)
@@ -418,12 +418,16 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback {
                 true
             }
             R.id.delete_trip -> {
-                if (getSharedUser(this).superuser == 1){
+                if (getSharedUser(this)?.superuser == 1){
                     if (!isRequest){
                     val destCode = decodeWilaya(trip.destCity)
                     val originCode = decodeWilaya(trip.originCity)
                     val otdPath = "${String.format("%02d", originCode)}_${String.format("%02d", destCode)}"
                     mDatabase.removeFromPath("trips/$otdPath/${trip.tripID}")
+                        mDatabase.removeFromPath("users/${trip.userID}/activeTrips/${trip.tripID}")
+                        for (user in trip.bookedUsers){
+                            mDatabase.removeFromPath("users/${user.key}/bookedTrips/${trip.tripID}")
+                        }
                     Toast.makeText(this,"Trip deleted ", Toast.LENGTH_LONG).show()
                         finish()
                     } else {
@@ -517,9 +521,8 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback {
                 mDatabase.removeFromPath(mPath)
                 mPath = "$userPath/${mDatabase.currentUserId()}/bookedTrips/${trip.tripID}"
                 mDatabase.removeFromPath(mPath)
-                mPath =
-                    "$userPath/${trip.userID}/notification/unbookedUsers/${trip.tripID}/${mDatabase.currentUserId()}"
-                mDatabase.addToPath(mPath, otdPath)
+            //    mPath = "$userPath/${trip.userID}/notifications/unbookedUsers/${trip.tripID}/${mDatabase.currentUserId()}"
+            //    mDatabase.addToPath(mPath, otdPath)
                 //onCompleteListener
                 for (user in bookedUsersList) {
                     if (user.userId == mDatabase.currentUserId()) {
@@ -532,10 +535,12 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback {
                 mDatabase.addToPath("$mPath/otd", otdPath)
                 mDatabase.addToPath("$mPath/timestamp", Date().toString())
 
+
             }
             2 -> {
                 for (user in bookedUsersList) {
                     // userRef.child(user.userId).child("notifications").child("canceledTrips").child(trip.tripID).setValue(1)
+
                     val rootPath = "$userPath/${user.userId}/notifications/canceledTrips/${trip.tripID}"
                     var mPath = "$rootPath/otd"
                     mDatabase.addToPath(mPath, otdPath)
@@ -546,7 +551,10 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback {
                     mPath = "$userPath/${user.userId}/bookedTrips/${trip.tripID}"
                     mDatabase.removeFromPath(mPath)
 
+
+
                 }
+                mDatabase.removeFromPath("users/${mDatabase.currentUserId()}/activeTrips/${trip.tripID}")
                 mDatabase.removeFromPath(tripPath)
                 //notify users
             }
@@ -681,7 +689,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
             val item = menu!!.findItem(R.id.delete_trip)
-            item.isVisible = getSharedUser(this).superuser == 1
+            item.isVisible = getSharedUser(this)?.superuser == 1
         } else {
             Log.i("Menu", "Error")
         }
@@ -771,9 +779,9 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback {
         //show icon of booked users
 
         trip_ac_luggage.text = trip.luggageSize
-        //todo change icon
+
         when {
-            trip.luggageSize == "N" -> trip_ac_luggage_text.text = getString(R.string.no_luggage)
+            trip.luggageSize == "N" -> trip_ac_luggage_text.text = getString(R.string.no_luggage);
             trip.luggageSize == "S" -> trip_ac_luggage_text.text = getString(R.string.small_luggage)
             trip.luggageSize == "M" -> trip_ac_luggage_text.text = getString(R.string.medium_luggage)
             trip.luggageSize == "L" -> trip_ac_luggage_text.text = getString(R.string.large_luggage)
@@ -783,7 +791,6 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback {
             trip_ac_smoke_pref.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
         } else {
             trip_ac_smoke_pref.text = getString(R.string.smoking_allowed)
-            //todo change icon
         }
         if (trip.petsAllowed) {
             trip_ac_pets_pref.text = getString(R.string.pets_allowed)
@@ -800,24 +807,28 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
         trip_ac_submit_btn.setOnClickListener {
-            if (!getSharedUser(this).isDriver) {
-                when (checkTripStatus(trip)) {
-                    0 -> submitRequest(trip)
-                    1 -> Toast.makeText(
-                        applicationContext,
-                        "You're already booked! Wait for the trip.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    2 -> Toast.makeText(
-                        applicationContext,
-                        "Trip is full and you're booked. have a nice trip!",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    3 -> Toast.makeText(
-                        applicationContext,
-                        "Your booking is pending, wait to be accepted.",
-                        Toast.LENGTH_SHORT
-                    ).show()
+            if (!getSharedUser(this)?.isDriver!!) {
+                if (bookedUsersList.size != trip.numberOfSeats){
+                    when (checkTripStatus(trip)) {
+                        0 -> submitRequest(trip)
+                        1 -> Toast.makeText(
+                            applicationContext,
+                            "You're already booked! Wait for the trip.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        2 -> Toast.makeText(
+                            applicationContext,
+                            "Trip is full and you're booked. have a nice trip!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        3 -> Toast.makeText(
+                            applicationContext,
+                            "Your booking is pending, wait to be accepted.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+            } else {
+                    Toast.makeText(this, "This trip is already full.",Toast.LENGTH_LONG).show()
                 }
             } else {
                 Toast.makeText(this, "Only passengers age 60+ can book trips.",Toast.LENGTH_LONG).show()
@@ -874,7 +885,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback {
                     val btn: MaterialButton = findViewById(R.id.trip_ac_submit_btn)
                     btn.text = getString(R.string.full_trip)
                     Log.i("COLOR", "C")
-                    //todo suprressed
+
                     btn.icon = getDrawable(ic_mtrl_chip_checked_circle)
                     btn.backgroundTintList =
                         ContextCompat.getColorStateList(this@TripActivity, R.color.quantum_googgreen500)
@@ -950,7 +961,10 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback {
         circleImageView.layoutParams = layoutParams
         circleImageView.borderWidth = 2
         circleImageView.circleBackgroundColor = Color.parseColor("#FF000000")
-        circleImageView.onClick { }
+        circleImageView.onClick {  val intent = Intent(this, UserActivity::class.java)
+            intent.putExtra("UserProfile",user)
+            startActivity(intent)
+        }
         layout.addView(circleImageView)
     }
 
@@ -987,7 +1001,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun bookedUsersDataListener(userId: String) {
-        //todo clear
+
         bookedUsersList.clear()
         mDatabase.fetchUser(userId, object : OnGetDataListener {
             override fun onStart() {
@@ -1050,7 +1064,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback {
         val originCode = decodeWilaya(trip.originCity)
         val otdPath = "${String.format("%02d", originCode)}_${String.format("%02d", destCode)}"
         var rootPath = "trips/$otdPath/$childName/bookedUsers/${mDatabase.currentUserId()}"
-        mDatabase.addToPath(rootPath, 1)
+        mDatabase.addToPath(rootPath, otdPath)
         rootPath = "users/${mDatabase.currentUserId()}/bookedTrips/${trip.tripID}"
         mDatabase.addToPath(rootPath, otdPath)
         rootPath = "users/${trip.userID}/notifications/bookedUsers/${trip.tripID}"
@@ -1069,7 +1083,7 @@ class TripActivity : AppCompatActivity(), OnMapReadyCallback {
         val originCode = decodeWilaya(trip.originCity)
         val otdPath = "${String.format("%02d", originCode)}_${String.format("%02d", destCode)}"
         var rootPath = "trips/$otdPath/$childName/pendingBookedUsers/${mDatabase.currentUserId()}"
-        mDatabase.addToPath(rootPath, 0)
+        mDatabase.addToPath(rootPath, otdPath)
         rootPath = "users/${trip.userID}/notifications/tripRequests/${trip.tripID}/${mDatabase.currentUserId()}"
         var mPath = "$rootPath/otd"
         mDatabase.addToPath(mPath, otdPath)

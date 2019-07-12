@@ -60,7 +60,7 @@ class LoginActivity : AppCompatActivity() {
         create_account.setOnClickListener {
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
-            finish()
+            //finish()
         }
         loading_btn.setOnClickListener {
             val email = email_edittext.text.toString()
@@ -78,6 +78,8 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }
 
+            } else {
+                Toast.makeText(this,"Empty Email. Type your email first.", Toast.LENGTH_SHORT).show()
             }
 
         }

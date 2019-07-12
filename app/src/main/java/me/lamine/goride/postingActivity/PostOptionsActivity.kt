@@ -26,7 +26,7 @@ class PostOptionsActivity: AppCompatActivity() {
             }
         val postARequest = findViewById<CardView>(R.id.card_img2)
         postARequest.setOnClickListener {
-            if (getSharedUser(this).isDriver){
+            if (getSharedUser(this)?.isDriver!!){
                 Toast.makeText(this,"Only passengers can request a ride.", Toast.LENGTH_LONG).show()
             } else {
             val intent = Intent(this,RequestTripActivity::class.java)

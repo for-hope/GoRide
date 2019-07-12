@@ -62,6 +62,7 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 class PostingActivity : AppCompatActivity() {
@@ -179,6 +180,16 @@ class PostingActivity : AppCompatActivity() {
         Log.i("modifyTrip", isModifyMode.toString())
         setOrigin(trip.origin)
         setDestination(trip.destination)
+        origin_label.isEnabled = false
+        destination_label.isEnabled = false
+        originCity = trip.originCity
+        originFullAddress = trip.originFullAddress
+        originSubCity = trip.originSubCity
+        editText_time.setText(trip.time)
+        search_date_edittext.setText(trip.date)
+        destFullAddress = trip.destFullAddress
+        destCity = trip.destCity
+        destSubCity = trip.destSubCity
         edittext_tripdesc.setText(trip.description)
         edittext_price.setText(trip.pricePerSeat.toString())
 
@@ -210,12 +221,12 @@ class PostingActivity : AppCompatActivity() {
                     fillOrigin(place)
                 }
                 AutocompleteActivity.RESULT_ERROR -> {
-                    // TODO: Handle the error.
                     val status = Autocomplete.getStatusFromIntent(data!!)
+                    Toast.makeText(applicationContext, "Google server error ${status.statusMessage}", Toast.LENGTH_SHORT).show()
                     Log.i("PostingActivity", status.statusMessage)
                 }
                 Activity.RESULT_CANCELED -> {
-                    // The user canceled the operation.
+                    Toast.makeText(applicationContext, "Canceled.", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -229,12 +240,12 @@ class PostingActivity : AppCompatActivity() {
 
                 }
                 AutocompleteActivity.RESULT_ERROR -> {
-                    // TODO: Handle the error.
                     val status = Autocomplete.getStatusFromIntent(data!!)
+                    Toast.makeText(applicationContext, "Google server error ${status.statusMessage}", Toast.LENGTH_SHORT).show()
                     Log.i("SearchActivity", status.statusMessage)
                 }
                 Activity.RESULT_CANCELED -> {
-                    // The user canceled the operation.
+                    Toast.makeText(applicationContext, "Canceled", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -384,12 +395,10 @@ class PostingActivity : AppCompatActivity() {
 
                 exitView.endIconImageButton.setOnClickListener {
                     for (box in myList) {
-                        Toast.makeText(this, "clicked " + box.id, Toast.LENGTH_SHORT).show()
-                        Toast.makeText(this, "y pressed on " + box.id, Toast.LENGTH_SHORT).show()
-                        //todo       removeStopFromList(findViewById(box.id))
+                    //    Toast.makeText(this, "clicked " + box.id, Toast.LENGTH_SHORT).show()
+                     //   Toast.makeText(this, "y pressed on " + box.id, Toast.LENGTH_SHORT).show()
                         parentView.removeView(findViewById(box.id))
                         Log.i("Remove Tag", "Removed $box.id")
-
                         co -= 1
                         numberOfStops--
 
@@ -401,7 +410,7 @@ class PostingActivity : AppCompatActivity() {
 
             if (co >= 0) {
                 setup(parentView.getChildAt(co))
-                //todo addStopToList(parentView.getChildAt(co))
+
             }
             co += 1
 
@@ -414,6 +423,10 @@ class PostingActivity : AppCompatActivity() {
 
     private fun fillAllForm() {
         var correctForm = true
+        if (originSubCity.isEmpty() || destSubCity.isEmpty()){
+            correctForm = true
+            Toast.makeText(this,"Invalid Places", Toast.LENGTH_SHORT).show()
+        }
         Log.i("fillAllForms", correctForm.toString())
         if (edittext_origin.text.toString() == "" || edittext_origin.text == null) {
             correctForm = false
@@ -501,6 +514,10 @@ class PostingActivity : AppCompatActivity() {
         val isValidDate = isValidDate(tripDate)
 
 
+        if (fillSeatOptions()<1){
+            Toast.makeText(this,"You need to add at least 1 seat",Toast.LENGTH_SHORT).show()
+            correctForm = false
+        }
         if (!isValidDate) {
             correctForm = false
             add_datebtn.setError("Please enter valid date at least after 24h", false)
@@ -513,7 +530,7 @@ class PostingActivity : AppCompatActivity() {
         val isValidTime = isValidTime(tripTime)
         if (!isValidTime) {
             correctForm = false
-            add_timebtn.setError("Please enter a valid time", false)
+            add_timebtn.setError("Invalid", false)
         } else {
             add_timebtn.removeError()
         }
@@ -808,7 +825,7 @@ class PostingActivity : AppCompatActivity() {
             btn.setOnClickListener {
                 luggageOption = index
                 //change to global variable
-                Toast.makeText(this, "index is $luggageOption", Toast.LENGTH_SHORT).show()
+
                 btn.setBackgroundColor(ContextCompat.getColor(this, R.color.btnBlack))
                 val btnText = btn.getChildAt(1) as TextView
                 val btnImg = btn.getChildAt(0) as ImageView
@@ -910,7 +927,6 @@ class PostingActivity : AppCompatActivity() {
             R.color.btnBlack
         )
         for ((indexOther, otherOptionBtn) in otherBtns.withIndex()) {
-            //todo fix colors
             var otherBtnClicked = 0
             otherOptionBtn.setOnClickListener {
 
@@ -1034,7 +1050,6 @@ class PostingActivity : AppCompatActivity() {
             // Handle unsuccessful uploads
             Log.i("UPLOAD", "FAILED")
         }.addOnSuccessListener { it1 ->
-            //todo add download url
             val result = it1.metadata?.reference?.downloadUrl
             result?.addOnSuccessListener {
                 downloadUrl = it.toString()
@@ -1129,7 +1144,7 @@ class PostingActivity : AppCompatActivity() {
     private fun setup(v: View) {
 
         val edit = v.findViewById<ExtendedEditText>(R.id.edittext_label)
-        Toast.makeText(this, edit.text.toString(), Toast.LENGTH_SHORT).show()
+      //  Toast.makeText(this, edit.text.toString(), Toast.LENGTH_SHORT).show()
     }
 
     private fun addStopViewToList() {
@@ -1144,7 +1159,7 @@ class PostingActivity : AppCompatActivity() {
     private fun fillStops() {
         for (stopView in stopsList) {
             val edit = stopView.findViewById<ExtendedEditText>(R.id.edittext_label)
-            Toast.makeText(this, edit.text.toString() + stopView.id, Toast.LENGTH_SHORT).show()
+        //    Toast.makeText(this, edit.text.toString() + stopView.id, Toast.LENGTH_SHORT).show()
             stops.add(edit.text.toString())
         }
 
@@ -1154,13 +1169,13 @@ class PostingActivity : AppCompatActivity() {
         setPb(1)
         var otdPath = "${String.format("%02d", originCode)}_${String.format("%02d", destinationCode)}"
         if (isAcceptedTrip){
-            //todo check
+
             val ocode = decodeWilaya(tripRequest.originCity)
             val dcode = decodeWilaya(tripRequest.destCity)
             otdPath = "${String.format("%02d", ocode)}_${String.format("%02d", dcode)}"
             val path = "trips/$otdPath/${tripRequest.tripID}/"
             trip.userID = mDatabase.currentUserId()
-            trip.bookedUsers[tripRequest.userID] = 1
+            trip.bookedUsers[tripRequest.userID] = otdPath
             trip.tripID = tripRequest.tripID
             //
             trip.originCity = tripRequest.originCity
@@ -1172,11 +1187,19 @@ class PostingActivity : AppCompatActivity() {
             trip.destCity = tripRequest.destCity
             trip.destFullAddress = tripRequest.destFullAddress
             trip.destination = tripRequest.destFullAddress
+
+            ///
+            ///
+
+            Database().removeFromPath("tripRequests/$otdPath/${tripRequest.tripID}")
+            ///
             mDatabase.addToPath(path,trip)
             mDatabase.addToPath("users/${tripRequest.userID}/bookedTrips/${trip.tripID}",otdPath)
             mDatabase.removeFromPath("users/${tripRequest.userID}/activeTripRequests/${tripRequest.tripID}")
+            mDatabase.removeFromPath("users/${Database().currentUserId()}/notifications/acceptedDriveRequest")
         }else {
         if (!isModifyMode) {
+
             var path = "trips/$otdPath"
             val tripID = mDatabase.pushKey(path)
             trip.tripID = tripID
@@ -1184,14 +1207,28 @@ class PostingActivity : AppCompatActivity() {
             trip.userID = mDatabase.currentUserId()
             mDatabase.addToPath(path, trip)
         } else {
+            val ocode = decodeWilaya(tripToModify.originCity)
+            val dcode = decodeWilaya(tripToModify.destCity)
+            otdPath = "${String.format("%02d", ocode)}_${String.format("%02d", dcode)}"
+
             val path = "trips/$otdPath/${tripToModify.tripID}"
 
             trip.tripID = tripToModify.tripID
             trip.userID = mDatabase.currentUserId()
+            Log.d("mHashMap = ", "${tripToModify.bookedUsers.size}")
+            trip.bookedUsers = HashMap(tripToModify.bookedUsers)
             mDatabase.addToPath(path, trip)
             for (user in trip.bookedUsers) {
-                val userPath = "users/${user.key}/notifications/modifiedTrips/${trip.tripID}"
-                mDatabase.addToPath(userPath, otdPath)
+
+             //  val userPath = "users/${user.key}/notifications/modifiedTrips/${trip.tripID}"
+            //    mDatabase.addToPath(userPath, otdPath)
+
+                val rootPath = "users/${user.key}/notifications/modifiedTrips/${trip.tripID}"
+                var mPath = "$rootPath/otd"
+                mDatabase.addToPath(mPath, otdPath)
+                mPath = "$rootPath/timestamp"
+                mDatabase.addToPath(mPath, Date().toString())
+
             }
 
         }

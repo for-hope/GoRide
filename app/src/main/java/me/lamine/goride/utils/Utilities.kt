@@ -13,6 +13,7 @@ import me.lamine.goride.interfaces.OnGetDataListener
 import android.net.NetworkInfo
 import androidx.core.content.ContextCompat.getSystemService
 import android.net.ConnectivityManager
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -104,8 +105,8 @@ fun decodePoly(encoded: String): List<LatLng> {
 
     return poly
 }
-fun getSharedUser(context:Context): User {
-        var isDone :Boolean = false
+fun getSharedUser(context:Context): User? {
+
         var mUser: User? = null
         val mPrefs = context.getSharedPreferences("TripsPref", Context.MODE_PRIVATE)!!
         val gson = Gson()
@@ -120,18 +121,22 @@ fun getSharedUser(context:Context): User {
                 }
 
                 override fun onSuccess(data: DataSnapshot) {
-                   isDone = true
-                    mUser = data.getValue(User::class.java) as User
-                    saveSharedUser(context, mUser!!)
+                    try {
+                        mUser = data.getValue(User::class.java) as User
+                        saveSharedUser(context, mUser!!)
+                    } catch (e:TypeCastException){
+                        Log.e("Utilities", e.localizedMessage)
+                    }
+
                 }
 
                 override fun onFailed(databaseError: DatabaseError) {
-                    isDone = true
+
                 }
 
             })
         }
-     return mUser!!
+     return mUser
 
     }
     fun verifyAvailableNetwork(activity: AppCompatActivity):Boolean{
@@ -185,12 +190,12 @@ fun saveSharedUser(context:Context,user: User){
     saveUserIsLogged(context,true)
 }
 fun saveUserIsLogged(context:Context,isLogged:Boolean){
-    //todo
     val mPref = context.getSharedPreferences("UserPref", Context.MODE_PRIVATE)!!
     val prefsEditor = mPref.edit()
     prefsEditor.putBoolean("isLogged",isLogged)
     prefsEditor.apply()
 }
+
 //---------//////
 // Request Activity high
 // IntroActivity medium
