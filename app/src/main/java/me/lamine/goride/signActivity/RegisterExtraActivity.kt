@@ -8,6 +8,8 @@ import android.media.MediaScannerConnection
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -17,9 +19,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.ViewFlipper
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.res.ResourcesCompat
+import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.android.gms.auth.api.Auth
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
@@ -34,7 +38,9 @@ import me.lamine.goride.R
 import me.lamine.goride.dataObjects.User
 import me.lamine.goride.interfaces.OnGetDataListener
 import me.lamine.goride.mainActivities.MainActivity
+import me.lamine.goride.settingsActivity.TextActivity
 import me.lamine.goride.utils.Database
+import me.lamine.goride.utils.saveSharedUser
 import org.jetbrains.anko.onCheckedChange
 import org.jetbrains.anko.onClick
 import java.io.ByteArrayOutputStream
@@ -84,17 +90,51 @@ class RegisterExtraActivity : AppCompatActivity() {
             initActivity()
         }
         initCallBacks()
+        initPermissions()
+        if (currentUser != null){
         if (!currentUser?.isEmailVerified!!){
             currentUser?.sendEmailVerification()?.addOnCompleteListener {
                 Toast.makeText(this,"Verification email sent.",Toast.LENGTH_SHORT).show()
             }
         }
+        }
+
+     /*   phone_nb_edittext.addTextChangedListener(object : TextWatcher{
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                when {
+                    s?.length!! == 3 -> {
+                        s.append(" ")
+                    }
+                    s.length == 6 -> {
+                        s.append(" ")
+                    }
+                    s.length == 8 -> {
+                        s.append(" ")
+                    }
+                }
+            }
+
+        })*/
         progressBar_extra.progress = 20
         if (currentUser?.phoneNumber != null && currentUser?.phoneNumber!!.isNotEmpty()) {
             nextView(view_flipper)
             nextView(view_flipper)
         }
         previous_btn.visibility = View.INVISIBLE
+        terms_desc.setOnClickListener {
+            val i = Intent(this, TextActivity::class.java)
+            i.putExtra("title","Terms & Conditions")
+            startActivity(i)
+        }
+
         age_label.onClick {
             val c = Calendar.getInstance()
             val myYear = c.get(Calendar.YEAR)
@@ -150,6 +190,42 @@ class RegisterExtraActivity : AppCompatActivity() {
         previous_btn.setOnClickListener { previousView(view_flipper) }
 
 
+    }
+    private fun initPermissions(){
+        Log.i("initPermissions", "STARTEd")
+        askPermission{
+            //all permissions already granted or just granted
+
+            Toast.makeText(this,"Permissions Granted!",Toast.LENGTH_SHORT).show()
+        }.onDeclined { e ->
+            if (e.hasDenied()) {
+                Toast.makeText(this,"Permissions Denied!",Toast.LENGTH_SHORT).show()
+                //the list of denied permissions
+                e.denied.forEach {
+                    Log.i("DENIED FOR EACH", it)
+                }
+
+                AlertDialog.Builder(this)
+                    .setMessage("Please accept our permissions")
+                    .setPositiveButton("yes") { _, _ ->
+                        e.askAgain()
+                    } //ask again
+                    .setNegativeButton("no") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+            }
+
+            if(e.hasForeverDenied()) {
+                Toast.makeText(this,"Permissions Denied Forever!",Toast.LENGTH_SHORT).show()
+                //the list of forever denied permissions, user has check 'never ask again'
+                e.foreverDenied.forEach {
+                    Log.i("DENIED FOREVER", it)
+                }
+                // you need to open setting manually if you really need it
+                e.goToSettings()
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -327,7 +403,8 @@ class RegisterExtraActivity : AppCompatActivity() {
 
     private fun onVerifyPhoneNumber() {
         previous_btn.visibility = View.VISIBLE
-        phoneNumber = phone_nb_edittext.text.toString()
+        phoneNumber = phone_nb_edittext.text.toString().replace("\\s".toRegex(), "")
+        Log.i("RegisterExtraActivity", "Phone number : $phoneNumber")
         val correctNumber: Boolean = phoneNumber.length == 9 &&
                 (phoneNumber.startsWith("5") || phoneNumber.startsWith("6") || phoneNumber.startsWith("7"))
         if (correctNumber) {
@@ -543,12 +620,24 @@ class RegisterExtraActivity : AppCompatActivity() {
         user.profilePic = downloadUrl
         val userPath = "users/$userId"
         mDatabase.addToPath(userPath, user)
+        user.accountCreatingDate = Date().time
+        if (mAuth?.currentUser?.isEmailVerified!!){
+            user.emailVerification = false
+            mDatabase.addToPath("users/${mDatabase.currentUserId()}/emailVerification",false)
+
+        }
+        if (mAuth?.currentUser?.phoneNumber?.isEmpty()!!){
+            user.phoneVerfication = false
+            mDatabase.addToPath("users/${mDatabase.currentUserId()}/phoneVerfication",false)
+        }
         mDatabase.addToPath("$userPath/accountCreatingDate",Date().time)
+        saveSharedUser(this,user)
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
         Toast.makeText(this, "Done.", Toast.LENGTH_LONG).show()
         setPb(0)
 
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
+
        // this.finish()
     }
 
